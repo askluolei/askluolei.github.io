@@ -3,12 +3,12 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle: ''
-description: ''
-keywords:
-author: John Doe
-language: en
+title: Askluolei
+subtitle: '个人的学习吐槽网站'
+description: '主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽'
+keywords: 'java, js, vue, go, 读书, 笔记'
+author: Luo lei
+language: zh-CN
 timezone: ''
 
 # URL
@@ -90,7 +90,8 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+# theme: landscape
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -98,3 +99,9 @@ deploy:
   type: 'git'
   repo: git@github.com:askluolei/askluolei.github.io.git
   branch: master
+
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
