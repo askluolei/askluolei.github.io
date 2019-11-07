@@ -51,31 +51,32 @@
   };
 </script>
 
-  <meta name="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-<meta name="keywords" content="java, js, vue, go, 读书, 笔记">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Askluolei">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;index.html">
+  <meta name="description" content="maven 相关的插件使用 jdk 等级在新建项目的时候，总是 maven 默认使用的编译等级和 jdk 为全局配置的，默认是 5可以修改全局配置，或者项目的 pom文件，推荐后一种，因为无法保证项目的每个人都会去配相同的全局配置，所以，一些配置尽量在项目配置里面完成添加以下配置   123456&amp;lt;properties&amp;gt;  &amp;lt;project.build.sourceEncodin">
+<meta name="keywords" content="maven,笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="maven 插件笔记">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;07&#x2F;maven-%E6%8F%92%E4%BB%B6%E7%AC%94%E8%AE%B0&#x2F;index.html">
 <meta property="og:site_name" content="Askluolei">
-<meta property="og:description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+<meta property="og:description" content="maven 相关的插件使用 jdk 等级在新建项目的时候，总是 maven 默认使用的编译等级和 jdk 为全局配置的，默认是 5可以修改全局配置，或者项目的 pom文件，推荐后一种，因为无法保证项目的每个人都会去配相同的全局配置，所以，一些配置尽量在项目配置里面完成添加以下配置   123456&amp;lt;properties&amp;gt;  &amp;lt;project.build.sourceEncodin">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-11-07T15:32:35.735Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/">
+<link rel="canonical" href="http://yoursite.com/2019/11/07/maven-%E6%8F%92%E4%BB%B6%E7%AC%94%E8%AE%B0/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome: true,
-    isPost: false,
+    isHome: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>Askluolei</title>
+  <title>maven 插件笔记 | Askluolei</title>
   
 
 
@@ -209,10 +210,10 @@
             
 
   <div class="posts-expand">
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/07/maven-%E6%8F%92%E4%BB%B6%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -226,8 +227,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/07/maven-%E6%8F%92%E4%BB%B6%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">maven 插件笔记</a>
+          maven 插件笔记
         </h1>
 
         <div class="post-meta">
@@ -263,7 +263,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>maven 相关的插件使用</p>
+        <p>maven 相关的插件使用</p>
 <h2 id="jdk-等级"><a href="#jdk-等级" class="headerlink" title="jdk 等级"></a>jdk 等级</h2><p>在新建项目的时候，总是 <code>maven</code> 默认使用的编译等级和 <code>jdk</code> 为全局配置的，默认是 <code>5</code><br>可以修改全局配置，或者项目的 <code>pom</code>文件，推荐后一种，因为无法保证项目的每个人都会去配相同的全局配置，所以，一些配置尽量在项目配置里面完成<br>添加以下配置  </p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">maven.compiler.compilerVersion</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">maven.compiler.compilerVersion</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <h2 id="项目报告"><a href="#项目报告" class="headerlink" title="项目报告"></a>项目报告</h2><p>检查代码重复率，findbugs，p3c检查等<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-pmd-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">version</span>&gt;</span>3.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">rulesets</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-comment.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-concurrent.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-constant.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-exception.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-flowcontrol.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-naming.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-oop.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-orm.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-other.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-set.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;/<span class="name">rulesets</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">printFailingErrors</span>&gt;</span>true<span class="tag">&lt;/<span class="name">printFailingErrors</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">							<span class="tag">&lt;<span class="name">goal</span>&gt;</span>check<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.p3c<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>p3c-pmd<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">			<span class="comment">&lt;!-- 可以使用 mvn site 生成报告，包含重复代码检测，p3c 检查，基本信息 --&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-site-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">version</span>&gt;</span>3.7.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 生成项目报告 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">reporting</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">			<span class="comment">&lt;!-- 项目总览，包括基本信息，依赖，使用的插件等 --&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-project-info-reports-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">version</span>&gt;</span>3.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">			<span class="comment">&lt;!-- 源码关联，当使用检测插件的时候，发现问题代码行数，可以直接点击行数去看源码 --&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-jxr-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">version</span>&gt;</span>3.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">			<span class="comment">&lt;!-- p3c 的代码质量检测 --&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-pmd-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">version</span>&gt;</span>3.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">rulesets</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-comment.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-concurrent.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-constant.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-exception.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-flowcontrol.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-naming.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-oop.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-orm.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-other.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-set.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;/<span class="name">rulesets</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">printFailingErrors</span>&gt;</span>true<span class="tag">&lt;/<span class="name">printFailingErrors</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">			<span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.codehaus.mojo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>findbugs-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">version</span>&gt;</span>3.0.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">					<span class="comment">&lt;!-- &lt;configLocation&gt;$&#123;basedir&#125;/springside-findbugs.xml&lt;/configLocation&gt; --&gt;</span></span><br><span class="line">					<span class="comment">&lt;!-- Low、Medium和High (Low最严格) --&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">threshold</span>&gt;</span>Medium和High<span class="tag">&lt;/<span class="name">threshold</span>&gt;</span></span><br><span class="line">					<span class="comment">&lt;!-- 设置分析工作的等级，可以为Min、Default和Max --&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">effort</span>&gt;</span>Default<span class="tag">&lt;/<span class="name">effort</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">findbugsXmlOutput</span>&gt;</span>true<span class="tag">&lt;/<span class="name">findbugsXmlOutput</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">findbugsXmlOutputDirectory</span>&gt;</span>target/site<span class="tag">&lt;/<span class="name">findbugsXmlOutputDirectory</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">reporting</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
@@ -272,15 +272,22 @@
 <p>这个配置放到顶层项目。使用<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn versions:<span class="built_in">set</span> -DnewVersion=1.0.0.RELEASE</span><br></pre></td></tr></table></figure></p>
 <p>修改版本号</p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
+          <div class="post-tags">
+              <a href="/tags/maven/" rel="tag"># maven</a>
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+          </div>
+
+        
+
       </footer>
+    
   </article>
   
   
@@ -288,12 +295,10 @@
 
   </div>
 
-  
-
-
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
         </div>
           
@@ -318,6 +323,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#jdk-等级"><span class="nav-number">1.</span> <span class="nav-text">jdk 等级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目报告"><span class="nav-number">2.</span> <span class="nav-text">项目报告</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#maven-多模块的版本号管理问题"><span class="nav-number">3.</span> <span class="nav-text">maven 多模块的版本号管理问题</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -500,6 +506,23 @@ window.addEventListener('pjax:success', () => {
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: '92bdc8d867fdb9d00042',
+      clientSecret: 'afd4318e433e4378a762bff838bd6e14df754d7e',
+      repo: 'askluolei.github.io',
+      owner: 'Askluolei',
+      admin: ['luo lei'],
+      id: '3f4daf0c891693345a8744a850a2e406',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
 
     </div>
 </body>
