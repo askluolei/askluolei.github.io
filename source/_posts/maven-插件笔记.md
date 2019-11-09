@@ -5,7 +5,7 @@ tags:
  - maven
  - 笔记
 categories:
- - 工具
+ - 技术笔记
 ---
 
 maven 相关的插件使用
