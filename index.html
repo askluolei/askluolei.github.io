@@ -213,6 +213,267 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/10/leetcode/1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/10/leetcode/1/" class="post-title-link" itemprop="url">两数之和</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-10 10:58:56 / 修改时间：11:29:39" itemprop="dateCreated datePublished" datetime="2019-11-10T10:58:56+08:00">2019-11-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/leetcode/" itemprop="url" rel="index">
+                    <span itemprop="name">leetcode</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个整数数组 <code>nums</code> 和一个目标值 <code>target</code>，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。<br>你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。</p>
+<p><em>示例</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">给定 nums = [2, 7, 11, 15], target = 9</span><br><span class="line"></span><br><span class="line">因为 nums[0] + nums[1] = 2 + 7 = 9</span><br><span class="line">所以返回 [0, 1]</span><br></pre></td></tr></table></figure></p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><p>最简单的思路就是两层 <code>for</code> 循环比较。时间复杂度 <code>n * n</code> </p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">twoSum</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> []<span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(nums); i++ &#123;</span><br><span class="line">		first := nums[i]</span><br><span class="line">		<span class="keyword">for</span> j := i + <span class="number">1</span>; j &lt; <span class="built_in">len</span>(nums); j++ &#123;</span><br><span class="line">			second := nums[j]</span><br><span class="line">			<span class="keyword">if</span> target == first+second &#123;</span><br><span class="line">				<span class="keyword">return</span> []<span class="keyword">int</span>&#123;i, j&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> []<span class="keyword">int</span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另一个思路，使用 <code>map</code> 遍历两次.<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">twoSum</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> []<span class="title">int</span></span> &#123;</span><br><span class="line">  ints := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span>)</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 第一遍 记录需要于谁配对，并记录坐标</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(nums); i++ &#123;</span><br><span class="line">    first := nums[i]</span><br><span class="line">    <span class="comment">// key 是 expect  value 为 坐标</span></span><br><span class="line">		ints[target-first] = i</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 第二遍 判断当前值是否为别人的预期 利用 map ，访问时间复杂度为 O(1)</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(nums); i++ &#123;</span><br><span class="line">		second := nums[i]</span><br><span class="line">    expect, ok := ints[second]</span><br><span class="line">    <span class="comment">// 注意，坐标不能为 自己</span></span><br><span class="line">		<span class="keyword">if</span> ok &amp;&amp; i != expect &#123;</span><br><span class="line">			<span class="keyword">return</span> []<span class="keyword">int</span>&#123;expect, i&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> []<span class="keyword">int</span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>基于上面的思路扩展，由于配对是相互的，因此可以边记录 <code>expect</code> 边判断是否满足条件<br>只用一次遍历<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">twoSum</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> []<span class="title">int</span></span> &#123;</span><br><span class="line">	ints := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(nums); i++ &#123;</span><br><span class="line">    first := nums[i]</span><br><span class="line">    <span class="comment">// 判断本值 是否为其他的配对值 ，如果是，就直接返回另</span></span><br><span class="line">		<span class="keyword">if</span> expect, ok := ints[first]; ok &#123;</span><br><span class="line">			<span class="keyword">return</span> []<span class="keyword">int</span>&#123;expect, i&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 如果不是，记录本值 预期的配对值，记录坐标</span></span><br><span class="line">			ints[target-first] = i</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> []<span class="keyword">int</span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/10/leetcode/0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/10/leetcode/0/" class="post-title-link" itemprop="url">leetcode 练习</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-10 10:56:51 / 修改时间：11:19:21" itemprop="dateCreated datePublished" datetime="2019-11-10T10:56:51+08:00">2019-11-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/leetcode/" itemprop="url" rel="index">
+                    <span itemprop="name">leetcode</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>开辟一个新的模块练习算法，准备用 <code>go</code> 语言来写。<br>主要是为了熟悉 <code>go</code> 语言,还有算法，不至于每次看到算法题就完全没有思路。<br>顺序的话，按照不同类型训练，先练习数组类的，目标先订 50 题    </p>
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>目标</th>
+<th>完成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数组</td>
+<td>50</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="汇总"><a href="#汇总" class="headerlink" title="汇总"></a>汇总</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>博文</th>
+<th>leetcode 地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数组</td>
+<td><a href="/2019/11/10/leetcode/1">两数之和</a></td>
+<td><a href="https://leetcode-cn.com/problems/two-sum/" target="_blank" rel="noopener">两数之和</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/10/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/10/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">开发笔记</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-10 10:17:07 / 修改时间：10:34:57" itemprop="dateCreated datePublished" datetime="2019-11-10T10:17:07+08:00">2019-11-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">技术笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这里记录一下之前遇到的开发上的问题  </p>
+<h2 id="JPA-的时区问题"><a href="#JPA-的时区问题" class="headerlink" title="JPA 的时区问题"></a>JPA 的时区问题</h2><p>表现为表中的时间字段，在数据库中存储的是 0 时区的（比北京时间少了8小时），查询出来展示没有问题。<br><code>jdbcurl</code> 已经加上了 <code>serverTimezone=GMT%2B8</code>    </p>
+<p>最后定位在配置<br><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">spring.jpa.properties.hibernate.jdbc.time_zone</span>=<span class="string">UTC</span></span><br></pre></td></tr></table></figure><br>这个配置，会导致，插入数据库的时候，将时间转换为 0 时区</p>
+<h2 id="gson-的泛型处理"><a href="#gson-的泛型处理" class="headerlink" title="gson 的泛型处理"></a>gson 的泛型处理</h2><p>在提交安全测试的时候，被检测到 <code>fastjson</code> 的安全漏洞，之前其实已经暴漏过了，因此，已经调整到版本 <code>1.2.60</code> ，但是不知道为啥又检测到了。<br>当前到最新版本为 <code>1.2.62</code> 。不过，我们只是在打印日志，或者外部对接到时候用到了 <code>fastjson</code>，只是当作一个 <code>jsonutil</code> 来用，<br>因此，为了防止以后又检测出安全漏洞，使用 <code>gson</code> 代替。<br>这里记录一下 <code>gson</code> 的简单用法。主要是泛型相关的。      </p>
+<p><em>实例话</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Gson();</span><br><span class="line"><span class="keyword">new</span> GsonBuilder().setDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>).create();</span><br></pre></td></tr></table></figure></p>
+<p><em>序列化</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gson.toJson(request);</span><br></pre></td></tr></table></figure></p>
+<p><em>反序列化</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 基本用法  如果暂时不知道内部的具体类型，可以使用 JsonObject</span></span><br><span class="line">fromJson(String json, Class&lt;T&gt; classOfT);</span><br><span class="line"><span class="comment">// 带有泛型的用法 如 List&lt;T&gt;   JsonObject 可以替换为自己的类型</span></span><br><span class="line"><span class="comment">// 这个应该是新版本的，如果在 百度上 搜索，大部分好像是 new TypeToken 的示例</span></span><br><span class="line">gson.fromJson(resp, TypeToken.getParameterized(ArrayList<span class="class">.<span class="keyword">class</span>, <span class="title">JsonObject</span>.<span class="title">class</span>).<span class="title">getType</span>())</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="spring-RestTemplate-日志拦截"><a href="#spring-RestTemplate-日志拦截" class="headerlink" title="spring RestTemplate 日志拦截"></a>spring RestTemplate 日志拦截</h2><p>其实可以通过调整日志等级来展示 <code>RestTemplate</code> 的日志,但是我进源码稍微看了一下，只发现打印了请求日志，没有看到响应日志<br>请求日志的打印，也不是我们响应的信息，因此，就加拦截器自己打印日志了。<br>下面的代码，也是参考其他的博文。不过具体是谁的。忘记了。  </p>
+<p><em>拦截器</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.HttpRequest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.client.ClientHttpRequestExecution;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.client.ClientHttpRequestInterceptor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.client.ClientHttpResponse;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * description:</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: luolei</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span>: 2019/10/24 14:27</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoggingRequestInterceptor</span> <span class="keyword">implements</span> <span class="title">ClientHttpRequestInterceptor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">static</span> Logger log = LoggerFactory.getLogger(LoggingRequestInterceptor<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ClientHttpResponse <span class="title">intercept</span><span class="params">(HttpRequest request, <span class="keyword">byte</span>[] body, ClientHttpRequestExecution execution)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        traceRequest(request, body);</span><br><span class="line">        ClientHttpResponse response = execution.execute(request, body);</span><br><span class="line">        traceResponse(response);</span><br><span class="line">        <span class="keyword">return</span> response;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">traceRequest</span><span class="params">(HttpRequest request, <span class="keyword">byte</span>[] body)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        log.debug(<span class="string">"===========================request begin================================================"</span>);</span><br><span class="line">        log.debug(<span class="string">"URI         : &#123;&#125;"</span>, request.getURI());</span><br><span class="line">        log.debug(<span class="string">"Method      : &#123;&#125;"</span>, request.getMethod());</span><br><span class="line">        log.debug(<span class="string">"Headers     : &#123;&#125;"</span>, request.getHeaders() );</span><br><span class="line">        log.debug(<span class="string">"Request body: &#123;&#125;"</span>, <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>));</span><br><span class="line">        log.debug(<span class="string">"==========================request end================================================"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">traceResponse</span><span class="params">(ClientHttpResponse response)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        StringBuilder inputStringBuilder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        BufferedReader bufferedReader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(response.getBody(), <span class="string">"UTF-8"</span>));</span><br><span class="line">        String line = bufferedReader.readLine();</span><br><span class="line">        <span class="keyword">while</span> (line != <span class="keyword">null</span>) &#123;</span><br><span class="line">            inputStringBuilder.append(line);</span><br><span class="line">            inputStringBuilder.append(<span class="string">'\n'</span>);</span><br><span class="line">            line = bufferedReader.readLine();</span><br><span class="line">        &#125;</span><br><span class="line">        log.debug(<span class="string">"============================response begin=========================================="</span>);</span><br><span class="line">        log.debug(<span class="string">"Status code  : &#123;&#125;"</span>, response.getStatusCode());</span><br><span class="line">        log.debug(<span class="string">"Status text  : &#123;&#125;"</span>, response.getStatusText());</span><br><span class="line">        log.debug(<span class="string">"Headers      : &#123;&#125;"</span>, response.getHeaders());</span><br><span class="line">        log.debug(<span class="string">"Response body: &#123;&#125;"</span>, inputStringBuilder.toString());</span><br><span class="line">        log.debug(<span class="string">"=======================response end================================================="</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><em>构造</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// BufferingClientHttpRequestFactory 使用这个 requestFactory 是为了允许重复读取</span></span><br><span class="line"><span class="keyword">this</span>.restTemplate = builder.requestFactory(() -&gt; <span class="keyword">new</span> BufferingClientHttpRequestFactory(<span class="keyword">new</span> SimpleClientHttpRequestFactory()))</span><br><span class="line">                .interceptors(<span class="keyword">new</span> LoggingRequestInterceptor())</span><br><span class="line">                .rootUri(properties.getUrl())</span><br><span class="line">                .build();</span><br></pre></td></tr></table></figure></p>
+<p>然后修改日志等级就可以了。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/10/hexo-%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -238,7 +499,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2019-11-10 00:13:27 / 修改时间：00:50:08" itemprop="dateCreated datePublished" datetime="2019-11-10T00:13:27+08:00">2019-11-10</time>
+              <time title="创建时间：2019-11-10 00:13:27 / 修改时间：10:49:32" itemprop="dateCreated datePublished" datetime="2019-11-10T00:13:27+08:00">2019-11-10</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -277,7 +538,14 @@
 <p>然后去 <code>http://localhost:4000</code> 看自己写的东西</p>
 <p><em>部署</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo deploy</span><br></pre></td></tr></table></figure></p>
 <p>当然，前提是要配置好 <code>git</code> 地址<br>去了解 <code>github pages</code>,就是建一个 <code>{username}.github.io</code> 仓库<br>然后去 <code>_config.yml</code> 配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># Deployment</span><br><span class="line">## Docs: https://hexo.io/docs/deployment.html</span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: &#123;git repo ssh address&#125;</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure></p>
-<p>需要额外安装插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">最后部署执行</span><br></pre></td></tr></table></figure><br>hexo deploy<br>``` </p>
+<p>需要额外安装插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">最后部署执行</span><br></pre></td></tr></table></figure><br>hexo deploy<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">*配置站点信息*</span><br><span class="line">修改 `_config.yml` 里面的配置</span><br><span class="line">```yml</span><br><span class="line">title: Askluolei</span><br><span class="line">subtitle: &apos;个人的学习吐槽网站&apos;</span><br><span class="line">description: &apos;主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽&apos;</span><br><span class="line">keywords: &apos;java, js, vue, go, 读书, 笔记&apos;</span><br><span class="line">author: Luo lei</span><br><span class="line">language: zh-CN</span><br><span class="line">timezone: &apos;&apos;</span><br></pre></td></tr></table></figure></p>
+<h3 id="主题-Next"><a href="#主题-Next" class="headerlink" title="主题 Next"></a>主题 Next</h3><p>修改主题<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/theme-next/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure></p>
+<p>然后在 <code>_config.yml</code> 里面修改配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure></p>
+<p>然后可以在 <code>themes/next/_config.yml</code> 里面调整主题的相关配置了 </p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 调整布局</span></span><br><span class="line"><span class="attr">scheme:</span> <span class="string">Pisces</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 网站图标，图片放在 themes/next/source/images 目录，然后修改下面的配置</span></span><br><span class="line"><span class="attr">favicon:</span></span><br><span class="line">  <span class="attr">small:</span> <span class="string">/images/favicon-16x16.png</span></span><br><span class="line">  <span class="attr">medium:</span> <span class="string">/images/favicon-32x32.png</span></span><br><span class="line">  <span class="attr">apple_touch_icon:</span> <span class="string">/images/apple-touch-icon.png</span></span><br><span class="line">  <span class="attr">safari_pinned_tab:</span> <span class="string">/images/safari-pinned-tab.svg</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 头像 放在 themes/next/source/images/avatar.png 然后修改配置</span></span><br><span class="line"><span class="comment"># Sidebar Avatar</span></span><br><span class="line"><span class="attr">avatar:</span></span><br><span class="line">  <span class="comment"># In theme directory (source/images): /images/avatar.gif</span></span><br><span class="line">  <span class="comment"># In site directory (source/uploads): /uploads/avatar.gif</span></span><br><span class="line">  <span class="comment"># You can also use other linking images.</span></span><br><span class="line">  <span class="attr">url:</span> <span class="string">/images/avatar.png</span></span><br><span class="line">  <span class="comment"># If true, the avatar would be dispalyed in circle.</span></span><br><span class="line">  <span class="attr">rounded:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># If true, the avatar would be rotated with the cursor.</span></span><br><span class="line">  <span class="attr">rotated:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 代码块的展示，使用 mac 类型的</span></span><br><span class="line"><span class="attr">codeblock:</span></span><br><span class="line">  <span class="comment"># Code Highlight theme</span></span><br><span class="line">  <span class="comment"># Available values: normal | night | night eighties | night blue | night bright</span></span><br><span class="line">  <span class="comment"># See: https://github.com/chriskempson/tomorrow-theme</span></span><br><span class="line">  <span class="attr">highlight_theme:</span> <span class="string">night</span> <span class="string">bright</span></span><br><span class="line">  <span class="comment"># Add copy button on codeblock</span></span><br><span class="line">  <span class="attr">copy_button:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># Show text copy result.</span></span><br><span class="line">    <span class="attr">show_result:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># Available values: default | flat | mac</span></span><br><span class="line">    <span class="attr">style:</span> <span class="string">mac</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 回到顶端 ，开启配置</span></span><br><span class="line"><span class="attr">back2top:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># Back to top in sidebar.</span></span><br><span class="line">  <span class="attr">sidebar:</span> <span class="literal">false</span></span><br><span class="line">  <span class="comment"># Scroll percent label in b2t button.</span></span><br><span class="line">  <span class="attr">scrollpercent:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 阅读进度条配置</span></span><br><span class="line"><span class="attr">reading_progress:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># Available values: top | bottom</span></span><br><span class="line">  <span class="attr">position:</span> <span class="string">top</span></span><br><span class="line">  <span class="attr">color:</span> <span class="string">"#222"</span></span><br><span class="line">  <span class="attr">height:</span> <span class="string">2px</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 右上角加上 github 地址</span></span><br><span class="line"><span class="attr">github_banner:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">permalink:</span> <span class="string">https://github.com/askluolei</span></span><br><span class="line">  <span class="attr">title:</span> <span class="string">Follow</span> <span class="string">me</span> <span class="string">on</span> <span class="string">GitHub</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 评论插件，开启 gitalk</span></span><br><span class="line"><span class="attr">comments:</span></span><br><span class="line">  <span class="comment"># Available values: tabs | buttons</span></span><br><span class="line">  <span class="attr">style:</span> <span class="string">tabs</span></span><br><span class="line">  <span class="comment"># Choose a comment system to be displayed by default.</span></span><br><span class="line">  <span class="comment"># Available values: changyan | disqus | disqusjs | facebook_comments_plugin | gitalk | livere | valine | vkontakte</span></span><br><span class="line">  <span class="attr">active:</span> <span class="string">gitalk</span></span><br><span class="line"><span class="comment"># 然后补充相关配置</span></span><br><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">github_id:</span> <span class="string">NightTeam</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">nightteam.github.io</span> <span class="comment"># Repository name to store issues</span></span><br><span class="line">  <span class="attr">client_id:</span> <span class="string">&#123;your</span> <span class="string">client</span> <span class="string">id&#125;</span> <span class="comment"># GitHub Application Client ID</span></span><br><span class="line">  <span class="attr">client_secret:</span> <span class="string">&#123;your</span> <span class="string">client</span> <span class="string">secret&#125;</span> <span class="comment"># GitHub Application Client Secret</span></span><br><span class="line">  <span class="attr">admin_user:</span> <span class="string">germey</span> <span class="comment"># GitHub repo owner and collaborators, only these guys can initialize gitHub issues</span></span><br><span class="line">  <span class="attr">distraction_free_mode:</span> <span class="literal">true</span> <span class="comment"># Facebook-like distraction free mode</span></span><br><span class="line">  <span class="comment"># Gitalk's display language depends on user's browser or system environment</span></span><br><span class="line">  <span class="comment"># If you want everyone visiting your site to see a uniform language, you can set a force language value</span></span><br><span class="line">  <span class="comment"># Available values: en | es-ES | fr | ru | zh-CN | zh-TW</span></span><br><span class="line">  <span class="attr">language:</span> <span class="string">zh-CN</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 中英文之间有空格</span></span><br><span class="line"><span class="attr">pangu:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 数学公式 </span></span><br><span class="line"><span class="attr">math:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Default (true) will load mathjax / katex script on demand.</span></span><br><span class="line">  <span class="comment"># That is it only render those page which has `mathjax: true` in Front-matter.</span></span><br><span class="line">  <span class="comment"># If you set it to false, it will load mathjax / katex srcipt EVERY PAGE.</span></span><br><span class="line">  <span class="attr">per_page:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># hexo-renderer-pandoc (or hexo-renderer-kramed) required for full MathJax support.</span></span><br><span class="line">  <span class="attr">mathjax:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># See: https://mhchem.github.io/MathJax-mhchem/</span></span><br><span class="line">    <span class="attr">mhchem:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 局部刷新</span></span><br><span class="line"><span class="attr">pjax:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h3 id="其他插件"><a href="#其他插件" class="headerlink" title="其他插件"></a>其他插件</h3><p><em>rss</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-generator-feed --save</span><br></pre></td></tr></table></figure></p>
+<p><em>数学公式</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm un hexo-renderer-marked --save</span><br><span class="line">npm i hexo-renderer-kramed --save</span><br></pre></td></tr></table></figure></p>
+<p><em>pjax</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd themes/next</span><br><span class="line">git clone https://github.com/theme-next/theme-next-pjax source/lib/pjax</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -1082,393 +1350,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/27/Rest%E5%AD%A6%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/27/Rest%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">Rest学习</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-27 12:37:55" itemprop="dateCreated datePublished" datetime="2019-07-27T12:37:55+08:00">2019-07-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-10 00:48:34" itemprop="dateModified" datetime="2019-11-10T00:48:34+08:00">2019-11-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">技术笔记</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="HTTP-状态码"><a href="#HTTP-状态码" class="headerlink" title="HTTP 状态码"></a>HTTP 状态码</h2><h3 id="消息（1字头）"><a href="#消息（1字头）" class="headerlink" title="消息（1字头）"></a>消息（1字头）</h3><ul>
-<li>100<br>客户端应当继续发送请求。这个临时响应是用来通知客户端它的部分请求已经被服务器接收，且仍未被拒绝。客户端应当继续发送请求的剩余部分，或者如果请求已经完成，忽略这个响应。服务器必须在请求完成后向客户端发送一个最终响应。    </li>
-<li>101<br>服务器已经理解了客户端的请求，并将通过Upgrade 消息头通知客户端采用不同的协议来完成这个请求。在发送完这个响应最后的空行后，服务器将会切换到在Upgrade 消息头中定义的那些协议。    </li>
-<li>102<br>由WebDAV（RFC 2518）扩展的状态码，代表处理将被继续执行。    </li>
-</ul>
-<h3 id="成功（2字头）"><a href="#成功（2字头）" class="headerlink" title="成功（2字头）"></a>成功（2字头）</h3><ul>
-<li>200<br>请求已成功，请求所希望的响应头或数据体将随此响应返回。    </li>
-<li>201<br>请求已经被实现，而且有一个新的资源已经依据请求的需要而建立，且其 URI 已经随Location 头信息返回。假如需要的资源无法及时建立的话，应当返回 ‘202 Accepted’。    </li>
-<li>202<br>服务器已接受请求，但尚未处理。正如它可能被拒绝一样，最终该请求可能会也可能不会被执行。在异步操作的场合下，没有比发送这个状态码更方便的做法了。<br>返回202状态码的响应的目的是允许服务器接受其他过程的请求（例如某个每天只执行一次的基于批处理的操作），而不必让客户端一直保持与服务器的连接直到批处理操作全部完成。在接受请求处理并返回202状态码的响应应当在返回的实体中包含一些指示处理当前状态的信息，以及指向处理状态监视器或状态预测的指针，以便用户能够估计操作是否已经完成。    </li>
-<li>203<br>服务器已成功处理了请求，但返回的实体头部元信息不是在原始服务器上有效的确定集合，而是来自本地或者第三方的拷贝。当前的信息可能是原始版本的子集或者超集。例如，包含资源的元数据可能导致原始服务器知道元信息的超集。使用此状态码不是必须的，而且只有在响应不使用此状态码便会返回200 OK的情况下才是合适的。    </li>
-<li>204<br>服务器成功处理了请求，但不需要返回任何实体内容，并且希望返回更新了的元信息。响应可能通过实体头部的形式，返回新的或更新后的元信息。如果存在这些头部信息，则应当与所请求的变量相呼应。<br>如果客户端是浏览器的话，那么用户浏览器应保留发送了该请求的页面，而不产生任何文档视图上的变化，即使按照规范新的或更新后的元信息应当被应用到用户浏览器活动视图中的文档。<br>由于204响应被禁止包含任何消息体，因此它始终以消息头后的第一个空行结尾。    </li>
-<li>205<br>服务器成功处理了请求，且没有返回任何内容。但是与204响应不同，返回此状态码的响应要求请求者重置文档视图。该响应主要是被用于接受用户输入后，立即重置表单，以便用户能够轻松地开始另一次输入。    </li>
-<li>206<br>服务器已经成功处理了部分 GET 请求。类似于 FlashGet 或者迅雷这类的 HTTP下载工具都是使用此类响应实现断点续传或者将一个大文档分解为多个下载段同时下载。    </li>
-<li>207<br>由WebDAV(RFC 2518)扩展的状态码，代表之后的消息体将是一个XML消息，并且可能依照之前子请求数量的不同，包含一系列独立的响应代码。    </li>
-</ul>
-<h3 id="重定向（3字头）"><a href="#重定向（3字头）" class="headerlink" title="重定向（3字头）"></a>重定向（3字头）</h3><ul>
-<li>300<br>被请求的资源有一系列可供选择的回馈信息，每个都有自己特定的地址和浏览器驱动的商议信息。用户或浏览器能够自行选择一个首选的地址进行重定向。    </li>
-<li>301<br>被请求的资源已永久移动到新位置，并且将来任何对此资源的引用都应该使用本响应返回的若干个 URI 之一。如果可能，拥有链接编辑功能的客户端应当自动把请求的地址修改为从服务器反馈回来的地址。除非额外指定，否则这个响应也是可缓存的。<br>新的永久性的URI 应当在响应的 Location 域中返回。除非这是一个 HEAD 请求，否则响应的实体中应当包含指向新的 URI 的超链接及简短说明。<br>如果这不是一个 GET 或者 HEAD 请求，因此浏览器禁止自动进行重定向，除非得到用户的确认，因为请求的条件可能因此发生变化。    </li>
-<li>302<br>请求的资源临时从不同的 URI响应请求。由于这样的重定向是临时的，客户端应当继续向原有地址发送以后的请求。只有在Cache-Control或Expires中进行了指定的情况下，这个响应才是可缓存的。    </li>
-<li>303<br>对应当前请求的响应可以在另一个 URI 上被找到，而且客户端应当采用 GET 的方式访问那个资源。这个方法的存在主要是为了允许由脚本激活的POST请求输出重定向到一个新的资源。这个新的 URI 不是原始资源的替代引用。同时，303响应禁止被缓存。当然，第二个请求（重定向）可能被缓存。    </li>
-<li>304<br>如果客户端发送了一个带条件的 GET 请求且该请求已被允许，而文档的内容（自上次访问以来或者根据请求的条件）并没有改变，则服务器应当返回这个状态码。304响应禁止包含消息体，因此始终以消息头后的第一个空行结尾。<br>该响应必须包含以下的头信息：<br>Date，除非这个服务器没有时钟。假如没有时钟的服务器也遵守这些规则，那么代理服务器以及客户端可以自行将 Date 字段添加到接收到的响应头中去（正如RFC 2068中规定的一样），缓存机制将会正常工作。<br>ETag 和/或 Content-Location，假如同样的请求本应返回200响应。<br>Expires, Cache-Control，和/或Vary，假如其值可能与之前相同变量的其他响应对应的值不同的话。    </li>
-<li>305<br>被请求的资源必须通过指定的代理才能被访问。Location 域中将给出指定的代理所在的 URI 信息，接收者需要重复发送一个单独的请求，通过这个代理才能访问相应资源。只有原始服务器才能建立305响应。    </li>
-<li>306<br>在最新版的规范中，306状态码已经不再被使用。    </li>
-<li>307<br>请求的资源临时从不同的URI 响应请求。    </li>
-</ul>
-<h3 id="请求错误（4字头）"><a href="#请求错误（4字头）" class="headerlink" title="请求错误（4字头）"></a>请求错误（4字头）</h3><ul>
-<li>400<br>语义有误，当前请求无法被服务器理解。除非进行修改，否则客户端不应该重复提交这个请求。    </li>
-<li>401<br>当前请求需要用户验证。该响应必须包含一个适用于被请求资源的 WWW-Authenticate 信息头用以询问用户信息。客户端可以重复提交一个包含恰当的 Authorization 头信息的请求。如果当前请求已经包含了 Authorization 证书，那么401响应代表着服务器验证已经拒绝了那些证书。如果401响应包含了与前一个响应相同的身份验证询问，且浏览器已经至少尝试了一次验证，那么浏览器应当向用户展示响应中包含的实体信息，因为这个实体信息中可能包含了相关诊断信息。    </li>
-<li>402<br>该状态码是为了将来可能的需求而预留的。    </li>
-<li>403<br>服务器已经理解请求，但是拒绝执行它。与401响应不同的是，身份验证并不能提供任何帮助，而且这个请求也不应该被重复提交。如果这不是一个 HEAD 请求，而且服务器希望能够讲清楚为何请求不能被执行，那么就应该在实体内描述拒绝的原因。当然服务器也可以返回一个404响应，假如它不希望让客户端获得任何信息。    </li>
-<li>404<br>请求失败，请求所希望得到的资源未被在服务器上发现。没有信息能够告诉用户这个状况到底是暂时的还是永久的。假如服务器知道情况的话，应当使用410状态码来告知旧资源因为某些内部的配置机制问题，已经永久的不可用，而且没有任何可以跳转的地址。404这个状态码被广泛应用于当服务器不想揭示到底为何请求被拒绝或者没有其他适合的响应可用的情况下。出现这个错误的最有可能的原因是服务器端没有这个页面。    </li>
-<li>405<br>请求行中指定的请求方法不能被用于请求相应的资源。该响应必须返回一个Allow 头信息用以表示出当前资源能够接受的请求方法的列表。<br>鉴于 PUT，DELETE 方法会对服务器上的资源进行写操作，因而绝大部分的网页服务器都不支持或者在默认配置下不允许上述请求方法，对于此类请求均会返回405错误。    </li>
-<li>406<br>请求的资源的内容特性无法满足请求头中的条件，因而无法生成响应实体。<br>除非这是一个 HEAD 请求，否则该响应就应当返回一个包含可以让用户或者浏览器从中选择最合适的实体特性以及地址列表的实体。实体的格式由 Content-Type 头中定义的媒体类型决定。浏览器可以根据格式及自身能力自行作出最佳选择。但是，规范中并没有定义任何作出此类自动选择的标准。    </li>
-<li>407<br>与401响应类似，只不过客户端必须在代理服务器上进行身份验证。代理服务器必须返回一个 Proxy-Authenticate 用以进行身份询问。客户端可以返回一个 Proxy-Authorization 信息头用以验证。    </li>
-<li>408<br>请求超时。客户端没有在服务器预备等待的时间内完成一个请求的发送。客户端可以随时再次提交这一请求而无需进行任何更改。    </li>
-<li><p>409<br>由于和被请求的资源的当前状态之间存在冲突，请求无法完成。这个代码只允许用在这样的情况下才能被使用：用户被认为能够解决冲突，并且会重新提交新的请求。该响应应当包含足够的信息以便用户发现冲突的源头。    </p>
-</li>
-<li><p>410<br>被请求的资源在服务器上已经不再可用，而且没有任何已知的转发地址。这样的状况应当被认为是永久性的。如果可能，拥有链接编辑功能的客户端应当在获得用户许可后删除所有指向这个地址的引用。如果服务器不知道或者无法确定这个状况是否是永久的，那么就应该使用404状态码。除非额外说明，否则这个响应是可缓存的。<br>410响应的目的主要是帮助网站管理员维护网站，通知用户该资源已经不再可用，并且服务器拥有者希望所有指向这个资源的远端连接也被删除。这类事件在限时、增值服务中很普遍。同样，410响应也被用于通知客户端在当前服务器站点上，原本属于某个个人的资源已经不再可用。当然，是否需要把所有永久不可用的资源标记为’410 Gone’，以及是否需要保持此标记多长时间，完全取决于服务器拥有者。    </p>
-</li>
-<li>411<br>服务器拒绝在没有定义 Content-Length 头的情况下接受请求。在添加了表明请求消息体长度的有效 Content-Length 头之后，客户端可以再次提交该请求。    </li>
-<li>412<br>服务器在验证在请求的头字段中给出先决条件时，没能满足其中的一个或多个。这个状态码允许客户端在获取资源时在请求的元信息（请求头字段数据）中设置先决条件，以此避免该请求方法被应用到其希望的内容以外的资源上。    </li>
-<li>413<br>服务器拒绝处理当前请求，因为该请求提交的实体数据大小超过了服务器愿意或者能够处理的范围。此种情况下，服务器可以关闭连接以免客户端继续发送此请求。    </li>
-<li>414<br>请求的URI 长度超过了服务器能够解释的长度，因此服务器拒绝对该请求提供服务。这比较少见，通常的情况包括：<br>本应使用POST方法的表单提交变成了GET方法，导致查询字符串（Query String）过长。<br>重定向URI “黑洞”，例如每次重定向把旧的 URI 作为新的 URI 的一部分，导致在若干次重定向后 URI 超长。    </li>
-<li>415<br>对于当前请求的方法和所请求的资源，请求中提交的实体并不是服务器中所支持的格式，因此请求被拒绝。    </li>
-<li>416<br>如果请求中包含了 Range 请求头，并且 Range 中指定的任何数据范围都与当前资源的可用范围不重合，同时请求中又没有定义 If-Range 请求头，那么服务器就应当返回416状态码。    </li>
-<li>417<br>在请求头 Expect 中指定的预期内容无法被服务器满足，或者这个服务器是一个代理服务器，它有明显的证据证明在当前路由的下一个节点上，Expect 的内容无法被满足。    </li>
-<li>422<br>请求格式正确，但是由于含有语义错误，无法响应。    </li>
-<li>423<br>当前资源被锁定。    </li>
-<li>424<br>由于之前的某个请求发生的错误，导致当前请求失败，例如 PROPPATCH。     </li>
-<li>425<br>在WebDav Advanced Collections 草案中定义，但是未出现在《WebDAV 顺序集协议》（RFC 3658）中。    </li>
-<li>426<br>客户端应当切换到TLS/1.0。（RFC 2817）</li>
-<li>449<br>由微软扩展，代表请求应当在执行完适当的操作后进行重试。    </li>
-</ul>
-<h3 id="服务器错误（5-6字头）"><a href="#服务器错误（5-6字头）" class="headerlink" title="服务器错误（5,6字头）"></a>服务器错误（5,6字头）</h3><ul>
-<li>500<br>服务器遇到了一个未曾预料的状况，导致了它无法完成对请求的处理。一般来说，这个问题都会在服务器端的源代码出现错误时出现。    </li>
-<li>501<br>服务器不支持当前请求所需要的某个功能。当服务器无法识别请求的方法，并且无法支持其对任何资源的请求。    </li>
-<li>502<br>作为网关或者代理工作的服务器尝试执行请求时，从上游服务器接收到无效的响应。    </li>
-<li>503<br>由于临时的服务器维护或者过载，服务器当前无法处理请求。这个状况是临时的，并且将在一段时间以后恢复。如果能够预计延迟时间，那么响应中可以包含一个 Retry-After 头用以标明这个延迟时间。如果没有给出这个 Retry-After 信息，那么客户端应当以处理500响应的方式处理它。    </li>
-<li>504<br>作为网关或者代理工作的服务器尝试执行请求时，未能及时从上游服务器（URI标识出的服务器，例如HTTP、FTP、LDAP）或者辅助服务器（例如DNS）收到响应。    </li>
-<li>505<br>服务器不支持，或者拒绝支持在请求中使用的 HTTP 版本。这暗示着服务器不能或不愿使用与客户端相同的版本。响应中应当包含一个描述了为何版本不被支持以及服务器支持哪些协议的实体。    </li>
-<li>506<br>由《透明内容协商协议》（RFC 2295）扩展，代表服务器存在内部配置错误：被请求的协商变元资源被配置为在透明内容协商中使用自己，因此在一个协商处理中不是一个合适的重点。    </li>
-<li>507<br>服务器无法存储完成请求所必须的内容。这个状况被认为是临时的。     </li>
-<li>509<br>服务器达到带宽限制。这不是一个官方的状态码，但是仍被广泛使用。    </li>
-<li>510<br>获取资源所需要的策略并没有没满足。    </li>
-<li>600<br>源站没有返回响应头部，只返回实体内容    </li>
-</ul>
-<hr>
-<h2 id="开发REST-API"><a href="#开发REST-API" class="headerlink" title="开发REST API"></a>开发REST API</h2><p>使用REST虽然非常简单，但是，设计一套合理的REST框架却需要仔细考虑很多问题。    </p>
-<h3 id="问题一：如何组织URL"><a href="#问题一：如何组织URL" class="headerlink" title="问题一：如何组织URL"></a>问题一：如何组织URL</h3><p>在实际工程中，一个Web应用既有REST，还有MVC，可能还需要集成其他第三方系统。如何组织URL？<br>一个简单的方法是通过固定的前缀区分。例如，<code>/static/</code>开头的URL是静态资源文件，类似的，<code>/api/</code>开头的URL就是REST API，其他URL是普通的MVC请求。<br>使用不同的子域名也可以区分，但对于中小项目来说配置麻烦。随着项目的扩大，将来仍然可以把单域名拆成多域名。    </p>
-<h3 id="问题二：如何统一输出REST"><a href="#问题二：如何统一输出REST" class="headerlink" title="问题二：如何统一输出REST"></a>问题二：如何统一输出REST</h3><p>如果每个异步函数都编写下面这样的代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置Content-Type:</span></span><br><span class="line">ctx.response.type = <span class="string">'application/json'</span>;</span><br><span class="line"><span class="comment">// 设置Response Body:</span></span><br><span class="line">ctx.response.body = &#123;</span><br><span class="line">    products: products</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>很显然，这样的重复代码很容易导致错误，例如，写错了字符串<code>&#39;application/json&#39;</code>，或者漏写了<code>ctx.response.type = &#39;application/json&#39;</code>，都会导致浏览器得不到JSON数据。    </p>
-<h3 id="问题三：如何处理错误"><a href="#问题三：如何处理错误" class="headerlink" title="问题三：如何处理错误"></a>问题三：如何处理错误</h3><p>这个问题实际上有两部分。<br>第一，当REST API请求出错时，我们如何返回错误信息？<br>第二，当客户端收到REST响应后，如何判断是成功还是错误？<br>这两部分还必须统一考虑。<br>REST架构本身对错误处理并没有统一的规定。实际应用时，各种各样的错误处理机制都有。有的设计得比较合理，有的设计得不合理，导致客户端尤其是手机客户端处理API简直就是噩梦。<br>在涉及到REST API的错误时，我们必须先意识到，客户端会遇到两种类型的REST API错误。<br>一类是类似403，404，500等错误，这些错误实际上是HTTP请求可能发生的错误。REST请求只是一种请求类型和响应类型均为JSON的HTTP请求，因此，这些错误在REST请求中也会发生。<br>针对这种类型的错误，客户端除了提示用户“出现了网络错误，稍后重试”以外，并无法获得具体的错误信息。<br>另一类错误是业务逻辑的错误，例如，输入了不合法的Email地址，试图删除一个不存在的Product，等等。这种类型的错误完全可以通过JSON返回给客户端，这样，客户端可以根据错误信息提示用户“Email不合法”等，以便用户修复后重新请求API。<br>问题的关键在于客户端必须能区分出这两种类型的错误。<br>第一类的错误实际上客户端可以识别，并且我们也无法操控HTTP服务器的错误码。<br>第二类的错误信息是一个JSON字符串，例如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"code"</span>: <span class="string">"10000"</span>,</span><br><span class="line">    <span class="string">"message"</span>: <span class="string">"Bad email address"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>但是HTTP的返回码应该用啥？<br>有的Web应用使用<code>200</code>，这样客户端在识别出第一类错误后，如果遇到<code>200</code>响应，则根据响应的JSON判断是否有错误。这种方式对于动态语言（例如，JavaScript，Python等）非常容易：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> result = <span class="built_in">JSON</span>.parse(response.data);</span><br><span class="line"><span class="keyword">if</span> (result.code) &#123;</span><br><span class="line">    <span class="comment">// 有错误:</span></span><br><span class="line">    alert(result.message);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 没有错误</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>但是，对于静态语言（例如，Java）就比较麻烦，很多时候，不得不做两次序列化：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">APIError err = objectMapper.readValue(jsonString, APIError<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"><span class="keyword">if</span> (err.code == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="comment">// 没有错误，还需要重新转换:</span></span><br><span class="line">    User user = objectMapper.readValue(jsonString, User<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 有错误:</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>有的Web应用对正确的REST响应使用<code>200</code>，对错误的REST响应使用<code>400</code>，这样，客户端即是静态语言，也可以根据HTTP响应码判断是否出错，出错时直接把结果反序列化为APIError对象。<br>两种方式各有优劣。我们选择第二种，<code>200</code>表示成功响应，<code>400</code>表示失败响应。    </p>
-<p>但是，要注意，<em>绝不能</em>混合其他HTTP错误码。例如，使用401响应“登录失败”，使用403响应“权限不够”。这会使客户端无法有效识别HTTP错误码和业务错误，其原因在于HTTP协议定义的错误码十分偏向底层，而REST API属于“高层”协议，不应该复用底层的错误码。    </p>
-<h3 id="如何定义错误码"><a href="#如何定义错误码" class="headerlink" title="如何定义错误码"></a>如何定义错误码</h3><p>REST架构本身同样没有标准的错误码定义一说，因此，有的Web应用使用数字<code>1000、1001……</code>作为错误码，例如Twitter和新浪微博，有的Web应用使用字符串作为错误码，例如YouTube。到底哪一种比较好呢？    </p>
-<p>我们强烈建议使用字符串作为错误码。原因在于，使用数字作为错误码时，API提供者需要维护一份错误码代码说明表，并且，该文档必须时刻与API发布同步，否则，客户端开发者遇到一个文档上没有写明的错误码，就完全不知道发生了什么错误。    </p>
-<p>使用字符串作为错误码，最大的好处在于不用查表，根据字面意思也能猜个八九不离十。例如，YouTube API如果返回一个错误<code>authError</code>，基本上能猜到是因为认证失败。    </p>
-<p>我们定义的REST API错误格式如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"code"</span>: <span class="string">"错误代码"</span>,</span><br><span class="line">    <span class="string">"message"</span>: <span class="string">"错误描述信息"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>其中，错误代码命名规范为<em>大类:子类</em>，例如，口令不匹配的登录错误代码为<code>auth:bad_password</code>，用户名不存在的登录错误代码为<code>auth:user_not_found</code>。这样，客户端既可以简单匹配某个类别的错误，也可以精确匹配某个特定的错误。    </p>
-<h3 id="问题五：如何返回错误"><a href="#问题五：如何返回错误" class="headerlink" title="问题五：如何返回错误"></a>问题五：如何返回错误</h3><p>如果一个REST异步函数想要返回错误，一个直观的想法是调用<code>ctx.rest()</code>：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">user = processLogin(username, password);</span><br><span class="line"><span class="keyword">if</span> (user != <span class="literal">null</span>) &#123;</span><br><span class="line">    ctx.rest(user);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    ctx.response.status = <span class="number">400</span>;</span><br><span class="line">    ctx.rest(&#123;</span><br><span class="line">        code: <span class="string">'auth:user_not_found'</span>,</span><br><span class="line">        message: <span class="string">'user not found'</span></span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这种方式不好，因为控制流程会混乱，而且，错误只能在Controller函数中输出。<br>更好的方式是异步函数直接用throw语句抛出错误，让middleware去处理错误：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">user = processLogin(username, password);</span><br><span class="line"><span class="keyword">if</span> (user != <span class="literal">null</span>) &#123;</span><br><span class="line">    ctx.rest(user);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> APIError(<span class="string">'auth:user_not_found'</span>, <span class="string">'user not found'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这种方式可以在异步函数的任何地方抛出错误，包括调用的子函数内部。<br>我们只需要稍稍改写一个middleware就可以处理错误：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    APIError: <span class="function"><span class="keyword">function</span> (<span class="params">code, message</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.code = code || <span class="string">'internal:unknown_error'</span>;</span><br><span class="line">        <span class="keyword">this</span>.message = message || <span class="string">''</span>;</span><br><span class="line">    &#125;,</span><br><span class="line">    restify: <span class="function">(<span class="params">pathPrefix</span>) =&gt;</span> &#123;</span><br><span class="line">        pathPrefix = pathPrefix || <span class="string">'/api/'</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">            <span class="keyword">if</span> (ctx.request.path.startsWith(pathPrefix)) &#123;</span><br><span class="line">                <span class="comment">// 绑定rest()方法:</span></span><br><span class="line">                ctx.rest = <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">                    ctx.response.type = <span class="string">'application/json'</span>;</span><br><span class="line">                    ctx.response.body = data;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">await</span> next();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">                    <span class="comment">// 返回错误:</span></span><br><span class="line">                    ctx.response.status = <span class="number">400</span>;</span><br><span class="line">                    ctx.response.type = <span class="string">'application/json'</span>;</span><br><span class="line">                    ctx.response.body = &#123;</span><br><span class="line">                        code: e.code || <span class="string">'internal:unknown_error'</span>,</span><br><span class="line">                        message: e.message || <span class="string">''</span></span><br><span class="line">                    &#125;;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">await</span> next();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>这个错误处理的好处在于，不但简化了Controller的错误处理（只需要throw，其他不管），并且，在遇到非APIError的错误时，自动转换错误码为<code>internal:unknown_error</code>。<br>受益于async/await语法，我们在middleware中可以直接用try…catch捕获异常。如果是callback模式，就无法用try…catch捕获，代码结构将混乱得多。<br>最后，顺便把APIError这个对象export出去。    </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/27/OpenSSL%E4%BD%BF%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/27/OpenSSL%E4%BD%BF%E7%94%A8/" class="post-title-link" itemprop="url">OpenSSL使用</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-27 12:35:29" itemprop="dateCreated datePublished" datetime="2019-07-27T12:35:29+08:00">2019-07-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-10 00:48:31" itemprop="dateModified" datetime="2019-11-10T00:48:31+08:00">2019-11-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">技术笔记</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>OpenSSL 是一个强大的安全套接字层密码库，囊括主要的密码算法、常用的密钥和证书封装管理功能及SSL协议，并提供丰富的应用程序供测试或其它目的使用。<br>在OpenSSL被曝出现严重安全漏洞后，发现多数通过SSL协议加密的网站使用名为OpenSSL的开源软件包。由于这是互联网应用最广泛的安全传输方法，被网银、在线支付、电商网站、门户网站、电子邮件等重要网站广泛使用，所以该漏洞影响范围广大。    </p>
-<h2 id="对称加密算法"><a href="#对称加密算法" class="headerlink" title="对称加密算法"></a>对称加密算法</h2><p>OpenSSL一共提供了8种对称加密算法，其中7种是分组加密算法，仅有的一种流加密算法是RC4。这7种分组加密算法分别是AES、DES、Blowfish、CAST、IDEA、RC2、RC5，都支持电子密码本模式（ECB）、加密分组链接模式（CBC）、加密反馈模式（CFB）和输出反馈模式（OFB）四种常用的分组密码加密模式。其中，AES使用的加密反馈模式（CFB）和输出反馈模式（OFB）分组长度是128位，其它算法使用的则是64位。事实上，DES算法里面不仅仅是常用的DES算法，还支持三个密钥和两个密钥3DES算法。        </p>
-<h2 id="非对称加密算法"><a href="#非对称加密算法" class="headerlink" title="非对称加密算法"></a>非对称加密算法</h2><p>OpenSSL一共实现了4种非对称加密算法，包括DH算法、RSA算法、DSA算法和椭圆曲线算法（EC）。DH算法一般用户密钥交换。RSA算法既可以用于密钥交换，也可以用于数字签名，当然，如果你能够忍受其缓慢的速度，那么也可以用于数据加密。DSA算法则一般只用于数字签名。        </p>
-<h2 id="信息摘要算法"><a href="#信息摘要算法" class="headerlink" title="信息摘要算法"></a>信息摘要算法</h2><p>OpenSSL实现了5种信息摘要算法，分别是MD2、MD5、MDC2、SHA（SHA1）和RIPEMD。SHA算法事实上包括了SHA和SHA1两种信息摘要算法，此外，OpenSSL还实现了DSS标准中规定的两种信息摘要算法DSS和DSS1。        </p>
-<h2 id="密钥和证书管理"><a href="#密钥和证书管理" class="headerlink" title="密钥和证书管理"></a>密钥和证书管理</h2><p>密钥和证书管理是PKI的一个重要组成部分，OpenSSL为之提供了丰富的功能，支持多种标准。     </p>
-<p>首先，OpenSSL实现了ASN.1的证书和密钥相关标准，提供了对证书、公钥、私钥、证书请求以及CRL等数据对象的DER、PEM和BASE64的编解码功能。OpenSSL提供了产生各种公开密钥对和对称密钥的方法、函数和应用程序，同时提供了对公钥和私钥的DER编解码功能。并实现了私钥的PKCS#12和PKCS#8的编解码功能。OpenSSL在标准中提供了对私钥的加密保护功能，使得密钥可以安全地进行存储和分发。     </p>
-<p>在此基础上，OpenSSL实现了对证书的X.509标准编解码、PKCS#12格式的编解码以及PKCS#7的编解码功能。并提供了一种文本数据库，支持证书的管理功能，包括证书密钥产生、请求产生、证书签发、吊销和验证等功能。     </p>
-<p>事实上，OpenSSL提供的CA应用程序就是一个小型的证书管理中心（CA），实现了证书签发的整个流程和证书管理的大部分机制。        </p>
-<h2 id="使用例子"><a href="#使用例子" class="headerlink" title="使用例子"></a>使用例子</h2><ol>
-<li>消息摘要算法应用例子        </li>
-</ol>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"># 用SHA1算法计算文件file.txt的哈西值，输出到stdout</span><br><span class="line"># openssl dgst -sha1 file.txt</span><br><span class="line"></span><br><span class="line">#用SHA1算法计算文件file.txt的哈西值,输出到文件digest.txt</span><br><span class="line"># openssl sha1 -out digest.txt file.txt	</span><br><span class="line"></span><br><span class="line"># 用DSS1(SHA1)算法为文件file.txt签名,输出到文件dsasign.bin</span><br><span class="line"># 签名的private key必须为DSA算法产生的，保存在文件dsakey.pem中</span><br><span class="line"># openssl dgst -dss1 -sign dsakey.pem -out dsasign.bin file.txt</span><br><span class="line"></span><br><span class="line"># 用dss1算法验证file.txt的数字签名dsasign.bin，</span><br><span class="line"># 验证的private key为DSA算法产生的文件dsakey.pem</span><br><span class="line"># openssl dgst -dss1 -prverify dsakey.pem -signature dsasign.bin file.txt</span><br><span class="line"></span><br><span class="line"># 用sha1算法为文件file.txt签名,输出到文件rsasign.bin</span><br><span class="line"># 签名的private key为RSA算法产生的文件rsaprivate.pem</span><br><span class="line"># openssl sha1 -sign rsaprivate.pem -out rsasign.bin file.txt</span><br><span class="line"></span><br><span class="line"># 用sha1算法验证file.txt的数字签名rsasign.bin，</span><br><span class="line"># 验证的public key为RSA算法生成的rsapublic.pem</span><br><span class="line"># openssl sha1 -<span class="built_in">verify</span> rsapublic.pem -signature rsasign.bin file.txt</span><br></pre></td></tr></table></figure>
-<ol>
-<li>对称加密应用例子        </li>
-</ol>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"># 对称加密应用例子</span><br><span class="line"># 用DES3算法的CBC模式加密文件plaintext.doc，</span><br><span class="line"># 加密结果输出到文件ciphertext.bin</span><br><span class="line"># openssl enc -des3 -salt -<span class="keyword">in</span> plaintext.doc -out ciphertext.bin</span><br><span class="line"></span><br><span class="line"># 用DES3算法的OFB模式解密文件ciphertext.bin，</span><br><span class="line"># 提供的口令为trousers，输出到文件plaintext.doc</span><br><span class="line"># 注意：因为模式不同，该命令不能对以上的文件进行解密</span><br><span class="line"># openssl enc -des-ede3-ofb -d -<span class="keyword">in</span> ciphertext.bin -out plaintext.doc -pass pass:trousers</span><br><span class="line"></span><br><span class="line"># 用Blowfish的CFB模式加密plaintext.doc，口令从环境变量PASSWORD中取</span><br><span class="line"># 输出到文件ciphertext.bin</span><br><span class="line"># openssl bf-cfb -salt -<span class="keyword">in</span> plaintext.doc -out ciphertext.bin -pass env:PASSWORD</span><br><span class="line"></span><br><span class="line"># 给文件ciphertext.bin用base64编码，输出到文件base64.txt</span><br><span class="line"># openssl base64 -<span class="keyword">in</span> ciphertext.bin -out base64.txt</span><br><span class="line"></span><br><span class="line"># 用RC5算法的CBC模式加密文件plaintext.doc</span><br><span class="line"># 输出到文件ciphertext.bin，</span><br><span class="line"># salt、key和初始化向量(iv)在命令行指定</span><br><span class="line"># openssl rc5 -<span class="keyword">in</span> plaintext.doc -out ciphertext.bin -S C62CB1D49F158ADC -iv E9EDACA1BD7090C6 -K <span class="number">89</span>D4B1678D604FAA3DBFFD030A314B29</span><br></pre></td></tr></table></figure>
-<ol>
-<li>Diffie-Hellman应用例子        </li>
-</ol>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 使用生成因子<span class="number">2</span>和随机的<span class="number">1024</span>-bit的素数产生D0ffie-Hellman参数</span><br><span class="line"># 输出保存到文件dhparam.pem</span><br><span class="line"># openssl dhparam -out dhparam.pem -<span class="number">2</span> <span class="number">1024</span></span><br><span class="line"></span><br><span class="line"># 从dhparam.pem中读取Diffie-Hell参数，以C代码的形式</span><br><span class="line"># 输出到stdout</span><br><span class="line"># openssl dhparam -<span class="keyword">in</span> dhparam.pem -noout -C</span><br></pre></td></tr></table></figure>
-<ol>
-<li>DSA应用例子应用例子        </li>
-</ol>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 生成<span class="number">1024</span>位DSA参数集，并输出到文件dsaparam.pem</span><br><span class="line"># openssl dsaparam -out dsaparam.pem <span class="number">1024</span></span><br><span class="line"></span><br><span class="line"># 使用参数文件dsaparam.pem生成DSA私钥匙，</span><br><span class="line"># 采用<span class="number">3</span>DES加密后输出到文件dsaprivatekey.pem</span><br><span class="line"># openssl gendsa -out dsaprivatekey.pem -des3 dsaparam.pem</span><br><span class="line"></span><br><span class="line"># 使用私钥匙dsaprivatekey.pem生成公钥匙，</span><br><span class="line"># 输出到dsapublickey.pem</span><br><span class="line"># openssl dsa -<span class="keyword">in</span> dsaprivatekey.pem -pubout -out dsapublickey.pem</span><br><span class="line"></span><br><span class="line"># 从dsaprivatekey.pem中读取私钥匙，解密并输入新口令进行加密，</span><br><span class="line"># 然后写回文件dsaprivatekey.pem</span><br><span class="line"># openssl dsa -<span class="keyword">in</span> dsaprivatekey.pem -out dsaprivatekey.pem -des3 -passin</span><br></pre></td></tr></table></figure>
-<ol>
-<li>RSA应用例子        </li>
-</ol>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"># 产生<span class="number">1024</span>位RSA私匙，用<span class="number">3</span>DES加密它，口令为trousers，</span><br><span class="line"># 输出到文件rsaprivatekey.pem</span><br><span class="line"># openssl genrsa -out rsaprivatekey.pem -passout pass:trousers -des3 <span class="number">1024</span></span><br><span class="line"></span><br><span class="line"># 从文件rsaprivatekey.pem读取私匙，用口令trousers解密，</span><br><span class="line"># 生成的公钥匙输出到文件rsapublickey.pem</span><br><span class="line"># openssl rsa -<span class="keyword">in</span> rsaprivatekey.pem -passin pass:trousers -pubout -out rsapubckey.pem</span><br><span class="line"></span><br><span class="line"># 用公钥匙rsapublickey.pem加密文件plain.txt，</span><br><span class="line"># 输出到文件cipher.txt</span><br><span class="line"># openssl rsautl -encrypt -pubin -inkey rsapublickey.pem -<span class="keyword">in</span> plain.txt -out cipher.txt</span><br><span class="line"></span><br><span class="line"># 使用私钥匙rsaprivatekey.pem解密密文cipher.txt，</span><br><span class="line"># 输出到文件plain.txt</span><br><span class="line"># openssl rsautl -decrypt -inkey rsaprivatekey.pem -<span class="keyword">in</span> cipher.txt -out plain.txt</span><br><span class="line"></span><br><span class="line"># 用私钥匙rsaprivatekey.pem给文件plain.txt签名，</span><br><span class="line"># 输出到文件signature.bin</span><br><span class="line"># openssl rsautl -sign -inkey rsaprivatekey.pem -<span class="keyword">in</span> plain.txt -out signature.bin</span><br><span class="line"></span><br><span class="line"># 用公钥匙rsapublickey.pem验证签名signature.bin，</span><br><span class="line"># 输出到文件plain.txt</span><br><span class="line"># openssl rsautl -<span class="built_in">verify</span> -pubin -inkey rsapublickey.pem -<span class="keyword">in</span> signature.bin -out plain</span><br><span class="line"></span><br><span class="line"># 从X.<span class="number">509</span>证书文件cert.pem中获取公钥匙，</span><br><span class="line"># 用<span class="number">3</span>DES加密mail.txt</span><br><span class="line"># 输出到文件mail.enc</span><br><span class="line"># openssl smime -encrypt -<span class="keyword">in</span> mail.txt -des3 -out mail.enc cert.pem</span><br><span class="line"></span><br><span class="line"># 从X.<span class="number">509</span>证书文件cert.pem中获取接收人的公钥匙，</span><br><span class="line"># 用私钥匙key.pem解密S/MIME消息mail.enc，</span><br><span class="line"># 结果输出到文件mail.txt</span><br><span class="line"># openssl smime -decrypt -<span class="keyword">in</span> mail.enc -recip cert.pem -inkey key.pem -out mail.txt</span><br><span class="line"></span><br><span class="line"># cert.pem为X.<span class="number">509</span>证书文件，用私匙key,pem为mail.txt签名，</span><br><span class="line"># 证书被包含在S/MIME消息中，输出到文件mail.sgn</span><br><span class="line"># openssl smime -sign -<span class="keyword">in</span> mail.txt -signer cert.pem -inkey key.pem -out mail.sgn</span><br><span class="line"></span><br><span class="line"># 验证S/MIME消息mail.sgn，输出到文件mail.txt</span><br><span class="line"># 签名者的证书应该作为S/MIME消息的一部分包含在mail.sgn中</span><br><span class="line"># openssl smime -<span class="built_in">verify</span> -<span class="keyword">in</span> mail.sgn -out mail.txt</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/27/spring-%E6%BA%90%E7%A0%81%E5%86%8D%E5%88%86%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/27/spring-%E6%BA%90%E7%A0%81%E5%86%8D%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">spring 源码再分析</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2019-07-27 12:32:26 / 修改时间：12:34:12" itemprop="dateCreated datePublished" datetime="2019-07-27T12:32:26+08:00">2019-07-27</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" itemprop="url" rel="index">
-                    <span itemprop="name">源码阅读</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <img src="/2019/07/27/spring-%E6%BA%90%E7%A0%81%E5%86%8D%E5%88%86%E6%9E%90/spring%E5%88%9D%E5%A7%8B%E5%8C%96-%E5%8D%95%E4%BE%8B%E5%AE%9E%E4%BE%8B%E5%8C%96%E8%BF%87%E7%A8%8B.svg" class="" title="This is an example image">
-<p>ConfigurationClassPostProcessor        BeanDefinitionRegistryPostProcessor<br>AutowiredAnnotationBeanPostProcessor            InstantiationAwareBeanPostProcessorAdapter<br>CommonAnnotationBeanPostProcessor             InstantiationAwareBeanPostProcessor</p>
-<p>EventListenerMethodProcessor        SmartInitializingSingleton<br>DefaultEventListenerFactory                EventListenerFactory<br>ApplicationContextAwareProcessor        BeanPostProcessor</p>
-<p>ApplicationListenerDetector        BeanPostProcessor</p>
-<p>BeanPostProcessorChecker</p>
-<ol>
-<li>prepareRefresh<br> 记录启动时间</li>
-<li>prepareBeanFactory<br> 忽略和设置框架依赖注入</li>
-<li>postProcessBeanFactory<br> 扩展方法，</li>
-<li><p>invokeBeanFactoryPostProcessors<br> 调用 BeanFactoryPostProcessor  BeanDefinitionRegistryPostProcessor 扩展</p>
-<ol>
-<li>直接挂在 context 上的 BeanDefinitionRegistryPostProcessor   -&gt; postProcessBeanDefinitionRegistry</li>
-<li>beanFactory 里面的  BeanDefinitionRegistryPostProcessor ,PriorityOrdered -&gt;  postProcessBeanDefinitionRegistry</li>
-<li>beanFactory 里面的  BeanDefinitionRegistryPostProcessor ,Ordered -&gt;  postProcessBeanDefinitionRegistry</li>
-<li>beanFactory 里面的  BeanDefinitionRegistryPostProcessor -&gt;  postProcessBeanDefinitionRegistry</li>
-<li>上面执行过的 继续执行 BeanFactoryPostProcessor —&gt; postProcessBeanFactory</li>
-<li>直接挂在 context 上的 BeanFactoryPostProcessor —&gt; postProcessBeanFactory</li>
-<li>beanFactory 里面的 BeanFactoryPostProcessor , PriorityOrdered  -&gt;  postProcessBeanFactory</li>
-<li>beanFactory 里面的 BeanFactoryPostProcessor , Ordered -&gt;  postProcessBeanFactory</li>
-<li>beanFactory 里面的 BeanFactoryPostProcessor  -&gt;  postProcessBeanFactory<br>这里核心的是 ConfigurationClassPostProcessor</li>
-</ol>
-</li>
-<li><p>registerBeanPostProcessors<br> 添加 BeanPostProcessor<br> beanFactory 自身带的<br> 添加 BeanPostProcessorChecker<br> 容器里面的<br> BeanPostProcessor - PriorityOrdered<br> BeanPostProcessor - Ordered<br> BeanPostProcessor -<br> 上面三个，按照顺序添加到自身带的后面<br> BeanPostProcessor - MergedBeanDefinitionPostProcessor - PriorityOrdered<br> BeanPostProcessor - MergedBeanDefinitionPostProcessor - Ordered<br> BeanPostProcessor - MergedBeanDefinitionPostProcessor<br> 再添加一次 MergedBeanDefinitionPostProcessor 类型的，按照上面的顺序<br> 最后添加 ApplicationListenerDetector</p>
-</li>
-<li>initMessageSource<br> 这个是国际化的地方<br> DelegatingMessageSource</li>
-<li>initApplicationEventMulticaster<br> 事件<br> SimpleApplicationEventMulticaster</li>
-<li>onRefresh<br>空的，扩展接口</li>
-<li>registerListeners<br>添加 ApplicationListener<br>先 beanFactory 上挂的，然后 beanFactory 里面的<br>然后将这之前的事件发布了</li>
-<li>finishBeanFactoryInitialization<br>特殊处理 LoadTimeWeaverAware 先进行初始化 （getBean）<br>冻结 beanDefinition ,不再改变<br>实例化非延时加载的单例</li>
-<li>finishRefresh<br>结束</li>
-</ol>
-<p>实例化非延时加载的单例</p>
-<p>spring 实例化 bean 其实就是调用 getBean<br>内部实现是 doGetBean<br>先看 普通的 bean  后面再看 factoryBean</p>
-<ol>
-<li>就是去手动注册的 bean 里面检查是否存在，如果存在，直接返回了  一般只有部分 spring 内部的 bean 是手动注册的</li>
-<li>在创建 bean 之前，用 InstantiationAwareBeanPostProcessor -&gt; postProcessBeforeInstantiation 处理<br> 这里参数是 class 和 beanName ，如果返回非 null ，那么就使用这里返回的 bean 然后<pre><code> BeanPostProcessor -&gt; postProcessAfterInitialization 处理生成的 bean
-</code></pre></li>
-<li>如果没被上面的扩展接口处理，那么进入标准的创建流程</li>
-<li>如果提供了 bean 的工厂类，那么使用工厂类创建 （可以是 Supplier 或者 factoryMethod）</li>
-<li>核心创建方法两个 autowireConstructor （有构造依赖的构建） 和 instantiateBean （标准创建）</li>
-<li>创建完成后 调用扩展 MergedBeanDefinitionPostProcessor -&gt; postProcessMergedBeanDefinition  这里是修改 BeanDefinetion 的地方</li>
-<li>populateBean  处理扩展接口 InstantiationAwareBeanPostProcessor -&gt; postProcessAfterInstantiation   返回值决定是否继续处理 propertyValue<br> 后面继续处理扩展接口  InstantiationAwareBeanPostProcessor -&gt; postProcessProperties  postProcessPropertyValues</li>
-</ol>
-<p>BeanPostProcessor -&gt; postProcessBeforeInitialization  </p>
-<p>afterPropertiesSet  initMethod<br>BeanPostProcessor -&gt; postProcessAfterInitialization<br>注册 destoryMethod</p>
-<p>几个核心的 BeanPostProcessor<br>ApplicationContextAwareProcessor<br>ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor<br>PostProcessorRegistrationDelegate$BeanPostProcessorChecker<br>CommonAnnotationBeanPostProcessor<br>AutowiredAnnotationBeanPostProcessor<br>ApplicationListenerDetector</p>
-<ol>
-<li>ApplicationContextAwareProcessor  实现  BeanPostProcessor<br>作用：<br>在 init 方法之前，调用 bean 的 Aware 接口<br>EnvironmentAware<br>EmbeddedValueResolverAware<br>ResourceLoaderAware<br>ApplicationEventPublisherAware<br>MessageSourceAware<br>ApplicationContextAware</li>
-<li>ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor 实现 InstantiationAwareBeanPostProcessor<br>作用:<br>在依赖注入前，设置 BeanFactory 接口  EnhancedConfiguration<br>在 init 方法前 调用<br>ImportAware</li>
-<li>PostProcessorRegistrationDelegate$BeanPostProcessorChecker<br>这个扩展是用来检测 bean 是否经过了所有 BeanPostProcess 的处理 ，如果没有，会有 info 日志<br>因为在实例化 bean 之前，首先处理的是 BeanPostProcessor 实例，按照顺序，是内建 -&gt; PriorityOrdered -&gt; Ordered -&gt; 非排序的<br>如果直接存在依赖注入的问题，那么，会有一个问题，在 BeanPostProcessor 里面依赖了其他普通的 bean，那么会先触发普通 bean 的实例化，但是没法享受 BeanPostProcessor 的处理了<br>要知道 无论是 ioc 还是 aop 都是使用 BeanPostProcessor 扩展的</li>
-<li>CommonAnnotationBeanPostProcessor 实现 InstantiationAwareBeanPostProcessor MergedBeanDefinitionPostProcessor DestructionAwareBeanPostProcessor<br>这里处理的是 init 和 destroy 和 JSR-250 注解依赖注入的地方<br>这里的注解属于标准注解 javax.annotation.PostConstruct javax.annotation.PreDestroy  javax.annotation.Resource 等</li>
-<li>AutowiredAnnotationBeanPostProcessor 实现 InstantiationAwareBeanPostProcessor  MergedBeanDefinitionPostProcessor<br>这里是处理内置注解 @Autowired   @Value  javax.inject.Inject  的注入</li>
-<li>ApplicationListenerDetector<br>这里是处理 ApplicationListener 的地方，单例的 ApplicationListener 实例注册，非单例，打印警告信息</li>
-</ol>
-<p>ConfigurationClassPostProcessor 这个是核心类，还要仔细看看</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1519,20 +1400,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">67</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">32</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
