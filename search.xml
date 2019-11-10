@@ -45,6 +45,7 @@
 <thead>
 <tr>
 <th>类型</th>
+<th>难度</th>
 <th>博文</th>
 <th>leetcode 地址</th>
 </tr>
@@ -52,6 +53,7 @@
 <tbody>
 <tr>
 <td>数组</td>
+<td>简单</td>
 <td><a href="/2019/11/10/leetcode/1">两数之和</a></td>
 <td><a href="https://leetcode-cn.com/problems/two-sum/" target="_blank" rel="noopener">两数之和</a></td>
 </tr>
