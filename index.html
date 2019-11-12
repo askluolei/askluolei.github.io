@@ -213,6 +213,220 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/12/sentinel-%E5%AD%A6%E4%B9%A0-%E4%B8%8A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/12/sentinel-%E5%AD%A6%E4%B9%A0-%E4%B8%8A/" class="post-title-link" itemprop="url">sentinel 学习-上</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-12 20:49:58 / 修改时间：20:50:55" itemprop="dateCreated datePublished" datetime="2019-11-12T20:49:58+08:00">2019-11-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">技术笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="sentinel-学习"><a href="#sentinel-学习" class="headerlink" title="sentinel 学习"></a>sentinel 学习</h1><h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>添加依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-sentinel<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.9.0.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这是一个 <code>spring-boot-start</code> 模块，依赖了<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-alibaba-sentinel<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>在包里面看到 <code>spring.factories</code> ，这里是集成 <code>spring-boot</code> 的入口    </p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">org.springframework.boot.autoconfigure.EnableAutoConfiguration</span>=<span class="string">\</span></span><br><span class="line">org.springframework.cloud.alibaba.sentinel.SentinelWebAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.alibaba.sentinel.endpoint.SentinelEndpointAutoConfiguration,\</span><br><span class="line">org.springframework.cloud.alibaba.sentinel.custom.SentinelAutoConfiguration,\</span><br><span class="line"><span class="attr">org.springframework.cloud.alibaba.sentinel.feign.SentinelFeignAutoConfiguration</span></span><br><span class="line"></span><br><span class="line"><span class="meta">org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker</span>=<span class="string">\</span></span><br><span class="line"><span class="attr">org.springframework.cloud.alibaba.sentinel.custom.SentinelCircuitBreakerConfiguration</span></span><br></pre></td></tr></table></figure>
+<h3 id="SentinelWebAutoConfiguration"><a href="#SentinelWebAutoConfiguration" class="headerlink" title="SentinelWebAutoConfiguration"></a>SentinelWebAutoConfiguration</h3><p>这个配置默认开启，作用是添加了一个 <code>CommonFilter</code><br>这里过滤器的作用是基于 <code>url</code> 的限流   </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(ServletRequest request, ServletResponse response, FilterChain chain)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">    HttpServletRequest sRequest = (HttpServletRequest) request;</span><br><span class="line">    Entry entry = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    Entry methodEntry = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 这里是获取 uri  就是排除 contextPath 后面的 uri ，剔除掉 query 参数</span></span><br><span class="line">        String target = FilterUtil.filterTarget(sRequest);</span><br><span class="line">        <span class="comment">// Clean and unify the URL.</span></span><br><span class="line">        <span class="comment">// For REST APIs, you have to clean the URL (e.g. `/foo/1` and `/foo/2` -&gt; `/foo/:id`), or</span></span><br><span class="line">        <span class="comment">// the amount of context and resources will exceed the threshold.</span></span><br><span class="line">        UrlCleaner urlCleaner = WebCallbackManager.getUrlCleaner();</span><br><span class="line">        <span class="comment">// 默认的 UrlCleaner 啥都不做，可以自己做处理， 譬如上面注释里面的路径参数</span></span><br><span class="line">        <span class="keyword">if</span> (urlCleaner != <span class="keyword">null</span>) &#123;</span><br><span class="line">            target = urlCleaner.clean(target);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 解析 origin 自己配置的 RequestOriginParser 实现，如果没有，默认就是 "" 了</span></span><br><span class="line">        <span class="comment">// Parse the request origin using registered origin parser.</span></span><br><span class="line">        String origin = parseOrigin(sRequest);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 这里就是限流控制了，context 和 resourceName 都是 uri  类型是 EntryType.IN   ，默认的类型是 OUT</span></span><br><span class="line">        ContextUtil.enter(target, origin);</span><br><span class="line">        entry = SphU.entry(target, EntryType.IN);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 是否基于 HTTP METHOD 区分 uri</span></span><br><span class="line">        <span class="comment">// Add method specification if necessary</span></span><br><span class="line">        <span class="keyword">if</span> (httpMethodSpecify) &#123;</span><br><span class="line">          <span class="comment">// 如果需要的话，继续请求限流控制</span></span><br><span class="line">            methodEntry = SphU.entry(sRequest.getMethod().toUpperCase() + COLON + target,</span><br><span class="line">                    EntryType.IN);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        chain.doFilter(request, response);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (BlockException e) &#123;</span><br><span class="line">        <span class="comment">// 阻塞了，代表本次请求被限流了，限流的原因有多个，大部分是基于 QPS 的</span></span><br><span class="line">        HttpServletResponse sResponse = (HttpServletResponse) response;</span><br><span class="line">        <span class="comment">// Return the block page, or redirect to another URL.</span></span><br><span class="line">        WebCallbackManager.getUrlBlockHandler().blocked(sRequest, sResponse, e);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e2) &#123;</span><br><span class="line">        Tracer.trace(e2);</span><br><span class="line">        <span class="keyword">throw</span> e2;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ServletException e3) &#123;</span><br><span class="line">        Tracer.trace(e3);</span><br><span class="line">        <span class="keyword">throw</span> e3;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RuntimeException e4) &#123;</span><br><span class="line">        Tracer.trace(e4);</span><br><span class="line">        <span class="keyword">throw</span> e4;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">// 释放资源</span></span><br><span class="line">        <span class="keyword">if</span> (methodEntry != <span class="keyword">null</span>) &#123;</span><br><span class="line">            methodEntry.exit();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (entry != <span class="keyword">null</span>) &#123;</span><br><span class="line">            entry.exit();</span><br><span class="line">        &#125;</span><br><span class="line">        ContextUtil.exit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="SentinelEndpointAutoConfiguration"><a href="#SentinelEndpointAutoConfiguration" class="headerlink" title="SentinelEndpointAutoConfiguration"></a>SentinelEndpointAutoConfiguration</h3><p>这个配置是对 <code>spring-boot-starter-actuator</code> 的一个扩展。添加了一个 <code>SentinelEndpoint</code>,用来返回展示一些基本配置和规则配置  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ReadOperation</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">invoke</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> Map&lt;String, Object&gt; result = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">  <span class="keyword">if</span> (sentinelProperties.isEnabled()) &#123;</span><br><span class="line"></span><br><span class="line">    result.put(<span class="string">"appName"</span>, AppNameUtil.getAppName());</span><br><span class="line">    result.put(<span class="string">"logDir"</span>, LogBase.getLogBaseDir());</span><br><span class="line">    result.put(<span class="string">"logUsePid"</span>, LogBase.isLogNameUsePid());</span><br><span class="line">    result.put(<span class="string">"blockPage"</span>, WebServletConfig.getBlockPage());</span><br><span class="line">    result.put(<span class="string">"metricsFileSize"</span>, SentinelConfig.singleMetricFileSize());</span><br><span class="line">    result.put(<span class="string">"metricsFileCharset"</span>, SentinelConfig.charset());</span><br><span class="line">    result.put(<span class="string">"totalMetricsFileCount"</span>, SentinelConfig.totalMetricFileCount());</span><br><span class="line">    result.put(<span class="string">"consoleServer"</span>, TransportConfig.getConsoleServer());</span><br><span class="line">    result.put(<span class="string">"clientIp"</span>, TransportConfig.getHeartbeatClientIp());</span><br><span class="line">    result.put(<span class="string">"heartbeatIntervalMs"</span>, TransportConfig.getHeartbeatIntervalMs());</span><br><span class="line">    result.put(<span class="string">"clientPort"</span>, TransportConfig.getPort());</span><br><span class="line">    result.put(<span class="string">"coldFactor"</span>, sentinelProperties.getFlow().getColdFactor());</span><br><span class="line">    result.put(<span class="string">"filter"</span>, sentinelProperties.getFilter());</span><br><span class="line">    result.put(<span class="string">"datasource"</span>, sentinelProperties.getDatasource());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> Map&lt;String, Object&gt; rules = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    result.put(<span class="string">"rules"</span>, rules);</span><br><span class="line">    rules.put(<span class="string">"flowRules"</span>, FlowRuleManager.getRules());</span><br><span class="line">    rules.put(<span class="string">"degradeRules"</span>, DegradeRuleManager.getRules());</span><br><span class="line">    rules.put(<span class="string">"systemRules"</span>, SystemRuleManager.getRules());</span><br><span class="line">    rules.put(<span class="string">"authorityRule"</span>, AuthorityRuleManager.getRules());</span><br><span class="line">    rules.put(<span class="string">"paramFlowRule"</span>, ParamFlowRuleManager.getRules());</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="SentinelAutoConfiguration"><a href="#SentinelAutoConfiguration" class="headerlink" title="SentinelAutoConfiguration"></a>SentinelAutoConfiguration</h3><p>这个是比较核心的配置，与 <code>spring</code> 集成的 <code>bean</code> 基本都是在这里注册的<br>还有 <code>sentinel</code> 本身的初始化，也在这里执行<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostConstruct</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 省略一堆配置</span></span><br><span class="line">  <span class="keyword">if</span> (StringUtils.hasText(properties.getServlet().getBlockPage())) &#123;</span><br><span class="line">    WebServletConfig.setBlockPage(properties.getServlet().getBlockPage());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  urlBlockHandlerOptional.ifPresent(WebCallbackManager::setUrlBlockHandler);</span><br><span class="line">  urlCleanerOptional.ifPresent(WebCallbackManager::setUrlCleaner);</span><br><span class="line">  requestOriginParserOptional.ifPresent(WebCallbackManager::setRequestOriginParser);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// earlier initialize</span></span><br><span class="line">  <span class="keyword">if</span> (properties.isEager()) &#123;</span><br><span class="line">    <span class="comment">// 核心，这里使用 SPI 加载 InitFunc 的实现，然后初始</span></span><br><span class="line">    InitExecutor.doInit();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 支持 @SentinelResource 注解的 Aspect 类</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SentinelResourceAspect <span class="title">sentinelResourceAspect</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> SentinelResourceAspect();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 看名字就知道是处理 RestTemplate 的，支持 @SentinelRestTemplate 注解，可以指定 block 或者 fallback 处理方法</span></span><br><span class="line"><span class="comment">// 参数类型为 HttpRequest.class, byte[].class, ClientHttpRequestExecution.class, BlockException.class </span></span><br><span class="line"><span class="comment">// 返回类型   ClientHttpResponse.class</span></span><br><span class="line"><span class="comment">// 静态方法</span></span><br><span class="line"><span class="comment">// 然后添加 SentinelProtectInterceptor</span></span><br><span class="line"><span class="comment">// 这里请求外部资源的时候，要经过两个 entry  1. hostResource (httpMethod):(schema)://(host):(port) 2. hostResource + path</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line"><span class="meta">@ConditionalOnClass</span>(name = <span class="string">"org.springframework.web.client.RestTemplate"</span>)</span><br><span class="line"><span class="meta">@ConditionalOnProperty</span>(name = <span class="string">"resttemplate.sentinel.enabled"</span>, havingValue = <span class="string">"true"</span>, matchIfMissing = <span class="keyword">true</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> SentinelBeanPostProcessor <span class="title">sentinelBeanPostProcessor</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    ApplicationContext applicationContext)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> SentinelBeanPostProcessor(applicationContext);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里是加载配置规则源，规则可以存放在 naco ，apollo 等地方</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SentinelDataSourceHandler <span class="title">sentinelDataSourceHandler</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    DefaultListableBeanFactory beanFactory)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> SentinelDataSourceHandler(beanFactory);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 规则序列化的地方</span></span><br><span class="line"><span class="meta">@ConditionalOnClass</span>(ObjectMapper<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">protected</span> <span class="title">static</span> <span class="title">class</span> <span class="title">SentinelConverterConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> ObjectMapper objectMapper = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean</span>(<span class="string">"sentinel-json-flow-converter"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">public</span> JsonConverter <span class="title">jsonFlowConverter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> JsonConverter(objectMapper, FlowRule<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean</span>(<span class="string">"sentinel-json-degrade-converter"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">public</span> JsonConverter <span class="title">jsonDegradeConverter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> JsonConverter(objectMapper, DegradeRule<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean</span>(<span class="string">"sentinel-json-system-converter"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">public</span> JsonConverter <span class="title">jsonSystemConverter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> JsonConverter(objectMapper, SystemRule<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean</span>(<span class="string">"sentinel-json-authority-converter"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">public</span> JsonConverter <span class="title">jsonAuthorityConverter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> JsonConverter(objectMapper, AuthorityRule<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean</span>(<span class="string">"sentinel-json-param-flow-converter"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">public</span> JsonConverter <span class="title">jsonParamFlowConverter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> JsonConverter(objectMapper, ParamFlowRule<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面的 <code>InitExecutor.doInit()</code> 触发的是 <code>sentinel</code> 核心的初始化，后面再看 </p>
+<h3 id="SentinelFeignAutoConfiguration"><a href="#SentinelFeignAutoConfiguration" class="headerlink" title="SentinelFeignAutoConfiguration"></a>SentinelFeignAutoConfiguration</h3><p>这里是跟 <code>feign</code> 集成，核心类是 <code>SentinelInvocationHandler</code><br><code>feign</code>,<code>ribbon</code>,<code>hystrix</code> 这里几个是 <code>netflix</code> 的组件，其中 <code>sentinel</code> 替换掉的是 <code>hystrix</code><br>详细的后面梳理完 <code>feign</code> 后再看</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>总结一下上面的自动配置  </p>
+<ol>
+<li>系统开放的 <code>rest</code> 接口，根据 <code>path</code> 会过一遍限流（如果区分 <code>http method</code> 则是两遍）</li>
+<li>系统注册的 <code>RestTempate</code> 的时候，如果加上了 <code>@SentinelRestTemplate</code> 注解，则会添加拦截器 <code>SentinelProtectInterceptor</code>,经过两个限流</li>
+<li>使用 <code>feign</code>，<code>@FeignClient</code> 标记的 <code>bean</code>,这里会经过一层限流</li>
+<li>使用 <code>@SentinelResource</code> 注解标记的方法  </li>
+</ol>
+<p>那么问题来了，限流规则是在哪里配置的呢？  </p>
+<p>首先看看 <code>sentinel</code> 支持哪些规则配置  </p>
+<h3 id="AuthorityRule"><a href="#AuthorityRule" class="headerlink" title="AuthorityRule"></a>AuthorityRule</h3><p>权限配置，就是配置黑白名单<br>先看下示例配置<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"resource"</span>: <span class="string">"good"</span>,</span><br><span class="line">    <span class="attr">"limitApp"</span>: <span class="string">"abc"</span>,</span><br><span class="line">    <span class="attr">"strategy"</span>: <span class="number">0</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"resource"</span>: <span class="string">"bad"</span>,</span><br><span class="line">    <span class="attr">"limitApp"</span>: <span class="string">"bcd"</span>,</span><br><span class="line">    <span class="attr">"strategy"</span>: <span class="number">1</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"resource"</span>: <span class="string">"terrible"</span>,</span><br><span class="line">    <span class="attr">"limitApp"</span>: <span class="string">"aaa"</span>,</span><br><span class="line">    <span class="attr">"strategy"</span>: <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure><br>对应的规则类为 <code>AuthorityRule</code>,经过的 <code>slot</code> 为 <code>AuthoritySlot</code><br>其中:</p>
+<ol>
+<li>resource  为资源名，每个规则都需要配置</li>
+<li>limitApp  限制的 app，其实就是针对 <code>origin</code> 来限制的，可以用来限制接入系统，需要提供一个 <code>RequestOriginParser</code> 来获取 <code>origin</code>,如果没有，那么规则配置是无效的</li>
+<li>strategy  不同规则配置，含义不一样。这里 0：白名单 1：黑名单</li>
+</ol>
+<h3 id="SystemRule"><a href="#SystemRule" class="headerlink" title="SystemRule"></a>SystemRule</h3><p>配置示例<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"highestSystemLoad"</span>: <span class="number">-1</span>,</span><br><span class="line">    <span class="attr">"highestCpuUsage"</span>: <span class="number">-1</span>,</span><br><span class="line">    <span class="attr">"qps"</span>: <span class="number">100</span>,</span><br><span class="line">    <span class="attr">"avgRt"</span>: <span class="number">-1</span>,</span><br><span class="line">    <span class="attr">"maxThread"</span>: <span class="number">10</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<p>这里虽然是一个数组，但是配置多个规则其实没啥用，总是使用最小有效配置来判断的<br>经过的 <code>slot</code> 为 <code>SystemSlot</code>,根据系统的负载来限流的，只针对 <code>EntryType.IN</code> 类型才有效，默认的都是 <code>OUT</code>,在 <code>CommonFilter</code> 里面为 <code>IN</code><br>配置含义其实看名字就知道了： </p>
+<ol>
+<li>highestSystemLoad  系统负载</li>
+<li>highestCpuUsage   cpu 使用率</li>
+<li>qps 每秒请求数，这里是有效的，被拦截的请求不算在里面</li>
+<li>avgRt 平均响应时间</li>
+<li>maxThread 当前出现线程数</li>
+</ol>
+<p>这里开看成应用总的负载限流  </p>
+<h3 id="FlowRule"><a href="#FlowRule" class="headerlink" title="FlowRule"></a>FlowRule</h3><p>配置示例：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"resource"</span>: <span class="string">"/hello"</span>,</span><br><span class="line">    <span class="attr">"controlBehavior"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"count"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">"grade"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">"limitApp"</span>: <span class="string">"default"</span>,</span><br><span class="line">    <span class="attr">"strategy"</span>: <span class="number">0</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"resource"</span>: <span class="string">"/test"</span>,</span><br><span class="line">    <span class="attr">"controlBehavior"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"count"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"grade"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">"limitApp"</span>: <span class="string">"default"</span>,</span><br><span class="line">    <span class="attr">"strategy"</span>: <span class="number">0</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"resource"</span>: <span class="string">"GET:http://www.taobao.com"</span>,</span><br><span class="line">    <span class="attr">"controlBehavior"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"count"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"grade"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">"limitApp"</span>: <span class="string">"default"</span>,</span><br><span class="line">    <span class="attr">"strategy"</span>: <span class="number">0</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<p>这个规则是针对每个资源，独立的限流配置  </p>
+<ol>
+<li>resource  资源名，可以看上面，默认的资源名生产规则</li>
+<li>grade   配置类型，0：线程数量 1：QPS</li>
+<li>count   配置数量</li>
+<li>strategy  0：用于直接流量控制 默认，1：相关流量控制，2：链流量控制  配置了 1 或者 2，需要配置 refResource,如果配 1，那么直接取对应资源的 ClusterNode，2的话，需要 contextName == refResource</li>
+<li>limitApp  这个必须配，默认 default 如果不配，规则不生效，如果不为 default 或者 other 那么，限流配置单独适应 origin 的限流，例如 配置 app1，那么 app1 的请求信息单独记录，也只根据这个记录来限流控制，不需要管资源的整体调用情况</li>
+<li>refResource  与 strategy 共同起作用</li>
+<li>controlBehavior  限流器的类型 0. default(reject directly), 1. warm up, 2. rate limiter, 3. warm up + rate limiter</li>
+</ol>
+<p>还有一些其他的，在需要特殊用法的时候再看</p>
+<h3 id="DegradeRule"><a href="#DegradeRule" class="headerlink" title="DegradeRule"></a>DegradeRule</h3><p>降级规则<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"resource"</span>: <span class="string">"abc0"</span>,</span><br><span class="line">    <span class="attr">"count"</span>: <span class="number">20.0</span>,</span><br><span class="line">    <span class="attr">"grade"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"passCount"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"timeWindow"</span>: <span class="number">10</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"resource"</span>: <span class="string">"abc1"</span>,</span><br><span class="line">    <span class="attr">"count"</span>: <span class="number">15.0</span>,</span><br><span class="line">    <span class="attr">"grade"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"passCount"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"timeWindow"</span>: <span class="number">10</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure><br>这个规则是用来断路的，当超过配置的规则时间，直接断路 <code>timeWindow</code> 时间后再开启<br>规则配置：</p>
+<ol>
+<li>resource  资源名</li>
+<li>grade     0: 平均响应时间, 1: 异常比例</li>
+<li>count     配置的阈值</li>
+<li>timeWindow  时间窗口</li>
+</ol>
+<p>除了上面的规则外，还可以有自定义的规则。。    </p>
+<p>刚刚上面的属于本地文件配置，在应用中如下配置<br><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">spring.cloud.sentinel.datasource.ds1.file.file</span>=<span class="string">classpath: flowrule.json</span></span><br><span class="line"><span class="meta">spring.cloud.sentinel.datasource.ds1.file.data-type</span>=<span class="string">json</span></span><br><span class="line"><span class="meta">spring.cloud.sentinel.datasource.ds1.file.rule-type</span>=<span class="string">flow</span></span><br><span class="line"></span><br><span class="line"><span class="meta">spring.cloud.sentinel.datasource.ds2.file.file</span>=<span class="string">classpath: degraderule.json</span></span><br><span class="line"><span class="meta">spring.cloud.sentinel.datasource.ds2.file.data-type</span>=<span class="string">json</span></span><br><span class="line"><span class="meta">spring.cloud.sentinel.datasource.ds2.file.rule-type</span>=<span class="string">degrade</span></span><br><span class="line"></span><br><span class="line"><span class="meta">spring.cloud.sentinel.datasource.ds3.file.file</span>=<span class="string">classpath: authority.json</span></span><br><span class="line"><span class="meta">spring.cloud.sentinel.datasource.ds3.file.rule-type</span>=<span class="string">authority</span></span><br><span class="line"></span><br><span class="line"><span class="meta">spring.cloud.sentinel.datasource.ds4.file.file</span>=<span class="string">classpath: system.json</span></span><br><span class="line"><span class="meta">spring.cloud.sentinel.datasource.ds4.file.rule-type</span>=<span class="string">system</span></span><br><span class="line"></span><br><span class="line"><span class="meta">spring.cloud.sentinel.datasource.ds5.file.file</span>=<span class="string">classpath: param-flow.json</span></span><br><span class="line"><span class="meta">spring.cloud.sentinel.datasource.ds5.file.rule-type</span>=<span class="string">param_flow</span></span><br></pre></td></tr></table></figure></p>
+<p>还支持 <code>apollo</code>, <code>nacos</code>, <code>redis</code>, <code>zk</code> 等  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/12/%E7%94%B1-spring-cloud-alibaba-sentinel-%E7%A4%BA%E4%BE%8B%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E5%BC%95%E8%B5%B7%E7%9A%84%E7%A0%94%E7%A9%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/12/%E7%94%B1-spring-cloud-alibaba-sentinel-%E7%A4%BA%E4%BE%8B%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E5%BC%95%E8%B5%B7%E7%9A%84%E7%A0%94%E7%A9%B6/" class="post-title-link" itemprop="url">由 spring-cloud-alibaba sentinel 示例启动失败引起的研究</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-12 20:47:26 / 修改时间：20:48:55" itemprop="dateCreated datePublished" datetime="2019-11-12T20:47:26+08:00">2019-11-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">技术笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="问题起因"><a href="#问题起因" class="headerlink" title="问题起因"></a>问题起因</h2><p>在看 <code>sentinel</code> 的时候，写了一个示例，添加以下配置<br><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sentinel 测试</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">sentinel:</span></span><br><span class="line">      <span class="attr">datasource:</span></span><br><span class="line">        <span class="comment"># 名称随意</span></span><br><span class="line">        <span class="attr">ds1:</span></span><br><span class="line">          <span class="attr">file:</span></span><br><span class="line">            <span class="attr">file:</span> <span class="string">"classpath: rules/flowRules.json"</span></span><br><span class="line">            <span class="attr">rule-type:</span> <span class="string">flow</span></span><br></pre></td></tr></table></figure></p>
+<p>这是一个本地配置文件来配置 <code>sentinel</code> 规则的示例<br>然后启动应用，发现异常  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">***************************</span><br><span class="line">APPLICATION FAILED TO START</span><br><span class="line">***************************</span><br><span class="line"></span><br><span class="line">Description:</span><br><span class="line"></span><br><span class="line">Failed to bind properties under &apos;spring.cloud.sentinel.datasource.ds1.file.rule-type&apos; to org.springframework.cloud.alibaba.sentinel.datasource.RuleType:</span><br><span class="line"></span><br><span class="line">    Property: spring.cloud.sentinel.datasource.ds1.file.rule-type</span><br><span class="line">    Value: flow</span><br><span class="line">    Origin: class path resource [application.yml]:23:24</span><br><span class="line">    Reason: 2</span><br><span class="line"></span><br><span class="line">Action:</span><br><span class="line"></span><br><span class="line">Update your application&apos;s configuration</span><br></pre></td></tr></table></figure>
+<p><code>sentinel</code> 的配置类是 <code>SentinelProperties</code>, <code>ruleType</code> 所在类为 <code>AbstractDataSourceProperties</code>,类型为枚举 <code>RuleType</code>  </p>
+<p>上面，没有任何异常信息，只是一个绑定错误，我还以为哪里拼写错了。<br>最后实在没办法，直接进 <code>spring</code> 处理 <code>@EnableConfigurationProperties(SentinelProperties.class)</code> 的地方  </p>
+<p>在类 <code>ConfigurationPropertiesBindingPostProcessor</code> 的 <code>bind</code> 方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">(Object bean, String beanName, ConfigurationProperties annotation)</span> </span>&#123;</span><br><span class="line">	ResolvableType type = getBeanType(bean, beanName);</span><br><span class="line">	Validated validated = getAnnotation(bean, beanName, Validated<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">	Annotation[] annotations = (validated != <span class="keyword">null</span>)</span><br><span class="line">			? <span class="keyword">new</span> Annotation[] &#123; annotation, validated &#125;</span><br><span class="line">			: <span class="keyword">new</span> Annotation[] &#123; annotation &#125;;</span><br><span class="line">	Bindable&lt;?&gt; target = Bindable.of(type).withExistingValue(bean)</span><br><span class="line">			.withAnnotations(annotations);</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="keyword">this</span>.configurationPropertiesBinder.bind(target);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> ConfigurationPropertiesBindException(beanName, bean, annotation,</span><br><span class="line">				ex);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以根据条件断点，然后在异常那里打印堆栈日志，发现是一个数组越界。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Caused by: java.lang.ArrayIndexOutOfBoundsException: <span class="number">2</span></span><br><span class="line">	at java.lang.reflect.Parameter.getAnnotatedType(Parameter.java:<span class="number">237</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider.getParameterMetaData(AnnotationMetaDataProvider.java:<span class="number">427</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider.findExecutableMetaData(AnnotationMetaDataProvider.java:<span class="number">300</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider.getMetaData(AnnotationMetaDataProvider.java:<span class="number">285</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider.getConstructorMetaData(AnnotationMetaDataProvider.java:<span class="number">266</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider.retrieveBeanConfiguration(AnnotationMetaDataProvider.java:<span class="number">135</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider.getBeanConfiguration(AnnotationMetaDataProvider.java:<span class="number">124</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.BeanMetaDataManager.getBeanConfigurationForHierarchy(BeanMetaDataManager.java:<span class="number">232</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.BeanMetaDataManager.createBeanMetaData(BeanMetaDataManager.java:<span class="number">199</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.BeanMetaDataManager.getBeanMetaData(BeanMetaDataManager.java:<span class="number">166</span>)</span><br><span class="line">	at org.hibernate.validator.internal.engine.ValidatorImpl.validate(ValidatorImpl.java:<span class="number">157</span>)</span><br><span class="line">	at org.springframework.validation.beanvalidation.SpringValidatorAdapter.validate(SpringValidatorAdapter.java:<span class="number">108</span>)</span><br></pre></td></tr></table></figure></p>
+<p>但是。越界发生在内部，我也无法干预，为了具体定位越界到底在哪里出现，跟踪调试<br>最后定位到 <code>org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider</code>  的方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> List&lt;ConstrainedParameter&gt; <span class="title">getParameterMetaData</span><span class="params">(Executable executable)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> ( executable.getParameterCount() == <span class="number">0</span> ) &#123;</span><br><span class="line">    <span class="keyword">return</span> Collections.emptyList();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ****  这里返回的构造方法参数是 4 引起了疑惑 ****</span></span><br><span class="line">  Parameter[] parameters = executable.getParameters();</span><br><span class="line"></span><br><span class="line">  List&lt;ConstrainedParameter&gt; metaData = <span class="keyword">new</span> ArrayList&lt;&gt;( parameters.length );</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> ( Parameter parameter : parameters ) &#123;</span><br><span class="line">    Annotation[] parameterAnnotations;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      parameterAnnotations = parameter.getAnnotations();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (ArrayIndexOutOfBoundsException ex) &#123;</span><br><span class="line">      LOG.warn( MESSAGES.constraintOnConstructorOfNonStaticInnerClass(), ex );</span><br><span class="line">      parameterAnnotations = EMPTY_PARAMETER_ANNOTATIONS;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Set&lt;MetaConstraint&lt;?&gt;&gt; parameterConstraints = newHashSet();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ( annotationProcessingOptions.areParameterConstraintsIgnoredFor( executable, i ) ) &#123;</span><br><span class="line">      Type type = ReflectionHelper.typeOf( executable, i );</span><br><span class="line">      metaData.add(</span><br><span class="line">          <span class="keyword">new</span> ConstrainedParameter(</span><br><span class="line">              ConfigurationSource.ANNOTATION,</span><br><span class="line">              executable,</span><br><span class="line">              type,</span><br><span class="line">              i,</span><br><span class="line">              parameterConstraints,</span><br><span class="line">              Collections.emptySet(),</span><br><span class="line">              CascadingMetaDataBuilder.nonCascading()</span><br><span class="line">          )</span><br><span class="line">      );</span><br><span class="line">      i++;</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ConstraintLocation location = ConstraintLocation.forParameter( executable, i );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> ( Annotation parameterAnnotation : parameterAnnotations ) &#123;</span><br><span class="line">      <span class="comment">// collect constraints if this annotation is a constraint annotation</span></span><br><span class="line">      List&lt;ConstraintDescriptorImpl&lt;?&gt;&gt; constraints = findConstraintAnnotations(</span><br><span class="line">          executable, parameterAnnotation, ElementType.PARAMETER</span><br><span class="line">      );</span><br><span class="line">      <span class="keyword">for</span> ( ConstraintDescriptorImpl&lt;?&gt; constraintDescriptorImpl : constraints ) &#123;</span><br><span class="line">        parameterConstraints.add(</span><br><span class="line">            MetaConstraints.create( typeResolutionHelper, valueExtractorManager, constraintDescriptorImpl, location )</span><br><span class="line">        );</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// **** 问题出在这里  ****</span></span><br><span class="line">    AnnotatedType parameterAnnotatedType = parameter.getAnnotatedType();</span><br><span class="line"></span><br><span class="line">    Set&lt;MetaConstraint&lt;?&gt;&gt; typeArgumentsConstraints = findTypeAnnotationConstraintsForExecutableParameter( executable, i, parameterAnnotatedType );</span><br><span class="line">    CascadingMetaDataBuilder cascadingMetaData = findCascadingMetaData( executable, parameters, i, parameterAnnotatedType );</span><br><span class="line"></span><br><span class="line">    metaData.add(</span><br><span class="line">        <span class="keyword">new</span> ConstrainedParameter(</span><br><span class="line">            ConfigurationSource.ANNOTATION,</span><br><span class="line">            executable,</span><br><span class="line">            ReflectionHelper.typeOf( executable, i ),</span><br><span class="line">            i,</span><br><span class="line">            parameterConstraints,</span><br><span class="line">            typeArgumentsConstraints,</span><br><span class="line">            cascadingMetaData</span><br><span class="line">        )</span><br><span class="line">    );</span><br><span class="line">    i++;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> metaData;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面有两个中文注释，就是问题所在。<br>首先，第一个问题，参数是 4 引起了我的疑惑。我们看下 <code>RuleType</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> RuleType &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * flow</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	FLOW(<span class="string">"flow"</span>, FlowRule<span class="class">.<span class="keyword">class</span>),</span></span><br><span class="line"><span class="class">	/**</span></span><br><span class="line"><span class="class">	 * <span class="title">degrade</span></span></span><br><span class="line"><span class="class">	 */</span></span><br><span class="line">	DEGRADE("degrade", DegradeRule.class),</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * param flow</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	PARAM_FLOW(<span class="string">"param-flow"</span>, ParamFlowRule<span class="class">.<span class="keyword">class</span>),</span></span><br><span class="line"><span class="class">	/**</span></span><br><span class="line"><span class="class">	 * <span class="title">system</span></span></span><br><span class="line"><span class="class">	 */</span></span><br><span class="line">	SYSTEM("system", SystemRule.class),</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * authority</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	AUTHORITY(<span class="string">"authority"</span>, AuthorityRule<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * alias for &#123;<span class="doctag">@link</span> AbstractRule&#125;</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * concrete &#123;<span class="doctag">@link</span> AbstractRule&#125; class</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Class clazz;</span><br><span class="line"></span><br><span class="line">	RuleType(String name, Class clazz) &#123;</span><br><span class="line">		<span class="keyword">this</span>.name = name;</span><br><span class="line">		<span class="keyword">this</span>.clazz = clazz;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Class <span class="title">getClazz</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> clazz;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Optional&lt;RuleType&gt; <span class="title">getByName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (StringUtils.isEmpty(name)) &#123;</span><br><span class="line">			<span class="keyword">return</span> Optional.empty();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> Arrays.stream(RuleType.values())</span><br><span class="line">				.filter(ruleType -&gt; name.equals(ruleType.getName())).findFirst();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Optional&lt;RuleType&gt; <span class="title">getByClass</span><span class="params">(Class clazz)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Arrays.stream(RuleType.values())</span><br><span class="line">				.filter(ruleType -&gt; clazz == ruleType.getClazz()).findFirst();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>只有一个构造方法，两个构造参数，为啥这里是 4 呢？<br>调试的时候可以看到 前面两个参数 ，一个是枚举的 name ,一个是 ordinal 坐标<br>说实话，以前还真没注意这个细节  </p>
+<p>继续找问题所在<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AnnotatedType parameterAnnotatedType = parameter.getAnnotatedType();</span><br></pre></td></tr></table></figure></p>
+<p>上面就是跑异常的地方<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> AnnotatedType <span class="title">getAnnotatedType</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// no caching for now</span></span><br><span class="line">    <span class="keyword">return</span> executable.getAnnotatedParameterTypes()[index];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里已经是 <code>jdk</code> 源码了<br>最后发现，问题在这里 <code>executable.getAnnotatedParameterTypes()</code> 这个方法返回的数组长度为 2<br>但是，我们可以看到，外层是在遍历 <code>executable.getParameters()</code> 这里返回的是 4 个元素，因此越界 </p>
+<p>去获取 <code>spring-cloud-alibaba</code> 的源码，运行 <code>sentinel</code> 示例，也出现同样的问题  </p>
+<p>写了一个测试例子<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">enum</span> EnumTest &#123;</span><br><span class="line"></span><br><span class="line">    A(<span class="number">0</span>, <span class="string">"A"</span>),</span><br><span class="line"></span><br><span class="line">    B(<span class="number">1</span>, <span class="string">"B"</span>)</span><br><span class="line"></span><br><span class="line">    ;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> code;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String msg;</span><br><span class="line"></span><br><span class="line">    EnumTest(<span class="keyword">int</span> code, String msg) &#123;</span><br><span class="line">        <span class="keyword">this</span>.code = code;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">enum</span> Enum2 &#123;</span><br><span class="line">    A</span><br><span class="line">    ;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">(Class&lt;?&gt; aClass)</span> </span>&#123;</span><br><span class="line">    Constructor&lt;?&gt;[] declaredConstructors = aClass.getDeclaredConstructors();</span><br><span class="line">    <span class="keyword">for</span> (Constructor&lt;?&gt; constructor : declaredConstructors) &#123;</span><br><span class="line">        <span class="keyword">int</span> parameterCount = constructor.getParameterCount();</span><br><span class="line">        System.out.printf(<span class="string">"parameterCount:%s\n"</span>, parameterCount);</span><br><span class="line">        <span class="keyword">int</span> length = constructor.getAnnotatedParameterTypes().length;</span><br><span class="line">        System.out.printf(<span class="string">"length:%s\n"</span>, length);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test4</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        show(EnumTest<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        System.out.println(<span class="string">"---"</span>);</span><br><span class="line">        show(Enum2<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>怀疑可能是 <code>jdk</code> 小版本的问题,目前用的 <code>jdk</code> 版本为 <code>1.8.25</code><br>因此去网上下载一个 <code>1.8.172</code> 发现没有问题<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.8.25    parameterCount = 4,  length = 2</span><br><span class="line">1.8.172   parameterCount = 4,  length = 4</span><br></pre></td></tr></table></figure></p>
+<p>到此，问题定位完毕。<br>然而 <code>1.8.25</code> 是公司定的版本。<br>通常搜索查询，这个 bug 在 <code>JDK 1.8.0_40</code> 之后修复了 </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/10/leetcode/1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -963,395 +1177,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/28/jvm-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/28/jvm-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">jvm 学习笔记</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-28 12:38:37" itemprop="dateCreated datePublished" datetime="2019-07-28T12:38:37+08:00">2019-07-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-10 00:47:40" itemprop="dateModified" datetime="2019-11-10T00:47:40+08:00">2019-11-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">技术笔记</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><code>深入理解 java 虚拟机</code>  这本书看了也有几遍了，说实话，每次都是面试前看的（我也没面几次试)<br>虽然每次看，感觉都可以多理解一点东西，但还是很虚。。先做个笔记，以后面试看笔记就行  </p>
-<h2 id="内存区域"><a href="#内存区域" class="headerlink" title="内存区域"></a>内存区域</h2><p>这个是面试但时候常问的，也是比较好理解的<br>运行时数据区域分为  </p>
-<ol>
-<li>程序计数器<br>可以看作当前线程执行字节码的行号指示器，字节码在jvm内部是解释执行的（没 jit 之前）</li>
-<li>java 虚拟机栈<br>也是线程私有的，每个方法创建一个栈帧，用于存储 局部变量表，操作数栈，动态链接，方法出口<br>局部变量表存放编译器可知的各种基本数据类型，对象引用，变量表的空间按 slot 分配，一个 slot 4个字节<br>当线程请求的栈深度大于虚拟机所允许的深度抛 StackOverflowError 栈溢出异常，如果是动态扩展栈空间的时候内存不足，则是 OOM 异常</li>
-<li>本地方法栈<br>native 方法栈</li>
-<li>java 堆<br>这个是最需要关系的区域<br>也是共享的一块内存区域，存放对象实例，也是 垃圾回收的主要区域<br>堆还可以细分为 新生代 老年代，注意是为了方便 gc 可以通过 -Xmx -Xms 控制，这个两个是常用的控制最大最小堆内存空间的jvm参数</li>
-<li>方法区，也是元空间<br>通常用于存储已经被虚拟机加载的 类信息，常量信息，静态变量，即使编译器后的代码，也叫 非堆 NonHeap ，也被称为永久代，通常这部分内容很难被回收掉，要回收的条件也比较严格</li>
-<li>直接内存<br>也是对外内存，nio 的时候会用到</li>
-</ol>
-<h2 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h2><p>垃圾回收其实可以分为两部分看，一个是怎么判断一个对象已经失效了，另一个才是实际回收内存操作  </p>
-<p><strong>对象已死吗</strong></p>
-<ol>
-<li>引用计数<br>就算对象每被引用一次，就 + 1，释放就 -1 到0 到 0 到时候代表没用了<br>这是一个思路，jvm 内部不使用这种策略，在 netty 中，只用 pooled** 到内存池的时候使用的就是引用计数来判断的</li>
-<li>可达性分析<br>这个是主流的方法，根据 GC Root 对象为起点，往下搜索，走过的路径代表引用链，不在引用链上的对象可以认为死对象<br>那么哪些对象是在 GC Root 呢<ul>
-<li>虚拟机栈中引用的对象</li>
-<li>方法区中类静态属性引用的变量</li>
-<li>方法区中常量引用的对象</li>
-<li>本地方法栈中 JNI 引用的对象<br>这里面其实可以看到后期的一个优化，栈上分配，当方法执行完成后，对象就失效了，因此在方法内部分配的对象，生命周期是短暂的</li>
-</ul>
-</li>
-</ol>
-<p><strong>引用</strong><br>java 内部将引用分为4种</p>
-<ol>
-<li>强引用<br>这也是最常见的，通常 new 出来的都是这种，只要强引用还在，垃圾回收器永远不会回收</li>
-<li>软引用<br>提供 SoftReference 来实现软引用，在将要内存溢出的情况下，才去回收这块内存</li>
-<li>弱引用<br>提供 WeakReference 来实现弱引用，下次 gc 的时候，就会回收这块内容</li>
-<li>虚引用<br>PhantomReference 基本就只是在回收的时候获得一个通知 </li>
-</ol>
-<p><strong>回收方法区</strong><br>由于在 jdk8 中，字符串常量池已经从方法区（元空间）移到堆了，这里说下类被回收（卸载）<br>满足3个条件</p>
-<ol>
-<li>类的所有实例已经被回收</li>
-<li>类的 classloader 已经被回收</li>
-<li>类 class 对象没有被引用</li>
-</ol>
-<p>就可以被回收了，注意是 可以，并不一定 </p>
-<h2 id="垃圾搜集算法"><a href="#垃圾搜集算法" class="headerlink" title="垃圾搜集算法"></a>垃圾搜集算法</h2><ol>
-<li><p>标记清除<br>跟名字已有，分为两个过程，标记阶段，标记需要回收的对象，然后统一清除被标记的对象<br>有两个问题，1. 标记和清除的效率不高 2. 会产生很多内存碎片</p>
-</li>
-<li><p>复制算法<br>将内存分为2块相同的区域，先用一块，用完的时候，将还存活的对象复制到另一半，然后将之前使用过的内存区域一次性清除。<br>问题也很大，内存缩小为原来的一半了</p>
-</li>
-<li><p>标记整理<br>与标记清除类似，不过后续步骤不是清理，而是让所有存活的对象都向一端移动，然后直接清理掉边界外的内存</p>
-</li>
-<li><p>分代算法<br>就是将内存划分为几块区域，一般分为新生代和老年代，针对不同区域使用不同的垃圾回收算法</p>
-</li>
-</ol>
-<p><strong>枚举根节点</strong><br>GC Root 的节点主要在全局性的引用和执行上下文中。<br>当在进行可达性分析的时候，需要 GC 停顿，不可以在分析过程中对象关系引用还在不断变化中。  </p>
-<p><strong>安全点</strong><br>虚拟机将在特定位置记录协助 GC Root 枚举信息，这些位置称为 Sofapoint 安全点  </p>
-<p><strong>安全区域</strong><br>安全区域是指在一段代码片段中国，引用关系不会发生变化</p>
-<h2 id="垃圾搜集器"><a href="#垃圾搜集器" class="headerlink" title="垃圾搜集器"></a>垃圾搜集器</h2><p>新生代：Serial，ParNew，Parallel Scavenge<br>老年代：CMS，Serial Old，Parallel Old<br>全部：G1</p>
-<p><strong>Serial</strong><br>这是一个单线程的搜集器，在进行垃圾搜集的时候需要进行暂停所有的工作线程。<br>这是在 Client 模式下默认的垃圾搜集器<br>能与老年代的 CMS，Serial Old 共用 </p>
-<p><strong>ParNew</strong><br>其实就是 Serial 的多线程版本</p>
-<p><strong>Parallel Scavenge</strong><br>目标是达到一个可控制的吞吐量，也就是 cpu 运行用户代码与 cpu 总消耗时间的比值<br>停顿时间越短适合需要与用户交互的程序，高吞吐量则是高效率的利用 cpu 时间 </p>
-<p><strong>Serial Old</strong><br>单线程搜集器，使用标记整理算法，也是给 client 模式的虚拟机用的</p>
-<p><strong>Parallel Old</strong><br>多线程加标记整理算法</p>
-<p><strong>CMS</strong><br>是一种以获取最短回收停顿时间为目标的搜集器<br>使用标记清除算法。整个过程分为4个步骤：</p>
-<ol>
-<li>初始标记</li>
-<li>并发标记</li>
-<li>重新标记</li>
-<li>并发清除<br>初始标记和重新标记需要 stop the world<br>整个初始标记时间很短<br>整个过程耗时最长的并发标记和并发清除过程，gc 线程可以和用户线程同时工作<br>问题：</li>
-<li>cpu 资源敏感，gc 会占用 cpu 资源</li>
-<li>无法清除浮动垃圾，也就是在并发清理过程中产生的垃圾要在下次 gc 清除</li>
-<li>标记清除，没做整理，可以设置参数</li>
-</ol>
-<p><strong>G1</strong><br>这个垃圾回收器与之前的都不一样内存划分不同，将堆划分为一个个 Region,默认 512k<br>在逻辑上连续，物理上不连续，同时每个 Regin 被标记为 E，S，O，H，分别表示 Eden，survivor，old，Humongous（大对象）<br>大于等于 region 一半大小的对象为 大对象，分配在老年代 </p>
-<p>eden 出生的对象， 经过一次 Minor GC 还存活，如果 Survivor 还能容纳，就进入 Survivor，年龄设置为 1<br>每在 Suvivor 熬过一次 Minor GC，年龄 +1，增加到一定程度 默认 15 晋升老年代。  </p>
-<h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><ol>
-<li>加载</li>
-<li>链接<ul>
-<li>验证</li>
-<li>准备</li>
-<li>解析</li>
-</ul>
-</li>
-<li>初始化<h2 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h2></li>
-<li>取得类的二进制流</li>
-<li>转为方法区（元空间）的数据结构</li>
-<li>生成 class 对象<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3></li>
-<li>文件格式正确<ul>
-<li>是否已 0xCAFEBABE 开头</li>
-<li>版本号是否合理</li>
-<li>。。。</li>
-</ul>
-</li>
-<li>元数据验证<ul>
-<li>是否有父类</li>
-<li>继承了 final 类？</li>
-<li>非抽象实现了所有的抽象方法</li>
-<li>。。</li>
-</ul>
-</li>
-<li>字节码验证（很复杂）<ul>
-<li>运行检查</li>
-<li>栈数据类型和操作码数据参数吻合</li>
-<li>跳转指令到合理位置</li>
-<li>。。</li>
-</ul>
-</li>
-<li>符号引用验证<ul>
-<li>常量池中描述类是否存在</li>
-<li>访问的方法或字段是否存在且有足够的权限</li>
-<li>。。<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3>分配内存，并为类赋值初值<br>public static int v = 1<br>在 准备阶段 v 会被设置为 0<br>在初始化的<clinit> 中才会设置为1<br>对于 static final 类型，在准备阶段就会被赋值正确的值<br>public static int v = 1<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3>符号引用替换为直接引用<br>符号引用：字符串，引用对象不一定被加载<br>直接引用：指针或者地址便宜，引用对象一定在内存<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2></li>
-</ul>
-</li>
-</ol>
-<ul>
-<li>执行类构造器 <clinit><ul>
-<li>static 变量赋值语句</li>
-<li>static {} 语句</li>
-</ul>
-</li>
-<li>子类的 <clinit> 调用前保证父类的 <clinit> 被调用</li>
-<li><clinit> 是线程安全的</li>
-</ul>
-<h2 id="编译优化"><a href="#编译优化" class="headerlink" title="编译优化"></a>编译优化</h2><p>一堆 JIT 优化，然鹅记不住 </p>
-<ol>
-<li>公共子表达式消除</li>
-<li>数组边界检查消除</li>
-<li>方法内联</li>
-<li>。。一大堆优化手段 </li>
-</ol>
-<h2 id="内存模型"><a href="#内存模型" class="headerlink" title="内存模型"></a>内存模型</h2><p>java 内存模型主要用来屏蔽底层各种硬件和操作系统的差异，给java程序在各个平台都能达到一致的内存访问效果。<br>以下指令是原子的：</p>
-<ol>
-<li>lock</li>
-<li>unlock</li>
-<li>read</li>
-<li>load</li>
-<li>use</li>
-<li>assign</li>
-<li>store</li>
-<li>write</li>
-</ol>
-<p>要将一个变量从主内存复制到工作内存，需要 read + load<br>将工作内存的变量写回主内存需要 store + write<br>这上面两个是不可拆分使用的<br>volatile 变量将保证可见性 </p>
-<p>并发的3个关键特性</p>
-<ol>
-<li>原子性</li>
-<li>可见性</li>
-<li>有序性</li>
-</ol>
-<p>几个先行发生原则，关注几个：</p>
-<ol>
-<li>单线程的代码顺序性</li>
-<li>加锁先于解锁</li>
-<li>volatile 写先于读</li>
-<li>线程 start 先于每个动作</li>
-<li>所有操作先于线程终止</li>
-<li>线程中断限于被中断线程的代码检查中断事件发生</li>
-<li>对象的初始化完成先于终结（finalize）</li>
-<li>a 先于 b，b先于 c 那么 a 先于 c  </li>
-</ol>
-<p>无论是编译重排序还是cpu 的指令重排序，java 内存模型保证上面的先行发生原则。<br>使用在适当的位置插入内存屏障来实现。  </p>
-<p>好吧，上面基本就是一些提纲，没啥具体内容，主要是为了看到这些，想到需要了解的知识  </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/28/redis-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/28/redis-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">redis 学习笔记</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-28 10:41:03" itemprop="dateCreated datePublished" datetime="2019-07-28T10:41:03+08:00">2019-07-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-10 00:47:35" itemprop="dateModified" datetime="2019-11-10T00:47:35+08:00">2019-11-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">技术笔记</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>redis 之前只是会用，经常看一些博客和官网的使用说明，但是还没成体系的学习过<br>最近买了本 <code>Redis 开发与运维</code> ，买这本书对理由是我虽然会用，但是对譬如哨兵，集群方案，<br>内部 redis 之间是怎么通信对等一些细节不是很了解。想要详细了解下   </p>
-<p>写这篇笔记，目的是，以后redis 相关等至少看自己等这篇笔记就可以了，不用经常回去翻书<br>其实书早就看完了。感觉要补一篇学习笔记。顺便用耗子哥说的总结归纳方法试一下<br>只归纳以下重点，具体细节就不罗列了</p>
-<p>先套下学习模板  </p>
-<ol>
-<li>这个技术出现的背景，初衷和要达到什么样的目标或者是要解决什么样的问题</li>
-<li>这个技术的优势和劣势分别是什么，或者说，这个技术的 trade-off 是什么</li>
-<li>这个技术的适用场景</li>
-<li>技术的组成部分和关键点</li>
-<li>技术的底层原理和关键实现</li>
-<li>已有的实现和它之间的对比</li>
-</ol>
-<h2 id="这个技术出现的背景"><a href="#这个技术出现的背景" class="headerlink" title="这个技术出现的背景"></a>这个技术出现的背景</h2><p><code>redis</code> 的作者实现原因是因为想要实现高性能的队列功能，用传统的 <code>mysql</code> 没办法达到性能要求<br>因此想要做一个专属的 <code>LLOOGG</code> 数据库。<br>这样看起来，简单的来说，<code>redis</code> 的出现背景是针对 传统数据库存储的性能不足 </p>
-<h2 id="这个技术的优势和劣势分别是什么"><a href="#这个技术的优势和劣势分别是什么" class="headerlink" title="这个技术的优势和劣势分别是什么"></a>这个技术的优势和劣势分别是什么</h2><ol>
-<li>速度快。 读写达到10w/s</li>
-<li>基于键值对对数据结构服务器。支持常用的数据结构</li>
-<li>丰富的功能。键过期，发布订阅，lua脚本，简单事务，流水线</li>
-<li>简单稳定。单线程模型</li>
-<li>支持的客户端语言多</li>
-<li>支持持久化</li>
-<li>主从复制</li>
-<li>高可用和分布式</li>
-</ol>
-<h2 id="这个技术的适用场景"><a href="#这个技术的适用场景" class="headerlink" title="这个技术的适用场景"></a>这个技术的适用场景</h2><ol>
-<li>缓存。大部分使用场景都是这个</li>
-<li>消息队列系统。简单的消息队列，基于发布订阅或者阻塞队列。这个只针对简单的队列功能，无持久化，重复，等复杂功能</li>
-<li>排行榜和计数器应用。。。这是书上说的，感觉其实就是使用 <code>redis</code> 里面的数据结构实现的一些功能。</li>
-</ol>
-<p>不适用的场景：1. 数据存储。<code>redis</code> 是基于内存的，不应该将全部数据或者冷数据放到 <code>redis</code> </p>
-<h2 id="技术的组成部分和关键点"><a href="#技术的组成部分和关键点" class="headerlink" title="技术的组成部分和关键点"></a>技术的组成部分和关键点</h2><p><strong>单线程模型</strong><br>首先，就是单线程模型，这个一定要知道。<br>所谓单线程模型，不代表 redis 进程内部只有一个线程，而是，只用单线程处理客户请求的命令<br>所以从客户端发请求到响应要经过以下过程：</p>
-<ol>
-<li>命令网络传输</li>
-<li>命令队列等待时间</li>
-<li>命令处理时间</li>
-<li>命令响应网络传输</li>
-</ol>
-<p>通常 redis 保证命令处理时间很短，当然，在有大量 key 的 redis 使用 keys 命令也是会执行很长时间的</p>
-<p><strong>数据结构</strong><br>支持5种数据结构。 string，hash，list，set，zset</p>
-<p>string 内部编码是 </p>
-<ol>
-<li>raw &gt;39个字节的字符串</li>
-<li>int 8个字节长整型</li>
-<li>embstr &lt;= 39 个字节的字符串<br>hash 的内部编码：</li>
-<li>hashtable  不满足下面的情况下使用</li>
-<li>ziplist  hash类型元素个数小于 hash-max-ziplist-entries 默认 512 个，这个是一个紧凑的结构，节省内存<br>list 的内部编码是 </li>
-<li>linkedlist 不满足下面的条件</li>
-<li>ziplist 列表元素个数小于 list-max-ziplist-entries 默认 512 个，同时列表每个元素的值小于 list-max-ziplist-value 默认 64 字节<br>set 的内部编码是 </li>
-<li>hashtable 不满足下面</li>
-<li>intset 元素是整数，并且数量小于 set-man-intset-entries<br>zset 的内部编码是 </li>
-<li>skiplist 不满足下面条件</li>
-<li>ziplist 元素个数小于 zet-max-ziplist-entries 默认 128 个 同时元素小于 zset-max-ziplist-value 默认 64 字节</li>
-</ol>
-<p><strong>键过期</strong><br><code>expire</code> 设置过期时间 和 <code>ttl</code> 查询存活时间，返回 -1 代表没设置过期时间，-2 键不存在<br>键过期有两种方式，一种是惰性的，当访问到 key 到时候检查 key 过期了才移除，另一种是定时抽样检查移除过期的 key，如果比例大于 25%，继续进行抽样，直到运行超时 25ms </p>
-<p><strong>pipeline</strong><br>pipeline 简单点说，就是将一批命令，整体打包发送给 redis，这样节省了 客户端与redis 的网络通信时间</p>
-<p><strong>持久化</strong><br>主要有两种持久化方式 rdb 和 aof </p>
-<ol>
-<li><p>rdb<br>rdb 相当于当前 redis 数据的快照，生成文件存放在硬盘<br>分为自动触发和手动触发，手动使用 <code>bgsave</code> 自动就是配置 <code>save m n</code> 标示 m 秒内有 n 次修改触发<br>文件保存 dir 配置的目录下，文件名韦 dbfilename 配置<br>rdb 没办法做到实时持久化，是一个紧凑的 二进制文件，redis 加载 rdb 文件比 aof 快</p>
-</li>
-<li><p>aof<br>就是以独立日志记录每次写命令，<br>开启需要 appendonly yes 配置开启 文件名为 appendfilename 配置<br>里面关键的是文件同步策略。每次命令是写在缓冲区，什么时候刷盘，需要配置 appendfsync 有 always everysec no 默认是 everysec<br>当 aof 文件很大的时候可以重写，直接使用当前 redis 的数据重写 aof 文件<br>手动触发 使用命令 bgrewriteaof<br>自动触发 根据配置 auto-aof-rewrite-min-size 和 auto-aof-rewrite-percentage </p>
-</li>
-</ol>
-<p><strong>事务</strong><br>将一组要执行的命令放在 multi  和 exec 命令中间<br>可以使用 discard 命令停止事务<br>如果命令过程中有语法错误，事务不执行<br>如果命令用错了，譬如 sadd 写成了 zadd ，错误前面的命令会执行。。</p>
-<p><strong>支持主从复制</strong><br>主从是高可用的基础<br>启动的时候使用配置 slaveof host port 配置<br>也可以在运行过程中执行命令 slaveof host port<br>查看主从信息，可以 info replication 命令<br>断开主从，可以 slaveof no one 断开主从连接，不会删除已有数据，只是无法接收新的数据变化<br>可以先断开主从，然后切换新的主节点，注意，切换过程中原有数据将删除，重新同步新的主节点数据，slave 默认只读<br>每个 redis 节点根据 运行id 区分，每次启动都会动态分配一个 40 位的运行 id</p>
-<p><strong>高可用-哨兵</strong><br>哨兵基于主从复制，在主节点出现故障的时候完成故障转移操作，提升一个从节点为主节点，并将其他从节点修改主节点地址<br>判断主节点故障至少需要 n/2 + 1 个哨兵确认<br>客户端获取主节点地址要通过哨兵获取，每监控一个主键点，其实就是一个 mastername，一套哨兵可以同时监控多个主节点</p>
-<p>故障转移的步骤简单说</p>
-<ol>
-<li>判断主节点故障</li>
-<li>选择一个 sentinal 节点完成故障转移功能</li>
-<li>选择一个数据最全的从节点作为新的主节点</li>
-<li>切换</li>
-</ol>
-<p>当然，中间有很多细节，就不写了。就算看了也估计就能记一段时间，这些概念还是能够理解的</p>
-<p><strong>高可用-集群</strong><br>当数据量过大，单个节点存不下所有数据，需要多个 redis 节点分担的时候，使用 redis 集群方案<br>数据分区规则：<br>根据虚拟槽分区，使用一个 hash 函数，将数据映射到一个 整数集合中，定义为 slot 槽，redis 到 slot 范围为 0 - 16383<br>每个 redis 主节点负责一部分 slot，一个 redis 集群，必须每个 slot 都有节点负责，这个时候 redis 集群才能正常工作  </p>
-<p>以集群模式启动 redis 需要配置<br>cluster-enabled yes<br>配置内部配置文件，这个通常是生成的配置<br>cluster-config-file node-port.conf  </p>
-<p>然后完成节点握手 通过 gossip 流言协议，达到互相感知<br>cluster meet host port 命令</p>
-<p>然后分配 slot<br>cluster addslots {0…5461} </p>
-<p>分配了slot 的节点可以认为是主节点，然后配置其他节点复制响应的主节点，根据 nodeid 复制<br>cluster replicate nodeid</p>
-<p>当然，手动配置比较复杂，使用 redis-trib.rb 搭建集群简单点 </p>
-<p>当有新的节点加入，可以将部分 slot 转移个新节点<br>当有主节点退出，也可以将他负责的 slot 转移给其他节点</p>
-<h2 id="已有的实现和它之间的对比"><a href="#已有的实现和它之间的对比" class="headerlink" title="已有的实现和它之间的对比"></a>已有的实现和它之间的对比</h2><p>memcached 多线程模型，只支持 key value<br>好吧，其实我没用过，也没了解过这个东西。。</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>除了上面的5个数据结构，还有一些扩展 </p>
-<p><strong>位图</strong><br>bitmap<br>事件上是字符串，内部存 0 1<br>命令 setbit key offset value    getbit key offset<br>还有一些其他的命令，用到的时候可以详细看  </p>
-<p><strong>hyperloglog</strong><br>这实际上是一个基数算法，可以使用更少的内存空间完成集合运算，当然存在一定误差</p>
-<p><strong>pub/sub</strong><br>基于频道的发布订阅，之前高可用内部通信很多都是基于这个<br>可以看着简单的队列<br>命令：<br>publish chennel message<br>subscribe channel<br>unsubscribe channel</p>
-<p><strong>geo</strong><br>地理位置信息<br>geoadd key longtitude latitude member 。。。</p>
-<p>完成地理位置信息的录入后，可以做些计算。。没用过  </p>
-<p><strong>stream</strong><br>redis5 新增的一个消息队列<br>与 kafka 类型，之前的发布订阅，订阅者可以获取全量数据，并且无法获取之前的数据<br>stream 目前会存一份原数据，消费者也分为消费者组，每个组消费全量数据，组内每个消费者竞争获取</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1402,7 +1227,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1415,7 +1240,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
