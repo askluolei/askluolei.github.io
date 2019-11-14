@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Askluolei" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="上篇主要学习了怎么用 sentinel这篇主要简单的进入源码瞅瞅 sentinel 的结构   上篇中，可以看到，限流操作的基本代码结构为123456789101112Entry entry = null;try &amp;#123;  ContextUtil.enter(target, origin);  entry = SphU.entry(resourceName);&amp;#125; catch (Bl">
+<meta name="keywords" content="java,sentinel,学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sentinel 学习-下">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;14&#x2F;sentinel-%E5%AD%A6%E4%B9%A0-%E4%B8%8B&#x2F;index.html">
+<meta property="og:site_name" content="Askluolei">
+<meta property="og:description" content="上篇主要学习了怎么用 sentinel这篇主要简单的进入源码瞅瞅 sentinel 的结构   上篇中，可以看到，限流操作的基本代码结构为123456789101112Entry entry = null;try &amp;#123;  ContextUtil.enter(target, origin);  entry = SphU.entry(resourceName);&amp;#125; catch (Bl">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;14&#x2F;sentinel-%E5%AD%A6%E4%B9%A0-%E4%B8%8B&#x2F;sentinel.svg">
+<meta property="og:updated_time" content="2019-11-14T14:21:53.848Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;14&#x2F;sentinel-%E5%AD%A6%E4%B9%A0-%E4%B8%8B&#x2F;sentinel.svg">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/14/sentinel-%E5%AD%A6%E4%B9%A0-%E4%B8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>sentinel 学习-下 | Askluolei</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Askluolei</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">个人的学习吐槽网站</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/askluolei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/14/sentinel-%E5%AD%A6%E4%B9%A0-%E4%B8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          sentinel 学习-下
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-14 22:13:34 / 修改时间：22:21:53" itemprop="dateCreated datePublished" datetime="2019-11-14T22:13:34+08:00">2019-11-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">技术笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>上篇主要学习了怎么用 <code>sentinel</code><br>这篇主要简单的进入源码瞅瞅 <code>sentinel</code> 的结构  </p>
+<p>上篇中，可以看到，限流操作的基本代码结构为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Entry entry = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  ContextUtil.enter(target, origin);</span><br><span class="line">  entry = SphU.entry(resourceName);</span><br><span class="line">&#125; <span class="keyword">catch</span> (BlockException e) &#123;</span><br><span class="line">   <span class="comment">// 限流处理</span></span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (entry != <span class="keyword">null</span>) &#123;</span><br><span class="line">      entry.exit();</span><br><span class="line">  &#125;</span><br><span class="line">  ContextUtil.exit();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>只不过，在使用的时候，基于 <code>aop</code> 获取拦截器，屏蔽掉类似这样的模板代码<br>那么，这段代码里面到底发生了什么呢？  </p>
+<p>先看整个调用图  </p>
+<img src="/2019/11/14/sentinel-%E5%AD%A6%E4%B9%A0-%E4%B8%8B/sentinel.svg" class="" title="This is an example image">
+<h2 id="核心类"><a href="#核心类" class="headerlink" title="核心类"></a>核心类</h2><p>这里面需要关注的几个类或接口</p>
+<ol>
+<li>Context</li>
+<li>Node</li>
+<li>Entry</li>
+<li>ProcessorSlotChain</li>
+<li>ProcessorSlot</li>
+</ol>
+<h3 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h3><p>每次调用 <code>entry</code> 获取资源<br>首先获取 <code>Context</code>，这是一个 <code>ThreadLocal</code> 变量，线程绑定变量</p>
+<p>包含以下信息</p>
+<ol>
+<li>上下文名称 <code>name</code></li>
+<li>当前调用树的入口节点  <code>entranceNode</code></li>
+<li>当前处理的 <code>Entry</code></li>
+<li>来源信息 <code>origin</code> 通常跨越系统调用才有</li>
+<li>异步表示 <code>async</code> </li>
+</ol>
+<p>一般，可以通过 <code>ContextUtil</code> 来设置 <code>contextName</code> 和 <code>origin</code><br>如果没，则使用默认的上下文  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Context context = ContextUtil.getContext();</span><br><span class="line"><span class="keyword">if</span> (context <span class="keyword">instanceof</span> NullContext) &#123;</span><br><span class="line">    <span class="comment">// The &#123;@link NullContext&#125; indicates that the amount of context has exceeded the threshold,</span></span><br><span class="line">    <span class="comment">// so here init the entry only. No rule checking will be done.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> CtEntry(resourceWrapper, <span class="keyword">null</span>, context);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (context == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="comment">// Using default context.</span></span><br><span class="line">    context = InternalContextUtil.internalEnter(Constants.CONTEXT_DEFAULT_NAME);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同一个资源可以对应不同的上下文，以此来区分不同的场景，这样，不同场景的调用可以独立统计<br>每个 <code>contextName</code> 会生成一个 <code>EntranceNode</code> 挂在 <code>Constants.ROOT.addChild(node);</code> 子节点</p>
+<h3 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h3><p>节点，是内部的统计单元，根据在内部的作用，有 <code>ClusterNode</code> <code>EntranceNode</code> <code>DefaultNode</code>     </p>
+<ol>
+<li><code>EntranceNode</code>  是入口节点，通常是外部入口，譬如上面的，每个 contextName 对应的就是入口节点</li>
+<li><code>ClusterNode</code>  集群节点，其实算资源的汇总统计节点，上面说个，每个资源，根据 contextName 会独立统计，就是对应下面的 <code>DefaultNode</code>,每个资源的汇总统计，就是这个节点</li>
+<li><code>DefaultNode</code> 默认节点，上面说了</li>
+</ol>
+<p>节点的统计信息将会用于后面的限流规则<br>里面的统计是基于滑动窗口的，实现类为 <code>LeapArray</code><br>这是一个抽象的实现，实现滑动窗口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">LeapArray</span><span class="params">(<span class="keyword">int</span> sampleCount, <span class="keyword">int</span> intervalInMs)</span> </span>&#123;</span><br><span class="line">    AssertUtil.isTrue(sampleCount &gt; <span class="number">0</span>, <span class="string">"bucket count is invalid: "</span> + sampleCount);</span><br><span class="line">    AssertUtil.isTrue(intervalInMs &gt; <span class="number">0</span>, <span class="string">"total time interval of the sliding window should be positive"</span>);</span><br><span class="line">    AssertUtil.isTrue(intervalInMs % sampleCount == <span class="number">0</span>, <span class="string">"time span needs to be evenly divided"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.windowLengthInMs = intervalInMs / sampleCount;</span><br><span class="line">    <span class="keyword">this</span>.intervalInMs = intervalInMs;</span><br><span class="line">    <span class="keyword">this</span>.sampleCount = sampleCount;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.array = <span class="keyword">new</span> AtomicReferenceArray&lt;&gt;(sampleCount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>intervalInMs 代表每个窗口时间<br>sampleCount  代表将窗口时间划分为多少分，越多越平滑，性能也越差</p>
+<p><code>sentinel</code> 内部，秒级窗口,默认是 2 1000<br>也就是内部将1s 划分为 2 个  500 ms  统计    </p>
+<p>具体实现有 <code>BucketLeapArray</code> <code>OccupiableBucketLeapArray</code>    </p>
+<p><code>BucketLeapArray</code>  为普通实现,不支持预占资源<br><code>OccupiableBucketLeapArray</code>  这个在内部维护一个 <code>FutureBucketLeapArray</code> 用来记录未来资源使用情况，来允许预占资源</p>
+<h2 id="ProcessorSlotChain-ProcessorSlot"><a href="#ProcessorSlotChain-ProcessorSlot" class="headerlink" title="ProcessorSlotChain ProcessorSlot"></a>ProcessorSlotChain ProcessorSlot</h2><p>处理链 和 处理插槽可以一起看，所有规则都是对应处理插槽处理的。使用 <code>SPI</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SlotChainBuilder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Build the processor slot chain.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> a processor slot that chain some slots together</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">ProcessorSlotChain <span class="title">build</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过实现上面的接口，来构建处理链<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultSlotChainBuilder</span> <span class="keyword">implements</span> <span class="title">SlotChainBuilder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ProcessorSlotChain <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ProcessorSlotChain chain = <span class="keyword">new</span> DefaultProcessorSlotChain();</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> NodeSelectorSlot());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> ClusterBuilderSlot());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> LogSlot());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> StatisticSlot());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> AuthoritySlot());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> SystemSlot());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> FlowSlot());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> DegradeSlot());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> chain;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>默认的实现，这里的 <code>Slot</code> 是限流的规则处理  </p>
+<h3 id="NodeSelectorSlot"><a href="#NodeSelectorSlot" class="headerlink" title="NodeSelectorSlot"></a>NodeSelectorSlot</h3><p>这个插槽记录调用链，设置当前的 node<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// node 记录统计信息，因此需要缓存</span></span><br><span class="line"> DefaultNode node = map.get(context.getName());</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            node = map.get(context.getName());</span><br><span class="line">            <span class="keyword">if</span> (node == <span class="keyword">null</span>) &#123;</span><br><span class="line">                node = <span class="keyword">new</span> DefaultNode(resourceWrapper, <span class="keyword">null</span>);</span><br><span class="line">                HashMap&lt;String, DefaultNode&gt; cacheMap = <span class="keyword">new</span> HashMap&lt;String, DefaultNode&gt;(map.size());</span><br><span class="line">                cacheMap.putAll(map);</span><br><span class="line">                cacheMap.put(context.getName(), node);</span><br><span class="line">                map = cacheMap;</span><br><span class="line">                <span class="comment">// 构建调用树</span></span><br><span class="line">                <span class="comment">// Build invocation tree</span></span><br><span class="line">                ((DefaultNode) context.getLastNode()).addChild(node);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 设置当前节点</span></span><br><span class="line">    context.setCurNode(node);</span><br><span class="line">    fireEntry(context, resourceWrapper, node, count, prioritized, args);</span><br></pre></td></tr></table></figure></p>
+<h3 id="ClusterBuilderSlot"><a href="#ClusterBuilderSlot" class="headerlink" title="ClusterBuilderSlot"></a>ClusterBuilderSlot</h3><p>构建 <code>ClusterNode</code> 这里每个资源对应一个，可以看到这里就是一个对象<br>这里是本资源的统计汇总<br>然后根据 <code>origin</code> 构建 <code>OriginNode</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (clusterNode == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">if</span> (clusterNode == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// Create the cluster node.</span></span><br><span class="line">            clusterNode = <span class="keyword">new</span> ClusterNode(resourceWrapper.getName(), resourceWrapper.getResourceType());</span><br><span class="line">            HashMap&lt;ResourceWrapper, ClusterNode&gt; newMap = <span class="keyword">new</span> HashMap&lt;&gt;(Math.max(clusterNodeMap.size(), <span class="number">16</span>));</span><br><span class="line">            newMap.putAll(clusterNodeMap);</span><br><span class="line">            newMap.put(node.getId(), clusterNode);</span><br><span class="line"></span><br><span class="line">            clusterNodeMap = newMap;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">node.setClusterNode(clusterNode);</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    * if context origin is set, we should get or create a new &#123;@link Node&#125; of</span></span><br><span class="line"><span class="comment">    * the specific origin.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="keyword">if</span> (!<span class="string">""</span>.equals(context.getOrigin())) &#123;</span><br><span class="line">    Node originNode = node.getClusterNode().getOrCreateOriginNode(context.getOrigin());</span><br><span class="line">    context.getCurEntry().setOriginNode(originNode);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fireEntry(context, resourceWrapper, node, count, prioritized, args);</span><br></pre></td></tr></table></figure></p>
+<h3 id="StatisticSlot"><a href="#StatisticSlot" class="headerlink" title="StatisticSlot"></a>StatisticSlot</h3><p><code>LogSlot</code> 就是记录日志的.<br><code>StatisticSlot</code> 是记录统计信息，供后面的规则做决策<br>主要记录通过资源的 <code>succ</code> <code>threadNum</code> <code>blocked</code> 等信息<br>这些信息是在 <code>node</code> 处理</p>
+<p>同时会触发<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ProcessorSlotEntryCallback</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onPass</span><span class="params">(Context context, ResourceWrapper resourceWrapper, T param, <span class="keyword">int</span> count, Object... args)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onBlocked</span><span class="params">(BlockException ex, Context context, ResourceWrapper resourceWrapper, T param, <span class="keyword">int</span> count, Object... args)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>回调，可以通过 <code>StatisticSlotCallbackRegistry</code> 注册 </p>
+<h3 id="限流插槽"><a href="#限流插槽" class="headerlink" title="限流插槽"></a>限流插槽</h3><ol>
+<li>AuthoritySlot<br>对应 <code>AuthorityRule</code> 处理黑白名单</li>
+<li>SystemSlot<br>对应 <code>SystemRule</code> ,根据系统整体性能指标 cpu 线程 等限流</li>
+<li>FlowSlot<br>对应 <code>FlowRule</code>,很多限流规则，处理策略，后面细看</li>
+<li>DegradeSlot<br>对应 <code>DegradeRule</code>,这里是熔断规则，满足条件，断开一段时间，然后再次开启</li>
+</ol>
+<p>上面 <code>FlowSlot</code> 是复杂点，可以集群限流  </p>
+<h3 id="FlowSlot"><a href="#FlowSlot" class="headerlink" title="FlowSlot"></a>FlowSlot</h3><p>可以根据 <code>FlowRule</code> 里面的 <code>clusterMode</code> 来判断是本地限流还是集群限流<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canPassCheck</span><span class="params">(<span class="comment">/*@NonNull*/</span> FlowRule rule, Context context, DefaultNode node, <span class="keyword">int</span> acquireCount,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                <span class="keyword">boolean</span> prioritized)</span> </span>&#123;</span><br><span class="line">    String limitApp = rule.getLimitApp();</span><br><span class="line">    <span class="keyword">if</span> (limitApp == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 集群限流</span></span><br><span class="line">    <span class="keyword">if</span> (rule.isClusterMode()) &#123;</span><br><span class="line">        <span class="keyword">return</span> passClusterCheck(rule, context, node, acquireCount, prioritized);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 本地限流</span></span><br><span class="line">    <span class="keyword">return</span> passLocalCheck(rule, context, node, acquireCount, prioritized);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里先只看本地检查<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">passLocalCheck</span><span class="params">(FlowRule rule, Context context, DefaultNode node, <span class="keyword">int</span> acquireCount,</span></span></span><br><span class="line"><span class="function"><span class="params">                                        <span class="keyword">boolean</span> prioritized)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 选择使用哪个 Node 里面的统计信息进行决策</span></span><br><span class="line">    <span class="comment">// 之前说过了，有 Cluster 资源总的统计 Origin 根据来源统计 </span></span><br><span class="line">    <span class="comment">// 使用其他相关资源的 Cluster ,或者 根据</span></span><br><span class="line">    Node selectedNode = selectNodeByRequesterAndStrategy(rule, context, node);</span><br><span class="line">    <span class="keyword">if</span> (selectedNode == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 然后使用限流器决策，这里的限流器又有多个选择</span></span><br><span class="line">    <span class="keyword">return</span> rule.getRater().canPass(selectedNode, acquireCount, prioritized);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个的 <code>getRater()</code> 返回的是 <code>TrafficShapingController</code> </p>
+<p>有以下几个实现  </p>
+<ol>
+<li><code>DefaultController</code> 只有超过设置的阈值，直接拒绝</li>
+<li><code>RateLimiterController</code> 均匀限流，固定每个请求之间的最小间隔</li>
+<li><code>WarmUpController</code> 预热,缓慢达到预设的最大值</li>
+<li><code>WarmUpRateLimiterController</code> 看名字，里面涉及到限流算法</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/sentinel/" rel="tag"># sentinel</a>
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/12/sentinel-%E5%AD%A6%E4%B9%A0-%E4%B8%8A/" rel="next" title="sentinel 学习-上">
+                  <i class="fa fa-chevron-left"></i> sentinel 学习-上
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#核心类"><span class="nav-number">1.</span> <span class="nav-text">核心类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Context"><span class="nav-number">1.1.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node"><span class="nav-number">1.2.</span> <span class="nav-text">Node</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ProcessorSlotChain-ProcessorSlot"><span class="nav-number">2.</span> <span class="nav-text">ProcessorSlotChain ProcessorSlot</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NodeSelectorSlot"><span class="nav-number">2.1.</span> <span class="nav-text">NodeSelectorSlot</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ClusterBuilderSlot"><span class="nav-number">2.2.</span> <span class="nav-text">ClusterBuilderSlot</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#StatisticSlot"><span class="nav-number">2.3.</span> <span class="nav-text">StatisticSlot</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#限流插槽"><span class="nav-number">2.4.</span> <span class="nav-text">限流插槽</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FlowSlot"><span class="nav-number">2.5.</span> <span class="nav-text">FlowSlot</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="Luo lei"
+    src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Luo lei</p>
+  <div class="site-description" itemprop="description">主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Luo lei</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      element.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: '92bdc8d867fdb9d00042',
+      clientSecret: 'afd4318e433e4378a762bff838bd6e14df754d7e',
+      repo: 'askluolei.github.io',
+      owner: 'Askluolei',
+      admin: ['luo lei'],
+      id: '8987968b8b93df99c3c33f6b864294d6',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+    </div>
+</body>
+</html>
