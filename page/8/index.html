@@ -213,6 +213,645 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/24/Queue-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/24/Queue-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" class="post-title-link" itemprop="url">Queue 源码阅读</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-24 21:51:10" itemprop="dateCreated datePublished" datetime="2019-07-24T21:51:10+08:00">2019-07-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-25 21:04:27" itemprop="dateModified" datetime="2019-07-25T21:04:27+08:00">2019-07-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" itemprop="url" rel="index">
+                    <span itemprop="name">源码阅读</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Queue 继承体系下，常用实现的分析<br>Queue 接口下面，还有 Deque 和 BlockingQueue 和 BlockingDeque    </p>
+<p>我们先弄清楚队列的方法的含义<br>就说功能，方法太多，用的时候看说明就行了    </p>
+<ol>
+<li>从头获取并删除元素（如果为空抛异常）</li>
+<li>从头获取并删除元素（如果为空返回null）</li>
+<li>从头获取元素（如果为空抛异常）</li>
+<li>从头获取元素（如果为空返回null）</li>
+<li>从头添加元素（如果满了抛异常）</li>
+<li>从头添加元素（如果满了返回false）    </li>
+</ol>
+<p>尾的操作跟上面类似。就不说了，具体用的时候看 api 的说明，完全记不住。</p>
+<h2 id="Deque"><a href="#Deque" class="headerlink" title="Deque"></a>Deque</h2><p>这个下面的实现类有 LinkedList ArrayDeque ConcurrentLinkedDeque<br>其中 LinkedList 就不说了，我们看看其他两个  </p>
+<h3 id="ArrayDeque"><a href="#ArrayDeque" class="headerlink" title="ArrayDeque"></a>ArrayDeque</h3><p>看名字就知道，这是一个基于数组的双向队列实现<br>ArrayDeque 的初始化容量一定是 2 的指数  </p>
+<pre><code class="lang-java">public ArrayDeque(int numElements) {
+    allocateElements(numElements);
+}
+private void allocateElements(int numElements) {
+    int initialCapacity = MIN_INITIAL_CAPACITY;
+    // Find the best power of two to hold elements.
+    // Tests &quot;&lt;=&quot; because arrays aren&#39;t kept full.
+    if (numElements &gt;= initialCapacity) {
+        initialCapacity = numElements;
+        initialCapacity |= (initialCapacity &gt;&gt;&gt;  1);
+        initialCapacity |= (initialCapacity &gt;&gt;&gt;  2);
+        initialCapacity |= (initialCapacity &gt;&gt;&gt;  4);
+        initialCapacity |= (initialCapacity &gt;&gt;&gt;  8);
+        initialCapacity |= (initialCapacity &gt;&gt;&gt; 16);
+        initialCapacity++;
+
+        if (initialCapacity &lt; 0)   // Too many elements, must back off
+            initialCapacity &gt;&gt;&gt;= 1;// Good luck allocating 2 ^ 30 elements
+    }
+    elements = new Object[initialCapacity];
+}
+</code></pre>
+<p>ArrayDeque 使用数组存储，但是，并不是 index = 0 的元素是头元素，如果这样设计，那么从队首插入的效率就非常低了（复制）<br>使用    </p>
+<pre><code class="lang-java">transient int head;
+
+transient int tail;
+</code></pre>
+<p>这个标记，来记录队首和队尾的下标    </p>
+<p>根据注释上面说的，本类作为 栈，比 <code>Stack</code> 要快（队尾添加，队尾获取，这样使用就是栈了）<br>作为 队列，比 <code>LinkedList</code> 要快</p>
+<p>ArrayDeque，每次扩容的时候都是双倍扩容    </p>
+<pre><code class="lang-java">private void doubleCapacity() {
+    assert head == tail;
+    int p = head;
+    int n = elements.length;
+    int r = n - p; // number of elements to the right of p
+    int newCapacity = n &lt;&lt; 1;
+    if (newCapacity &lt; 0)
+        throw new IllegalStateException(&quot;Sorry, deque too big&quot;);
+    Object[] a = new Object[newCapacity];
+    System.arraycopy(elements, p, a, 0, r);
+    System.arraycopy(elements, 0, a, r, p);
+    elements = a;
+    head = 0;
+    tail = n;
+}
+</code></pre>
+<p>经过扩容后，head 将置为 0<br>我们先看一下 addFirst   </p>
+<pre><code class="lang-java">public void addFirst(E e) {
+    if (e == null)
+        throw new NullPointerException();
+    elements[head = (head - 1) &amp; (elements.length - 1)] = e;
+    if (head == tail)
+        doubleCapacity();
+}
+</code></pre>
+<p>赋值语句比较复杂，我们拆开看<br>由于初始容量为2 的指数，每次扩容都是2倍扩容，所以 <code>(elements.length - 1)</code> 的结果就是低位全1<br>因为在队首插入，因此 <code>(head - 1)</code>,head 的新值是两个值 <code>&amp;</code> ，其实就是取余。<br>我们看一下，第一个调用 addFirst，那么 head 为 15 （默认容量为16），<br>如果 head == tail 了，那么代表数组满了，需要扩容了<br>反正注意从队首添加就是 head - 1 取余，从队首删除就是 head + 1 取余  </p>
+<p>从队首获取的方法    </p>
+<pre><code class="lang-java">public E pollFirst() {
+    int h = head;
+    @SuppressWarnings(&quot;unchecked&quot;)
+    E result = (E) elements[h];
+    // Element is null if deque empty
+    if (result == null)
+        return null;
+    elements[h] = null;     // Must null out slot
+    head = (h + 1) &amp; (elements.length - 1);
+    return result;
+}
+</code></pre>
+<p>这里结果为null，不抛异常，其他要抛异常的方法也是调用这个方法    </p>
+<p>队尾的操作类似  </p>
+<pre><code class="lang-java">public void addLast(E e) {
+    if (e == null)
+        throw new NullPointerException();
+    elements[tail] = e;
+    if ( (tail = (tail + 1) &amp; (elements.length - 1)) == head)
+        doubleCapacity();
+}
+</code></pre>
+<h3 id="ArrayBlockingQueue"><a href="#ArrayBlockingQueue" class="headerlink" title="ArrayBlockingQueue"></a>ArrayBlockingQueue</h3><p>基于数组的阻塞队列，内部使用重入锁和两个条件实现阻塞<br>实现并不复杂，看一下代表性的方法 offer poll</p>
+<pre><code class="lang-java">
+public boolean offer(E e) {
+    // 元素不能为null
+    checkNotNull(e);
+    final ReentrantLock lock = this.lock;
+    // 重入锁，所以阻塞队列是线程安全的
+    lock.lock();
+    try {
+        // 队列已满
+        if (count == items.length)
+            return false;
+        else {
+            // 没满，就入队，肯定成功，因为上锁了
+            enqueue(e);
+            return true;
+        }
+    } finally {
+        lock.unlock();
+    }
+}
+
+/**
+ * 调用这个方法前，先上锁
+ */
+private void enqueue(E x) {
+    // assert lock.getHoldCount() == 1;
+    // assert items[putIndex] == null;
+    final Object[] items = this.items;
+    // putIndex 记录最后入队索引
+    items[putIndex] = x;
+    if (++putIndex == items.length)
+        putIndex = 0;
+    count++;
+    // 入队后，代表有数据了，通知 notEmpty 条件， 如果有在 notEmpty 上等待的，其实就是想要在非空的时候得到通知
+    notEmpty.signal();
+}
+</code></pre>
+<p>太简单了，没啥说的。    </p>
+<pre><code class="lang-java">/**
+    出队
+*/   
+public E poll() {
+    final ReentrantLock lock = this.lock;
+    // 同样要上锁
+    lock.lock();
+    try {
+        // 为空就返回null，否则出队操作
+        return (count == 0) ? null : dequeue();
+    } finally {
+        lock.unlock();
+    }
+}
+
+private E dequeue() {
+    // assert lock.getHoldCount() == 1;
+    // assert items[takeIndex] != null;
+    final Object[] items = this.items;
+    // takeIndex 记录出队索引
+    @SuppressWarnings(&quot;unchecked&quot;)
+    E x = (E) items[takeIndex];
+    items[takeIndex] = null;
+    if (++takeIndex == items.length)
+        takeIndex = 0;
+    count--;
+    if (itrs != null)
+        itrs.elementDequeued();
+    // 出队了，肯定有空位，通知 notFull 条件，如果有在 notFull 上等待的，其实就是想要在非满的时候得到通知
+    notFull.signal();
+    return x;
+}
+</code></pre>
+<p>基于数组，重入锁，两个条件，putIndex 和 takeIndex。</p>
+<h3 id="LinkedBlockingDeque"><a href="#LinkedBlockingDeque" class="headerlink" title="LinkedBlockingDeque"></a>LinkedBlockingDeque</h3><p>看名字就知道基于双向链表的阻塞队列<br>内部实现跟 LinkedList 差不多，就是多了重入锁，两个条件。。 </p>
+<h3 id="ConcurrentLinkedDeque"><a href="#ConcurrentLinkedDeque" class="headerlink" title="ConcurrentLinkedDeque"></a>ConcurrentLinkedDeque</h3><p>这个看名字，就能猜到线程安全的，基于链表实现的双端队列<br>里面使用循环加上 cas 操作，无锁化编程   </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/24/List-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/24/List-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">List 源码阅读</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-24 20:46:06" itemprop="dateCreated datePublished" datetime="2019-07-24T20:46:06+08:00">2019-07-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-25 21:04:10" itemprop="dateModified" datetime="2019-07-25T21:04:10+08:00">2019-07-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" itemprop="url" rel="index">
+                    <span itemprop="name">源码阅读</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>List 体系下的部分源码实现阅读分析   </p>
+<h2 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h2><p>ArrayList 在平时用的很多，是基于数组的。可随机访问。里面值得注意的地方扩容 </p>
+<pre><code class="lang-java">private void ensureCapacityInternal(int minCapacity) {
+    if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
+        minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
+    }
+
+    ensureExplicitCapacity(minCapacity);
+}
+
+private void ensureExplicitCapacity(int minCapacity) {
+    modCount++;
+
+    // overflow-conscious code
+    if (minCapacity - elementData.length &gt; 0)
+        grow(minCapacity);
+}
+
+private void grow(int minCapacity) {
+    // overflow-conscious code
+    int oldCapacity = elementData.length;
+    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);
+    if (newCapacity - minCapacity &lt; 0)
+        newCapacity = minCapacity;
+    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+        newCapacity = hugeCapacity(minCapacity);
+    // minCapacity is usually close to size, so this is a win:
+    elementData = Arrays.copyOf(elementData, newCapacity);
+}
+
+private static int hugeCapacity(int minCapacity) {
+    if (minCapacity &lt; 0) // overflow
+        throw new OutOfMemoryError();
+    return (minCapacity &gt; MAX_ARRAY_SIZE) ?
+        Integer.MAX_VALUE :
+        MAX_ARRAY_SIZE;
+}
+</code></pre>
+<p>数组扩容<br>从上面可以看到默认是 1.5 倍扩容 <code>int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1)</code><br>如果指定的最小容量比 1.5 倍大，那就用指定的值。数组的容量上限是 <code>Integer.MAX_VALUE</code><br>可以看到，扩容后，将有一次复制操作 <code>Arrays.copyOf(elementData, newCapacity)</code><br>内部的实现是 <code>System.arrayCopy</code> 方法    </p>
+<pre><code class="lang-java">public static native void arraycopy(Object src,  int  srcPos,
+                                        Object dest, int destPos,
+                                        int length);
+</code></pre>
+<p>这是一个 native 方法    </p>
+<p>需要注意的是，在 List 中间插入或者删除一个元素操作，都会有一次复制操作    </p>
+<pre><code class="lang-java">public void add(int index, E element) {
+    rangeCheckForAdd(index);
+
+    ensureCapacityInternal(size + 1);  // Increments modCount!!
+    System.arraycopy(elementData, index, elementData, index + 1,
+                        size - index);
+    elementData[index] = element;
+    size++;
+}
+
+public E remove(int index) {
+    rangeCheck(index);
+
+    modCount++;
+    E oldValue = elementData(index);
+
+    int numMoved = size - index - 1;
+    if (numMoved &gt; 0)
+        System.arraycopy(elementData, index+1, elementData, index,
+                            numMoved);
+    elementData[--size] = null; // clear to let GC do its work
+
+    return oldValue;
+}
+</code></pre>
+<p>因此，ArrayList 的优缺点就很清楚了</p>
+<p>另外 <code>ArrayList</code> 是非线程安全的  </p>
+<h2 id="Vector"><a href="#Vector" class="headerlink" title="Vector"></a>Vector</h2><p>基本跟 ArrayList 一样，不同的是，几乎所有方法都用 <code>synchronized</code> 关键字了，所以是线程安全的。<br>虽说是线程安全的，但是如果要在多线程情况下使用的话，效率非常差，就是串行访问了。    </p>
+<p>不同的增长方式，在 <code>Vecotr</code> 中，在构造的时候可以指定每次增长的长度，如果不指定，那就双倍（最小）    </p>
+<pre><code class="lang-java">public Vector(int initialCapacity, int capacityIncrement) {
+    super();
+    if (initialCapacity &lt; 0)
+        throw new IllegalArgumentException(&quot;Illegal Capacity: &quot;+
+                                            initialCapacity);
+    this.elementData = new Object[initialCapacity];
+    this.capacityIncrement = capacityIncrement;
+}
+
+public synchronized void ensureCapacity(int minCapacity) {
+    if (minCapacity &gt; 0) {
+        modCount++;
+        ensureCapacityHelper(minCapacity);
+    }
+}
+
+private void ensureCapacityHelper(int minCapacity) {
+    // overflow-conscious code
+    if (minCapacity - elementData.length &gt; 0)
+        grow(minCapacity);
+}
+
+private void grow(int minCapacity) {
+    // overflow-conscious code
+    int oldCapacity = elementData.length;
+    int newCapacity = oldCapacity + ((capacityIncrement &gt; 0) ?
+                                        capacityIncrement : oldCapacity);
+    if (newCapacity - minCapacity &lt; 0)
+        newCapacity = minCapacity;
+    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+        newCapacity = hugeCapacity(minCapacity);
+    elementData = Arrays.copyOf(elementData, newCapacity);
+}
+</code></pre>
+<h2 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h2><p>内部的实现是双向链表    </p>
+<pre><code class="lang-java">private static class Node&lt;E&gt; {
+    E item;
+    Node&lt;E&gt; next;
+    Node&lt;E&gt; prev;
+
+    Node(Node&lt;E&gt; prev, E element, Node&lt;E&gt; next) {
+        this.item = element;
+        this.next = next;
+        this.prev = prev;
+    }
+}
+</code></pre>
+<p>不止是 List 的实现，还是 Deque 的实现<br>由于内部是双向链表实现的 List，所以就不存在扩容了。<br>双向列表，向链表中插入，重点在于找到位置，这个操作最耗时，LinkedList 是不支持随机访问的。<br>看看重点方法就知道了<br>内部根据 index 找到节点的方式 node</p>
+<pre><code class="lang-java">Node&lt;E&gt; node(int index) {
+    // assert isElementIndex(index);
+
+    if (index &lt; (size &gt;&gt; 1)) {
+        Node&lt;E&gt; x = first;
+        for (int i = 0; i &lt; index; i++)
+            x = x.next;
+        return x;
+    } else {
+        Node&lt;E&gt; x = last;
+        for (int i = size - 1; i &gt; index; i--)
+            x = x.prev;
+        return x;
+    }
+}
+</code></pre>
+<p>这里做了一个简单的优化，根据 index 更靠近 first 还是 last 来决定从 first 开始遍历，还是从 last 遍历<br>然后插入，删除操作，就是先用这个方法定位，然后使用下面的方法来操作  </p>
+<pre><code class="lang-java">private void linkFirst(E e) {
+    final Node&lt;E&gt; f = first;
+    final Node&lt;E&gt; newNode = new Node&lt;&gt;(null, e, f);
+    first = newNode;
+    if (f == null)
+        last = newNode;
+    else
+        f.prev = newNode;
+    size++;
+    modCount++;
+}
+
+void linkLast(E e) {
+    final Node&lt;E&gt; l = last;
+    final Node&lt;E&gt; newNode = new Node&lt;&gt;(l, e, null);
+    last = newNode;
+    if (l == null)
+        first = newNode;
+    else
+        l.next = newNode;
+    size++;
+    modCount++;
+}
+
+void linkBefore(E e, Node&lt;E&gt; succ) {
+    // assert succ != null;
+    final Node&lt;E&gt; pred = succ.prev;
+    final Node&lt;E&gt; newNode = new Node&lt;&gt;(pred, e, succ);
+    succ.prev = newNode;
+    if (pred == null)
+        first = newNode;
+    else
+        pred.next = newNode;
+    size++;
+    modCount++;
+}
+</code></pre>
+<p>上面 3 个方法是添加操作 </p>
+<pre><code class="lang-java">private E unlinkFirst(Node&lt;E&gt; f) {
+    // assert f == first &amp;&amp; f != null;
+    final E element = f.item;
+    final Node&lt;E&gt; next = f.next;
+    f.item = null;
+    f.next = null; // help GC
+    first = next;
+    if (next == null)
+        last = null;
+    else
+        next.prev = null;
+    size--;
+    modCount++;
+    return element;
+}
+
+private E unlinkLast(Node&lt;E&gt; l) {
+    // assert l == last &amp;&amp; l != null;
+    final E element = l.item;
+    final Node&lt;E&gt; prev = l.prev;
+    l.item = null;
+    l.prev = null; // help GC
+    last = prev;
+    if (prev == null)
+        first = null;
+    else
+        prev.next = null;
+    size--;
+    modCount++;
+    return element;
+}
+
+E unlink(Node&lt;E&gt; x) {
+    // assert x != null;
+    final E element = x.item;
+    final Node&lt;E&gt; next = x.next;
+    final Node&lt;E&gt; prev = x.prev;
+
+    if (prev == null) {
+        first = next;
+    } else {
+        prev.next = next;
+        x.prev = null;
+    }
+
+    if (next == null) {
+        last = prev;
+    } else {
+        next.prev = prev;
+        x.next = null;
+    }
+
+    x.item = null;
+    size--;
+    modCount++;
+    return element;
+}
+</code></pre>
+<p>上面3个操作是删除操作。基本上所有的公开方法就是基于上面的方法的。譬如   </p>
+<pre><code class="lang-java">public void add(int index, E element) {
+    checkPositionIndex(index);
+
+    if (index == size)
+        linkLast(element);
+    else
+        linkBefore(element, node(index));
+}
+
+public E remove(int index) {
+    checkElementIndex(index);
+    return unlink(node(index));
+}
+
+public E get(int index) {
+    checkElementIndex(index);
+    return node(index).item;
+}
+</code></pre>
+<p>还有一个需要注意的地方是 iterator 方法， LinkedList 重写了 ListIterator 的实现，内部除了记录 index，还记录 节点，这个，就不用每次都用 index 来找上下节点了<br>所以，一个代码的细节就是，如果使用了 LinkedList， 就不要使用 <code>for(int i = 0; i &lt; list.size; i++)</code> 这样的循环了，应该使用 foreach 循环 <code>for(item : list)</code> 或者使用 iterator<br>LinkedList 是非线程安全的   </p>
+<h2 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h2><p>这个也不复杂，在写（删）的时候，加锁复制，赋值。    </p>
+<pre><code class="lang-java">public boolean add(E e) {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        Object[] elements = getArray();
+        int len = elements.length;
+        Object[] newElements = Arrays.copyOf(elements, len + 1);
+        newElements[len] = e;
+        setArray(newElements);
+        return true;
+    } finally {
+        lock.unlock();
+    }
+}
+
+public void add(int index, E element) {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        Object[] elements = getArray();
+        int len = elements.length;
+        if (index &gt; len || index &lt; 0)
+            throw new IndexOutOfBoundsException(&quot;Index: &quot;+index+
+                                                &quot;, Size: &quot;+len);
+        Object[] newElements;
+        int numMoved = len - index;
+        if (numMoved == 0)
+            newElements = Arrays.copyOf(elements, len + 1);
+        else {
+            newElements = new Object[len + 1];
+            System.arraycopy(elements, 0, newElements, 0, index);
+            System.arraycopy(elements, index, newElements, index + 1,
+                                numMoved);
+        }
+        newElements[index] = element;
+        setArray(newElements);
+    } finally {
+        lock.unlock();
+    }
+}
+
+public E remove(int index) {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        Object[] elements = getArray();
+        int len = elements.length;
+        E oldValue = get(elements, index);
+        int numMoved = len - index - 1;
+        if (numMoved == 0)
+            setArray(Arrays.copyOf(elements, len - 1));
+        else {
+            Object[] newElements = new Object[len - 1];
+            System.arraycopy(elements, 0, newElements, 0, index);
+            System.arraycopy(elements, index + 1, newElements, index,
+                                numMoved);
+            setArray(newElements);
+        }
+        return oldValue;
+    } finally {
+        lock.unlock();
+    }
+}
+</code></pre>
+<p>这些都没啥好说的，可以看到内存占用挺大的，适合读多写少的时候。<br>读的时候不需要加锁，写的时候，总是复制，然后赋值。当内容过多的时候，可能造成内存溢出<br>读的时候，如果有其他线程在写，读可能读到旧值。  </p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/22/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -344,7 +983,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

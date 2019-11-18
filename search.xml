@@ -1,6 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>三数之和</title>
+    <url>/2019/11/18/leetcode/15/</url>
+    <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个包含 <code>n</code> 个整数的数组 <code>nums</code>，判断 <code>nums</code> 中是否存在三个元素 <code>a，b，c</code> ，使得 <code>a + b + c = 0</code> ？找出所有满足条件且不重复的三元组。<br><em>注意：</em>答案中不可以包含重复的三元组。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">例如, 给定数组 nums = [-1, 0, 1, 2, -1, -4]，</span><br><span class="line"></span><br><span class="line">满足要求的三元组集合为：</span><br><span class="line">[</span><br><span class="line">  [-1, 0, 1],</span><br><span class="line">  [-1, -1, 2]</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><p>暴力解法，3遍 for 循环，但是，不能包含重复的三元组这个条件不好满足<br>继续想，之前又 a + b = target ，那么，我们固定，其实，这里也是满足的 a + b = -c 的模式<br>重复问题，只能用 hash 解决了，但是，我们可以通过先排序，然后去掉同样的元素就可以了，排序的时间复杂度为 O(nlogn) ,是可以接受的。 </p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">threeSum</span><span class="params">(nums []<span class="keyword">int</span>)</span> [][]<span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> result [][]<span class="keyword">int</span></span><br><span class="line">	<span class="built_in">len</span> := <span class="built_in">len</span>(nums)</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span> &lt; <span class="number">3</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> result</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 先排序</span></span><br><span class="line">	sort.Ints(nums)</span><br><span class="line">	<span class="comment">// 全部大于0 或者小于0，就没有结果</span></span><br><span class="line">	<span class="keyword">if</span> nums[<span class="number">0</span>] &gt; <span class="number">0</span> || nums[<span class="built_in">len</span> - <span class="number">1</span>] &lt; <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> result</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span> - <span class="number">2</span>; i++ &#123;</span><br><span class="line">		<span class="comment">// 第一个数  &gt; 0 那就没有了</span></span><br><span class="line">		<span class="keyword">if</span> nums[i] &gt; <span class="number">0</span> &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 同样的数，不需要重复找</span></span><br><span class="line">		<span class="keyword">if</span> i != <span class="number">0</span> &amp;&amp; nums[i] == nums[i<span class="number">-1</span>] &#123;</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 固定第一位数，然后前后分别找，类似 寻找数组里面 a + b = target 一样</span></span><br><span class="line">		first := i + <span class="number">1</span></span><br><span class="line">		last := <span class="built_in">len</span> - <span class="number">1</span></span><br><span class="line">		<span class="keyword">for</span> ;first &lt; last &amp;&amp; nums[last] &gt;= <span class="number">0</span>; &#123;</span><br><span class="line">			exp := nums[first] + nums[last] + nums[i]</span><br><span class="line">			<span class="keyword">if</span> exp &lt; <span class="number">0</span> &#123;</span><br><span class="line">				first++</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> exp &gt; <span class="number">0</span>&#123;</span><br><span class="line">				last--</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				line := []<span class="keyword">int</span>&#123;nums[i], nums[first], nums[last]&#125;</span><br><span class="line">				result = <span class="built_in">append</span>(result, line)</span><br><span class="line"></span><br><span class="line">				<span class="comment">// 这里剔除重复的</span></span><br><span class="line">				<span class="keyword">for</span> first++ ; first &lt; last &amp;&amp; nums[first - <span class="number">1</span>] == nums[first]; first++&#123;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">for</span> last-- ; first &lt; last &amp;&amp; nums[last + <span class="number">1</span>] == nums[last]; last--&#123;</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>盛最多水的容器</title>
+    <url>/2019/11/17/leetcode/11/</url>
+    <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定 n 个非负整数 a1，a2，…，an，每个数代表坐标中的一个点 (i, ai) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为 (i, ai) 和 (i, 0)。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。<br>说明： 你不能倾斜容器，且 n 的值至少为 2。</p>
+<p>示例:<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: [1,8,6,2,5,4,8,3,7]</span><br><span class="line">输出: 49</span><br></pre></td></tr></table></figure></p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><h3 id="思路1"><a href="#思路1" class="headerlink" title="思路1"></a>思路1</h3><p>暴力解法<br>没啥思路可言，直接穷举了</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">maxArea</span><span class="params">(height []<span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="built_in">len</span> := <span class="built_in">len</span>(height)</span><br><span class="line">	result := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>; i++ &#123;</span><br><span class="line">		first := height[i]</span><br><span class="line">		<span class="keyword">for</span> j := i + <span class="number">1</span>; j &lt; <span class="built_in">len</span>; j++ &#123;</span><br><span class="line">			second := height[j]</span><br><span class="line">			h := min(first, second)</span><br><span class="line">			w := j - i</span><br><span class="line">			m := h * w</span><br><span class="line">			<span class="keyword">if</span> m &gt; result &#123;</span><br><span class="line">				result = m</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">min</span><span class="params">(a, b <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> a &lt; b &#123;</span><br><span class="line">		<span class="keyword">return</span> a</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> b</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="思路2"><a href="#思路2" class="headerlink" title="思路2"></a>思路2</h2><p>从两侧开始，这样 width 最大，选择一个 height 最大的就行了。然后依次遍历，谁小，就从哪边开始减小下标</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 2. 从两侧开始，这样 width 最大，选择一个 height 最大的就行了。然后依次遍历，谁小，就从哪边开始减小下标</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">maxArea</span><span class="params">(height []<span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	result := <span class="number">0</span></span><br><span class="line">	i := <span class="number">0</span></span><br><span class="line">	j := <span class="built_in">len</span>(height) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> ;i &lt; j; &#123;</span><br><span class="line">		left := height[i]</span><br><span class="line">		right := height[j]</span><br><span class="line"></span><br><span class="line">		<span class="keyword">var</span> m = <span class="number">0</span></span><br><span class="line">		<span class="keyword">if</span> left &lt;= right &#123;</span><br><span class="line">			m = left * (j - i)</span><br><span class="line">			i++</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			m = right * (j - i)</span><br><span class="line">			j--</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> m &gt; result &#123;</span><br><span class="line">			result = m</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>寻找两个有序数组的中位数</title>
     <url>/2019/11/16/leetcode/4/</url>
     <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定两个大小为 m 和 n 的 <em>有序</em> 数组 <code>nums1</code> 和 <code>nums2</code>。<br>请你找出这两个有序数组的中位数，并且要求算法的时间复杂度为 <code>O(log(m + n))</code>。  </p>
@@ -233,7 +266,7 @@
 <tr>
 <td>数组</td>
 <td>50</td>
-<td>2</td>
+<td>4</td>
 </tr>
 </tbody>
 </table>
@@ -260,6 +293,18 @@
 <td>困难</td>
 <td><a href="/2019/11/16/leetcode/4">寻找两个有序数组的中位数</a></td>
 <td><a href="https://leetcode-cn.com/problems/median-of-two-sorted-arrays/" target="_blank" rel="noopener">寻找两个有序数组的中位数</a></td>
+</tr>
+<tr>
+<td>数组</td>
+<td>中等</td>
+<td><a href="/2019/11/16/leetcode/11">盛最多水的容器</a></td>
+<td><a href="https://leetcode-cn.com/problems/container-with-most-water/" target="_blank" rel="noopener">盛最多水的容器</a></td>
+</tr>
+<tr>
+<td>数组</td>
+<td>中等</td>
+<td><a href="/2019/11/18/leetcode/15">三数之和</a></td>
+<td><a href="https://leetcode-cn.com/problems/3sum/" target="_blank" rel="noopener">三数之和</a></td>
 </tr>
 </tbody>
 </table>
