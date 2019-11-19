@@ -51,18 +51,18 @@
   };
 </script>
 
-  <meta name="description" content="开辟一个新的模块练习算法，准备用 go 语言来写。主要是为了熟悉 go 语言,还有算法，不至于每次看到算法题就完全没有思路。顺序的话，按照不同类型训练，先练习数组类的，目标先订 50 题     目标    类型 目标 完成     数组 50 5     汇总    类型 难度 博文 leetcode 地址     数组 简单 两数之和 两数之和   数组 困难 寻找两个有序数组的中位数 寻找两">
-<meta name="keywords" content="leetcode">
+  <meta name="description" content="问题给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和。假定每组输入只存在唯一答案。123例如，给定数组 nums = [-1，2，1，-4], 和 target = 1.与 target 最接近的三个数的和为 2. (-1 + 2 + 1 = 2). 提交思路1最简单的肯定还是暴力解法，时间">
+<meta name="keywords" content="leetcode,数组">
 <meta property="og:type" content="article">
-<meta property="og:title" content="leetcode 练习">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;10&#x2F;leetcode&#x2F;0&#x2F;index.html">
+<meta property="og:title" content="最接近的三数之和">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;19&#x2F;leetcode&#x2F;16&#x2F;index.html">
 <meta property="og:site_name" content="Askluolei">
-<meta property="og:description" content="开辟一个新的模块练习算法，准备用 go 语言来写。主要是为了熟悉 go 语言,还有算法，不至于每次看到算法题就完全没有思路。顺序的话，按照不同类型训练，先练习数组类的，目标先订 50 题     目标    类型 目标 完成     数组 50 5     汇总    类型 难度 博文 leetcode 地址     数组 简单 两数之和 两数之和   数组 困难 寻找两个有序数组的中位数 寻找两">
+<meta property="og:description" content="问题给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和。假定每组输入只存在唯一答案。123例如，给定数组 nums = [-1，2，1，-4], 和 target = 1.与 target 最接近的三个数的和为 2. (-1 + 2 + 1 = 2). 提交思路1最简单的肯定还是暴力解法，时间">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-11-19T15:37:53.470Z">
+<meta property="og:updated_time" content="2019-11-19T15:36:31.968Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2019/11/10/leetcode/0/">
+<link rel="canonical" href="http://yoursite.com/2019/11/19/leetcode/16/">
 
 
 <script id="page-configurations">
@@ -76,7 +76,7 @@
   };
 </script>
 
-  <title>leetcode 练习 | Askluolei</title>
+  <title>最接近的三数之和 | Askluolei</title>
   
 
 
@@ -214,7 +214,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/10/leetcode/0/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/leetcode/16/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -227,7 +227,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          leetcode 练习
+          最接近的三数之和
         </h1>
 
         <div class="post-meta">
@@ -236,16 +236,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2019-11-10 10:56:51" itemprop="dateCreated datePublished" datetime="2019-11-10T10:56:51+08:00">2019-11-10</time>
+              <time title="创建时间：2019-11-19 22:19:52 / 修改时间：23:36:31" itemprop="dateCreated datePublished" datetime="2019-11-19T22:19:52+08:00">2019-11-19</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-19 23:37:53" itemprop="dateModified" datetime="2019-11-19T23:37:53+08:00">2019-11-19</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -269,69 +263,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>开辟一个新的模块练习算法，准备用 <code>go</code> 语言来写。<br>主要是为了熟悉 <code>go</code> 语言,还有算法，不至于每次看到算法题就完全没有思路。<br>顺序的话，按照不同类型训练，先练习数组类的，目标先订 50 题    </p>
-<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><div class="table-container">
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>目标</th>
-<th>完成</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>数组</td>
-<td>50</td>
-<td>5</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h2 id="汇总"><a href="#汇总" class="headerlink" title="汇总"></a>汇总</h2><div class="table-container">
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>难度</th>
-<th>博文</th>
-<th>leetcode 地址</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>数组</td>
-<td>简单</td>
-<td><a href="/2019/11/10/leetcode/1">两数之和</a></td>
-<td><a href="https://leetcode-cn.com/problems/two-sum/" target="_blank" rel="noopener">两数之和</a></td>
-</tr>
-<tr>
-<td>数组</td>
-<td>困难</td>
-<td><a href="/2019/11/16/leetcode/4">寻找两个有序数组的中位数</a></td>
-<td><a href="https://leetcode-cn.com/problems/median-of-two-sorted-arrays/" target="_blank" rel="noopener">寻找两个有序数组的中位数</a></td>
-</tr>
-<tr>
-<td>数组</td>
-<td>中等</td>
-<td><a href="/2019/11/16/leetcode/11">盛最多水的容器</a></td>
-<td><a href="https://leetcode-cn.com/problems/container-with-most-water/" target="_blank" rel="noopener">盛最多水的容器</a></td>
-</tr>
-<tr>
-<td>数组</td>
-<td>中等</td>
-<td><a href="/2019/11/18/leetcode/15">三数之和</a></td>
-<td><a href="https://leetcode-cn.com/problems/3sum/" target="_blank" rel="noopener">三数之和</a></td>
-</tr>
-<tr>
-<td>数组</td>
-<td>中等</td>
-<td><a href="/2019/11/19/leetcode/16">最接近的三数之和</a></td>
-<td><a href="https://leetcode-cn.com/problems/3sum-closest/" target="_blank" rel="noopener">最接近的三数之和</a></td>
-</tr>
-</tbody>
-</table>
-</div>
+        <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个包括 <code>n</code> 个整数的数组 <code>nums</code> 和 一个目标值 <code>target</code>。找出 <code>nums</code> 中的三个整数，使得它们的和与 <code>target</code> 最接近。返回这三个数的和。假定每组输入只存在唯一答案。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">例如，给定数组 nums = [-1，2，1，-4], 和 target = 1.</span><br><span class="line"></span><br><span class="line">与 target 最接近的三个数的和为 2. (-1 + 2 + 1 = 2).</span><br></pre></td></tr></table></figure></p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><h3 id="思路1"><a href="#思路1" class="headerlink" title="思路1"></a>思路1</h3><p>最简单的肯定还是暴力解法，时间复杂度是 O(n <em> n </em> n)<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">threeSumClosest</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	minLen := math.MaxInt64</span><br><span class="line">	result := <span class="number">0</span></span><br><span class="line">	<span class="built_in">len</span> := <span class="built_in">len</span>(nums)</span><br><span class="line">	<span class="comment">// 暴力解法</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span> - <span class="number">2</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> j := i + <span class="number">1</span>; j &lt; <span class="built_in">len</span> - <span class="number">1</span>; j++ &#123;</span><br><span class="line">			<span class="keyword">for</span> k := j + <span class="number">1</span>; k &lt; <span class="built_in">len</span>; k++ &#123;</span><br><span class="line">				sum := nums[i] + nums[j] + nums[k]</span><br><span class="line">				abs := abs(sum, target)</span><br><span class="line">				<span class="keyword">if</span> abs == <span class="number">0</span> &#123;</span><br><span class="line">					<span class="keyword">return</span> sum</span><br><span class="line">				&#125; <span class="keyword">else</span> <span class="keyword">if</span> abs &lt; minLen &#123;</span><br><span class="line">					minLen = abs</span><br><span class="line">          result = sum</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">abs</span><span class="params">(a, b <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> a &gt; b &#123;</span><br><span class="line">		<span class="keyword">return</span> a - b</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> b - a</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="思路2"><a href="#思路2" class="headerlink" title="思路2"></a>思路2</h3><p>还是像之前的题目，一样，先排序 O(n<em>logn) ，然后固定前面一位，然后前后指针寻找 O(n </em> n) ,总共 O(n * n),当然，里面还有一些细节可以优化。<br>譬如说，类似二分之类的，目前还是一位一位寻找的<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">threeSumClosest</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	result := <span class="number">0</span></span><br><span class="line">	<span class="comment">// 先排序</span></span><br><span class="line">	sort.Ints(nums)</span><br><span class="line"></span><br><span class="line">	minLen := math.MaxInt64</span><br><span class="line">	<span class="built_in">len</span> := <span class="built_in">len</span>(nums)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span> - <span class="number">2</span>; i++ &#123;</span><br><span class="line">		first := i + <span class="number">1</span></span><br><span class="line">		last := <span class="built_in">len</span> - <span class="number">1</span></span><br><span class="line">		<span class="keyword">for</span> ; first &lt; last; &#123;</span><br><span class="line">			sum := nums[i] + nums[first] + nums[last]</span><br><span class="line">			<span class="keyword">if</span> sum &lt; target &#123;</span><br><span class="line">				abs := target - sum</span><br><span class="line">				<span class="keyword">if</span> abs &lt; minLen &#123;</span><br><span class="line">					minLen = abs</span><br><span class="line">					result = sum</span><br><span class="line">				&#125;</span><br><span class="line">				first++</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> sum &gt; target &#123;</span><br><span class="line">				abs := sum - target</span><br><span class="line">				<span class="keyword">if</span> abs &lt; minLen &#123;</span><br><span class="line">					minLen = abs</span><br><span class="line">					result = sum</span><br><span class="line">				&#125;</span><br><span class="line">				last--</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> sum</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
     </div>
 
@@ -342,23 +276,21 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/leetcode/" rel="tag"># leetcode</a>
+              <a href="/tags/%E6%95%B0%E7%BB%84/" rel="tag"># 数组</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
-                <a href="/2019/11/10/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/" rel="next" title="开发笔记">
-                  <i class="fa fa-chevron-left"></i> 开发笔记
+                <a href="/2019/11/18/leetcode/15/" rel="next" title="三数之和">
+                  <i class="fa fa-chevron-left"></i> 三数之和
                 </a>
             </div>
 
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-                <a href="/2019/11/10/leetcode/1/" rel="prev" title="两数之和">
-                  两数之和 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
       </footer>
@@ -398,7 +330,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目标"><span class="nav-number">1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#汇总"><span class="nav-number">2.</span> <span class="nav-text">汇总</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提交"><span class="nav-number">2.</span> <span class="nav-text">提交</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#思路1"><span class="nav-number">2.1.</span> <span class="nav-text">思路1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思路2"><span class="nav-number">2.2.</span> <span class="nav-text">思路2</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -591,7 +523,7 @@ window.addEventListener('pjax:success', () => {
       repo: 'askluolei.github.io',
       owner: 'Askluolei',
       admin: ['luo lei'],
-      id: 'c43b891ac9eb8d045870a837daf17ab6',
+      id: 'a3e1a2bb349575dae670d4a6941cc7e9',
         language: 'zh-CN',
       distractionFreeMode: 'true'
     });

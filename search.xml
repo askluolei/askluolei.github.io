@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>最接近的三数之和</title>
+    <url>/2019/11/19/leetcode/16/</url>
+    <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个包括 <code>n</code> 个整数的数组 <code>nums</code> 和 一个目标值 <code>target</code>。找出 <code>nums</code> 中的三个整数，使得它们的和与 <code>target</code> 最接近。返回这三个数的和。假定每组输入只存在唯一答案。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">例如，给定数组 nums = [-1，2，1，-4], 和 target = 1.</span><br><span class="line"></span><br><span class="line">与 target 最接近的三个数的和为 2. (-1 + 2 + 1 = 2).</span><br></pre></td></tr></table></figure></p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><h3 id="思路1"><a href="#思路1" class="headerlink" title="思路1"></a>思路1</h3><p>最简单的肯定还是暴力解法，时间复杂度是 O(n <em> n </em> n)<br><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">threeSumClosest</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	minLen := math.MaxInt64</span><br><span class="line">	result := <span class="number">0</span></span><br><span class="line">	<span class="built_in">len</span> := <span class="built_in">len</span>(nums)</span><br><span class="line">	<span class="comment">// 暴力解法</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span> - <span class="number">2</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> j := i + <span class="number">1</span>; j &lt; <span class="built_in">len</span> - <span class="number">1</span>; j++ &#123;</span><br><span class="line">			<span class="keyword">for</span> k := j + <span class="number">1</span>; k &lt; <span class="built_in">len</span>; k++ &#123;</span><br><span class="line">				sum := nums[i] + nums[j] + nums[k]</span><br><span class="line">				abs := abs(sum, target)</span><br><span class="line">				<span class="keyword">if</span> abs == <span class="number">0</span> &#123;</span><br><span class="line">					<span class="keyword">return</span> sum</span><br><span class="line">				&#125; <span class="keyword">else</span> <span class="keyword">if</span> abs &lt; minLen &#123;</span><br><span class="line">					minLen = abs</span><br><span class="line">          result = sum</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">abs</span><span class="params">(a, b <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> a &gt; b &#123;</span><br><span class="line">		<span class="keyword">return</span> a - b</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> b - a</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="思路2"><a href="#思路2" class="headerlink" title="思路2"></a>思路2</h3><p>还是像之前的题目，一样，先排序 O(n<em>logn) ，然后固定前面一位，然后前后指针寻找 O(n </em> n) ,总共 O(n * n),当然，里面还有一些细节可以优化。<br>譬如说，类似二分之类的，目前还是一位一位寻找的<br><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">threeSumClosest</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	result := <span class="number">0</span></span><br><span class="line">	<span class="comment">// 先排序</span></span><br><span class="line">	sort.Ints(nums)</span><br><span class="line"></span><br><span class="line">	minLen := math.MaxInt64</span><br><span class="line">	<span class="built_in">len</span> := <span class="built_in">len</span>(nums)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span> - <span class="number">2</span>; i++ &#123;</span><br><span class="line">		first := i + <span class="number">1</span></span><br><span class="line">		last := <span class="built_in">len</span> - <span class="number">1</span></span><br><span class="line">		<span class="keyword">for</span> ; first &lt; last; &#123;</span><br><span class="line">			sum := nums[i] + nums[first] + nums[last]</span><br><span class="line">			<span class="keyword">if</span> sum &lt; target &#123;</span><br><span class="line">				abs := target - sum</span><br><span class="line">				<span class="keyword">if</span> abs &lt; minLen &#123;</span><br><span class="line">					minLen = abs</span><br><span class="line">					result = sum</span><br><span class="line">				&#125;</span><br><span class="line">				first++</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> sum &gt; target &#123;</span><br><span class="line">				abs := sum - target</span><br><span class="line">				<span class="keyword">if</span> abs &lt; minLen &#123;</span><br><span class="line">					minLen = abs</span><br><span class="line">					result = sum</span><br><span class="line">				&#125;</span><br><span class="line">				last--</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> sum</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>三数之和</title>
     <url>/2019/11/18/leetcode/15/</url>
     <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个包含 <code>n</code> 个整数的数组 <code>nums</code>，判断 <code>nums</code> 中是否存在三个元素 <code>a，b，c</code> ，使得 <code>a + b + c = 0</code> ？找出所有满足条件且不重复的三元组。<br><em>注意：</em>答案中不可以包含重复的三元组。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">例如, 给定数组 nums = [-1, 0, 1, 2, -1, -4]，</span><br><span class="line"></span><br><span class="line">满足要求的三元组集合为：</span><br><span class="line">[</span><br><span class="line">  [-1, 0, 1],</span><br><span class="line">  [-1, -1, 2]</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
@@ -266,7 +281,7 @@
 <tr>
 <td>数组</td>
 <td>50</td>
-<td>4</td>
+<td>5</td>
 </tr>
 </tbody>
 </table>
@@ -305,6 +320,12 @@
 <td>中等</td>
 <td><a href="/2019/11/18/leetcode/15">三数之和</a></td>
 <td><a href="https://leetcode-cn.com/problems/3sum/" target="_blank" rel="noopener">三数之和</a></td>
+</tr>
+<tr>
+<td>数组</td>
+<td>中等</td>
+<td><a href="/2019/11/19/leetcode/16">最接近的三数之和</a></td>
+<td><a href="https://leetcode-cn.com/problems/3sum-closest/" target="_blank" rel="noopener">最接近的三数之和</a></td>
 </tr>
 </tbody>
 </table>

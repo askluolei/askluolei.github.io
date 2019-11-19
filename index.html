@@ -213,6 +213,78 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/leetcode/16/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/19/leetcode/16/" class="post-title-link" itemprop="url">最接近的三数之和</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-19 22:19:52 / 修改时间：23:36:31" itemprop="dateCreated datePublished" datetime="2019-11-19T22:19:52+08:00">2019-11-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/leetcode/" itemprop="url" rel="index">
+                    <span itemprop="name">leetcode</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个包括 <code>n</code> 个整数的数组 <code>nums</code> 和 一个目标值 <code>target</code>。找出 <code>nums</code> 中的三个整数，使得它们的和与 <code>target</code> 最接近。返回这三个数的和。假定每组输入只存在唯一答案。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">例如，给定数组 nums = [-1，2，1，-4], 和 target = 1.</span><br><span class="line"></span><br><span class="line">与 target 最接近的三个数的和为 2. (-1 + 2 + 1 = 2).</span><br></pre></td></tr></table></figure></p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><h3 id="思路1"><a href="#思路1" class="headerlink" title="思路1"></a>思路1</h3><p>最简单的肯定还是暴力解法，时间复杂度是 O(n <em> n </em> n)<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">threeSumClosest</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	minLen := math.MaxInt64</span><br><span class="line">	result := <span class="number">0</span></span><br><span class="line">	<span class="built_in">len</span> := <span class="built_in">len</span>(nums)</span><br><span class="line">	<span class="comment">// 暴力解法</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span> - <span class="number">2</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> j := i + <span class="number">1</span>; j &lt; <span class="built_in">len</span> - <span class="number">1</span>; j++ &#123;</span><br><span class="line">			<span class="keyword">for</span> k := j + <span class="number">1</span>; k &lt; <span class="built_in">len</span>; k++ &#123;</span><br><span class="line">				sum := nums[i] + nums[j] + nums[k]</span><br><span class="line">				abs := abs(sum, target)</span><br><span class="line">				<span class="keyword">if</span> abs == <span class="number">0</span> &#123;</span><br><span class="line">					<span class="keyword">return</span> sum</span><br><span class="line">				&#125; <span class="keyword">else</span> <span class="keyword">if</span> abs &lt; minLen &#123;</span><br><span class="line">					minLen = abs</span><br><span class="line">          result = sum</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">abs</span><span class="params">(a, b <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> a &gt; b &#123;</span><br><span class="line">		<span class="keyword">return</span> a - b</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> b - a</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="思路2"><a href="#思路2" class="headerlink" title="思路2"></a>思路2</h3><p>还是像之前的题目，一样，先排序 O(n<em>logn) ，然后固定前面一位，然后前后指针寻找 O(n </em> n) ,总共 O(n * n),当然，里面还有一些细节可以优化。<br>譬如说，类似二分之类的，目前还是一位一位寻找的<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">threeSumClosest</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	result := <span class="number">0</span></span><br><span class="line">	<span class="comment">// 先排序</span></span><br><span class="line">	sort.Ints(nums)</span><br><span class="line"></span><br><span class="line">	minLen := math.MaxInt64</span><br><span class="line">	<span class="built_in">len</span> := <span class="built_in">len</span>(nums)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span> - <span class="number">2</span>; i++ &#123;</span><br><span class="line">		first := i + <span class="number">1</span></span><br><span class="line">		last := <span class="built_in">len</span> - <span class="number">1</span></span><br><span class="line">		<span class="keyword">for</span> ; first &lt; last; &#123;</span><br><span class="line">			sum := nums[i] + nums[first] + nums[last]</span><br><span class="line">			<span class="keyword">if</span> sum &lt; target &#123;</span><br><span class="line">				abs := target - sum</span><br><span class="line">				<span class="keyword">if</span> abs &lt; minLen &#123;</span><br><span class="line">					minLen = abs</span><br><span class="line">					result = sum</span><br><span class="line">				&#125;</span><br><span class="line">				first++</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> sum &gt; target &#123;</span><br><span class="line">				abs := sum - target</span><br><span class="line">				<span class="keyword">if</span> abs &lt; minLen &#123;</span><br><span class="line">					minLen = abs</span><br><span class="line">					result = sum</span><br><span class="line">				&#125;</span><br><span class="line">				last--</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> sum</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/leetcode/15/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -894,7 +966,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-18 22:15:05" itemprop="dateModified" datetime="2019-11-18T22:15:05+08:00">2019-11-18</time>
+                <time title="修改时间：2019-11-19 23:37:53" itemprop="dateModified" datetime="2019-11-19T23:37:53+08:00">2019-11-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -933,7 +1005,7 @@
 <tr>
 <td>数组</td>
 <td>50</td>
-<td>4</td>
+<td>5</td>
 </tr>
 </tbody>
 </table>
@@ -972,6 +1044,12 @@
 <td>中等</td>
 <td><a href="/2019/11/18/leetcode/15">三数之和</a></td>
 <td><a href="https://leetcode-cn.com/problems/3sum/" target="_blank" rel="noopener">三数之和</a></td>
+</tr>
+<tr>
+<td>数组</td>
+<td>中等</td>
+<td><a href="/2019/11/19/leetcode/16">最接近的三数之和</a></td>
+<td><a href="https://leetcode-cn.com/problems/3sum-closest/" target="_blank" rel="noopener">最接近的三数之和</a></td>
 </tr>
 </tbody>
 </table>
@@ -1071,97 +1149,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/10/hexo-%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/10/hexo-%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">hexo 使用笔记</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2019-11-10 00:13:27 / 修改时间：10:49:32" itemprop="dateCreated datePublished" datetime="2019-11-10T00:13:27+08:00">2019-11-10</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>参考 <a href="https://www.cxyxiaowu.com/6407.html" target="_blank" rel="noopener">https://www.cxyxiaowu.com/6407.html</a><br>防止链接挂了，自己复制一份。在上面的基础上添加了图片的配置。   </p>
-<blockquote>
-<p>_config.yml<br>post_asset_folder: true</p>
-</blockquote>
-<p>然后使用 <code>hexo new &quot;page&quot;</code> 的时候会建一个同名文件夹，可以放本文章使用的静态资源。<br>使用方式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% asset_path slug %&#125;</span><br><span class="line">&#123;% asset_img slug [title] %&#125;</span><br><span class="line">&#123;% asset_link slug [title] %&#125;</span><br></pre></td></tr></table></figure></p>
-<p>使用图片的示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% asset_img example.jpg This is an example image %&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="复制内容"><a href="#复制内容" class="headerlink" title="复制内容"></a>复制内容</h2><p>使用 hexo 搭建的步骤，删去一些内容。留下关键步骤<br>node 环境之类的就不说了。</p>
-<h3 id="安装-Hexo-初始化项目"><a href="#安装-Hexo-初始化项目" class="headerlink" title="安装 Hexo 初始化项目"></a>安装 Hexo 初始化项目</h3><p><em>安装 hexo</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure></p>
-<p><em>初始化项目</em><br>也就是你的笔记保存的地方<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init &#123;name&#125;</span><br></pre></td></tr></table></figure></p>
-<p><em>生成网站</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo generate</span><br></pre></td></tr></table></figure><br>生成 <code>public</code> 目录，部署的时候是上传这个目录，本地的时候通常不用  </p>
-<p><em>预览</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo serve</span><br></pre></td></tr></table></figure></p>
-<p>然后去 <code>http://localhost:4000</code> 看自己写的东西</p>
-<p><em>部署</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo deploy</span><br></pre></td></tr></table></figure></p>
-<p>当然，前提是要配置好 <code>git</code> 地址<br>去了解 <code>github pages</code>,就是建一个 <code>{username}.github.io</code> 仓库<br>然后去 <code>_config.yml</code> 配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># Deployment</span><br><span class="line">## Docs: https://hexo.io/docs/deployment.html</span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: &#123;git repo ssh address&#125;</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure></p>
-<p>需要额外安装插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">最后部署执行</span><br></pre></td></tr></table></figure><br>hexo deploy<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">*配置站点信息*</span><br><span class="line">修改 `_config.yml` 里面的配置</span><br><span class="line">```yml</span><br><span class="line">title: Askluolei</span><br><span class="line">subtitle: &apos;个人的学习吐槽网站&apos;</span><br><span class="line">description: &apos;主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽&apos;</span><br><span class="line">keywords: &apos;java, js, vue, go, 读书, 笔记&apos;</span><br><span class="line">author: Luo lei</span><br><span class="line">language: zh-CN</span><br><span class="line">timezone: &apos;&apos;</span><br></pre></td></tr></table></figure></p>
-<h3 id="主题-Next"><a href="#主题-Next" class="headerlink" title="主题 Next"></a>主题 Next</h3><p>修改主题<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/theme-next/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure></p>
-<p>然后在 <code>_config.yml</code> 里面修改配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure></p>
-<p>然后可以在 <code>themes/next/_config.yml</code> 里面调整主题的相关配置了 </p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 调整布局</span></span><br><span class="line"><span class="attr">scheme:</span> <span class="string">Pisces</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 网站图标，图片放在 themes/next/source/images 目录，然后修改下面的配置</span></span><br><span class="line"><span class="attr">favicon:</span></span><br><span class="line">  <span class="attr">small:</span> <span class="string">/images/favicon-16x16.png</span></span><br><span class="line">  <span class="attr">medium:</span> <span class="string">/images/favicon-32x32.png</span></span><br><span class="line">  <span class="attr">apple_touch_icon:</span> <span class="string">/images/apple-touch-icon.png</span></span><br><span class="line">  <span class="attr">safari_pinned_tab:</span> <span class="string">/images/safari-pinned-tab.svg</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 头像 放在 themes/next/source/images/avatar.png 然后修改配置</span></span><br><span class="line"><span class="comment"># Sidebar Avatar</span></span><br><span class="line"><span class="attr">avatar:</span></span><br><span class="line">  <span class="comment"># In theme directory (source/images): /images/avatar.gif</span></span><br><span class="line">  <span class="comment"># In site directory (source/uploads): /uploads/avatar.gif</span></span><br><span class="line">  <span class="comment"># You can also use other linking images.</span></span><br><span class="line">  <span class="attr">url:</span> <span class="string">/images/avatar.png</span></span><br><span class="line">  <span class="comment"># If true, the avatar would be dispalyed in circle.</span></span><br><span class="line">  <span class="attr">rounded:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># If true, the avatar would be rotated with the cursor.</span></span><br><span class="line">  <span class="attr">rotated:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 代码块的展示，使用 mac 类型的</span></span><br><span class="line"><span class="attr">codeblock:</span></span><br><span class="line">  <span class="comment"># Code Highlight theme</span></span><br><span class="line">  <span class="comment"># Available values: normal | night | night eighties | night blue | night bright</span></span><br><span class="line">  <span class="comment"># See: https://github.com/chriskempson/tomorrow-theme</span></span><br><span class="line">  <span class="attr">highlight_theme:</span> <span class="string">night</span> <span class="string">bright</span></span><br><span class="line">  <span class="comment"># Add copy button on codeblock</span></span><br><span class="line">  <span class="attr">copy_button:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># Show text copy result.</span></span><br><span class="line">    <span class="attr">show_result:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># Available values: default | flat | mac</span></span><br><span class="line">    <span class="attr">style:</span> <span class="string">mac</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 回到顶端 ，开启配置</span></span><br><span class="line"><span class="attr">back2top:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># Back to top in sidebar.</span></span><br><span class="line">  <span class="attr">sidebar:</span> <span class="literal">false</span></span><br><span class="line">  <span class="comment"># Scroll percent label in b2t button.</span></span><br><span class="line">  <span class="attr">scrollpercent:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 阅读进度条配置</span></span><br><span class="line"><span class="attr">reading_progress:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># Available values: top | bottom</span></span><br><span class="line">  <span class="attr">position:</span> <span class="string">top</span></span><br><span class="line">  <span class="attr">color:</span> <span class="string">"#222"</span></span><br><span class="line">  <span class="attr">height:</span> <span class="string">2px</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 右上角加上 github 地址</span></span><br><span class="line"><span class="attr">github_banner:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">permalink:</span> <span class="string">https://github.com/askluolei</span></span><br><span class="line">  <span class="attr">title:</span> <span class="string">Follow</span> <span class="string">me</span> <span class="string">on</span> <span class="string">GitHub</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 评论插件，开启 gitalk</span></span><br><span class="line"><span class="attr">comments:</span></span><br><span class="line">  <span class="comment"># Available values: tabs | buttons</span></span><br><span class="line">  <span class="attr">style:</span> <span class="string">tabs</span></span><br><span class="line">  <span class="comment"># Choose a comment system to be displayed by default.</span></span><br><span class="line">  <span class="comment"># Available values: changyan | disqus | disqusjs | facebook_comments_plugin | gitalk | livere | valine | vkontakte</span></span><br><span class="line">  <span class="attr">active:</span> <span class="string">gitalk</span></span><br><span class="line"><span class="comment"># 然后补充相关配置</span></span><br><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">github_id:</span> <span class="string">NightTeam</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">nightteam.github.io</span> <span class="comment"># Repository name to store issues</span></span><br><span class="line">  <span class="attr">client_id:</span> <span class="string">&#123;your</span> <span class="string">client</span> <span class="string">id&#125;</span> <span class="comment"># GitHub Application Client ID</span></span><br><span class="line">  <span class="attr">client_secret:</span> <span class="string">&#123;your</span> <span class="string">client</span> <span class="string">secret&#125;</span> <span class="comment"># GitHub Application Client Secret</span></span><br><span class="line">  <span class="attr">admin_user:</span> <span class="string">germey</span> <span class="comment"># GitHub repo owner and collaborators, only these guys can initialize gitHub issues</span></span><br><span class="line">  <span class="attr">distraction_free_mode:</span> <span class="literal">true</span> <span class="comment"># Facebook-like distraction free mode</span></span><br><span class="line">  <span class="comment"># Gitalk's display language depends on user's browser or system environment</span></span><br><span class="line">  <span class="comment"># If you want everyone visiting your site to see a uniform language, you can set a force language value</span></span><br><span class="line">  <span class="comment"># Available values: en | es-ES | fr | ru | zh-CN | zh-TW</span></span><br><span class="line">  <span class="attr">language:</span> <span class="string">zh-CN</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 中英文之间有空格</span></span><br><span class="line"><span class="attr">pangu:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 数学公式 </span></span><br><span class="line"><span class="attr">math:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Default (true) will load mathjax / katex script on demand.</span></span><br><span class="line">  <span class="comment"># That is it only render those page which has `mathjax: true` in Front-matter.</span></span><br><span class="line">  <span class="comment"># If you set it to false, it will load mathjax / katex srcipt EVERY PAGE.</span></span><br><span class="line">  <span class="attr">per_page:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># hexo-renderer-pandoc (or hexo-renderer-kramed) required for full MathJax support.</span></span><br><span class="line">  <span class="attr">mathjax:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># See: https://mhchem.github.io/MathJax-mhchem/</span></span><br><span class="line">    <span class="attr">mhchem:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 局部刷新</span></span><br><span class="line"><span class="attr">pjax:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-<h3 id="其他插件"><a href="#其他插件" class="headerlink" title="其他插件"></a>其他插件</h3><p><em>rss</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-generator-feed --save</span><br></pre></td></tr></table></figure></p>
-<p><em>数学公式</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm un hexo-renderer-marked --save</span><br><span class="line">npm i hexo-renderer-kramed --save</span><br></pre></td></tr></table></figure></p>
-<p><em>pjax</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd themes/next</span><br><span class="line">git clone https://github.com/theme-next/theme-next-pjax source/lib/pjax</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1212,7 +1199,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-count">74</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
