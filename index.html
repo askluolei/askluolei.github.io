@@ -213,6 +213,79 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/20/leetcode/18/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/20/leetcode/18/" class="post-title-link" itemprop="url">四数之和</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-20 22:50:51 / 修改时间：23:50:39" itemprop="dateCreated datePublished" datetime="2019-11-20T22:50:51+08:00">2019-11-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/leetcode/" itemprop="url" rel="index">
+                    <span itemprop="name">leetcode</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个包含 <code>n</code> 个整数的数组 <code>nums</code> 和一个目标值 <code>target</code>，判断 nums 中是否存在四个元素 <code>a，b，c</code> 和 <code>d</code> ，使得 <code>a + b + c + d</code> 的值与 <code>target</code> 相等？找出所有满足条件且不重复的四元组。<br><em>注意：</em><br>答案中不可以包含重复的四元组。</p>
+<p>示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">给定数组 nums = [1, 0, -1, 0, -2, 2]，和 target = 0。</span><br><span class="line"></span><br><span class="line">满足要求的四元组集合为：</span><br><span class="line">[</span><br><span class="line">  [-1,  0, 0, 1],</span><br><span class="line">  [-2, -1, 1, 2],</span><br><span class="line">  [-2,  0, 0, 2]</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><h3 id="思路1"><a href="#思路1" class="headerlink" title="思路1"></a>思路1</h3><p>暴力解法<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fourSum</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> [][]<span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> result [][]<span class="keyword">int</span></span><br><span class="line">	<span class="built_in">len</span> := <span class="built_in">len</span>(nums)</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span> &lt; <span class="number">4</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> result</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 先排序</span></span><br><span class="line">	sort.Ints(nums);</span><br><span class="line">	<span class="comment">// 暴力解法</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span><span class="number">-3</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> ;i!=<span class="number">0</span> &amp;&amp; i &lt; <span class="built_in">len</span> - <span class="number">3</span> &amp;&amp; nums[i]==nums[i<span class="number">-1</span>];i++&#123;&#125;</span><br><span class="line">		<span class="keyword">for</span> j := i + <span class="number">1</span>; j &lt; <span class="built_in">len</span><span class="number">-2</span>;j++ &#123;</span><br><span class="line">			<span class="keyword">for</span> ;j!=i+<span class="number">1</span> &amp;&amp; j &lt; <span class="built_in">len</span><span class="number">-2</span>&amp;&amp;nums[j]==nums[j<span class="number">-1</span>];j++&#123;&#125;</span><br><span class="line">			<span class="keyword">for</span> k := j+<span class="number">1</span>; k &lt; <span class="built_in">len</span> <span class="number">-1</span>;k++ &#123;</span><br><span class="line">				<span class="keyword">for</span> ; k != j+<span class="number">1</span> &amp;&amp; k &lt; <span class="built_in">len</span> - <span class="number">1</span>&amp;&amp; nums[k]==nums[k<span class="number">-1</span>];k++&#123;&#125;</span><br><span class="line">				<span class="keyword">for</span> l := k+<span class="number">1</span>; l &lt; <span class="built_in">len</span>; l++ &#123;</span><br><span class="line">					sum := nums[i] + nums[j] + nums[k] + nums[l]</span><br><span class="line">					<span class="keyword">if</span> sum == target &#123;</span><br><span class="line">						result = <span class="built_in">append</span>(result, []<span class="keyword">int</span>&#123;nums[i], nums[j], nums[k], nums[l]&#125;)</span><br><span class="line">						<span class="keyword">break</span></span><br><span class="line">					&#125; <span class="keyword">else</span> <span class="keyword">if</span> sum &gt; target&#123;</span><br><span class="line">						<span class="keyword">break</span></span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="思路二"><a href="#思路二" class="headerlink" title="思路二"></a>思路二</h3><p>基于上面的，结合 <code>a + b = target</code> 的双指针思路<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fourSum</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> [][]<span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> result [][]<span class="keyword">int</span></span><br><span class="line">	<span class="built_in">len</span> := <span class="built_in">len</span>(nums)</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span> &lt; <span class="number">4</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> result</span><br><span class="line">	&#125;</span><br><span class="line">	sort.Ints(nums)</span><br><span class="line">	<span class="comment">// 暴力解法扩展,内部使用 a + b = target 的双向指针解法</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span><span class="number">-3</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> ; i != <span class="number">0</span> &amp;&amp; i &lt; <span class="built_in">len</span><span class="number">-3</span> &amp;&amp; nums[i] == nums[i<span class="number">-1</span>]; i++ &#123;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> j := i + <span class="number">1</span>; j &lt; <span class="built_in">len</span><span class="number">-2</span>; j++ &#123;</span><br><span class="line">			<span class="keyword">for</span> ; j != i+<span class="number">1</span> &amp;&amp; j &lt; <span class="built_in">len</span><span class="number">-2</span> &amp;&amp; nums[j] == nums[j<span class="number">-1</span>]; j++ &#123;</span><br><span class="line">			&#125;</span><br><span class="line">			firstIndex := j + <span class="number">1</span></span><br><span class="line">			lastIndex := <span class="built_in">len</span> - <span class="number">1</span></span><br><span class="line">			expect := target - nums[i] - nums[j]</span><br><span class="line">			<span class="keyword">for</span> firstIndex &lt; lastIndex &#123;</span><br><span class="line">				first := nums[firstIndex]</span><br><span class="line">				last := nums[lastIndex]</span><br><span class="line">				sum := first + last</span><br><span class="line">				<span class="keyword">if</span> sum &gt; expect &#123;</span><br><span class="line">					lastIndex--</span><br><span class="line">					<span class="keyword">for</span> ; firstIndex &lt; lastIndex &amp;&amp; nums[lastIndex] == nums[lastIndex+<span class="number">1</span>]; lastIndex-- &#123;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125; <span class="keyword">else</span> <span class="keyword">if</span> sum &lt; expect &#123;</span><br><span class="line">					firstIndex++</span><br><span class="line">					<span class="keyword">for</span> ; firstIndex &lt; lastIndex &amp;&amp; nums[firstIndex] == nums[firstIndex<span class="number">-1</span>]; firstIndex++ &#123;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">					result = <span class="built_in">append</span>(result, []<span class="keyword">int</span>&#123;nums[i], nums[j], first, last&#125;)</span><br><span class="line">					lastIndex--</span><br><span class="line">					<span class="keyword">for</span> ; firstIndex &lt; lastIndex &amp;&amp; nums[lastIndex] == nums[lastIndex+<span class="number">1</span>]; lastIndex-- &#123;</span><br><span class="line">					&#125;</span><br><span class="line">					firstIndex++</span><br><span class="line">					<span class="keyword">for</span> ; firstIndex &lt; lastIndex &amp;&amp; nums[firstIndex] == nums[firstIndex<span class="number">-1</span>]; firstIndex++ &#123;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/leetcode/16/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -966,7 +1039,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-19 23:37:53" itemprop="dateModified" datetime="2019-11-19T23:37:53+08:00">2019-11-19</time>
+                <time title="修改时间：2019-11-20 23:51:33" itemprop="dateModified" datetime="2019-11-20T23:51:33+08:00">2019-11-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1005,7 +1078,7 @@
 <tr>
 <td>数组</td>
 <td>50</td>
-<td>5</td>
+<td>6</td>
 </tr>
 </tbody>
 </table>
@@ -1051,89 +1124,15 @@
 <td><a href="/2019/11/19/leetcode/16">最接近的三数之和</a></td>
 <td><a href="https://leetcode-cn.com/problems/3sum-closest/" target="_blank" rel="noopener">最接近的三数之和</a></td>
 </tr>
+<tr>
+<td>数组</td>
+<td>中等</td>
+<td><a href="/2019/11/20/leetcode/18">四数之和</a></td>
+<td><a href="https://leetcode-cn.com/problems/4sum/" target="_blank" rel="noopener">四数之和</a></td>
+</tr>
 </tbody>
 </table>
 </div>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/10/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/10/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">开发笔记</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2019-11-10 10:17:07 / 修改时间：10:34:57" itemprop="dateCreated datePublished" datetime="2019-11-10T10:17:07+08:00">2019-11-10</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">技术笔记</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这里记录一下之前遇到的开发上的问题  </p>
-<h2 id="JPA-的时区问题"><a href="#JPA-的时区问题" class="headerlink" title="JPA 的时区问题"></a>JPA 的时区问题</h2><p>表现为表中的时间字段，在数据库中存储的是 0 时区的（比北京时间少了8小时），查询出来展示没有问题。<br><code>jdbcurl</code> 已经加上了 <code>serverTimezone=GMT%2B8</code>    </p>
-<p>最后定位在配置<br><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">spring.jpa.properties.hibernate.jdbc.time_zone</span>=<span class="string">UTC</span></span><br></pre></td></tr></table></figure><br>这个配置，会导致，插入数据库的时候，将时间转换为 0 时区</p>
-<h2 id="gson-的泛型处理"><a href="#gson-的泛型处理" class="headerlink" title="gson 的泛型处理"></a>gson 的泛型处理</h2><p>在提交安全测试的时候，被检测到 <code>fastjson</code> 的安全漏洞，之前其实已经暴漏过了，因此，已经调整到版本 <code>1.2.60</code> ，但是不知道为啥又检测到了。<br>当前到最新版本为 <code>1.2.62</code> 。不过，我们只是在打印日志，或者外部对接到时候用到了 <code>fastjson</code>，只是当作一个 <code>jsonutil</code> 来用，<br>因此，为了防止以后又检测出安全漏洞，使用 <code>gson</code> 代替。<br>这里记录一下 <code>gson</code> 的简单用法。主要是泛型相关的。      </p>
-<p><em>实例话</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Gson();</span><br><span class="line"><span class="keyword">new</span> GsonBuilder().setDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>).create();</span><br></pre></td></tr></table></figure></p>
-<p><em>序列化</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gson.toJson(request);</span><br></pre></td></tr></table></figure></p>
-<p><em>反序列化</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 基本用法  如果暂时不知道内部的具体类型，可以使用 JsonObject</span></span><br><span class="line">fromJson(String json, Class&lt;T&gt; classOfT);</span><br><span class="line"><span class="comment">// 带有泛型的用法 如 List&lt;T&gt;   JsonObject 可以替换为自己的类型</span></span><br><span class="line"><span class="comment">// 这个应该是新版本的，如果在 百度上 搜索，大部分好像是 new TypeToken 的示例</span></span><br><span class="line">gson.fromJson(resp, TypeToken.getParameterized(ArrayList<span class="class">.<span class="keyword">class</span>, <span class="title">JsonObject</span>.<span class="title">class</span>).<span class="title">getType</span>())</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="spring-RestTemplate-日志拦截"><a href="#spring-RestTemplate-日志拦截" class="headerlink" title="spring RestTemplate 日志拦截"></a>spring RestTemplate 日志拦截</h2><p>其实可以通过调整日志等级来展示 <code>RestTemplate</code> 的日志,但是我进源码稍微看了一下，只发现打印了请求日志，没有看到响应日志<br>请求日志的打印，也不是我们响应的信息，因此，就加拦截器自己打印日志了。<br>下面的代码，也是参考其他的博文。不过具体是谁的。忘记了。  </p>
-<p><em>拦截器</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.HttpRequest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.client.ClientHttpRequestExecution;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.client.ClientHttpRequestInterceptor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.client.ClientHttpResponse;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * description:</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: luolei</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span>: 2019/10/24 14:27</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoggingRequestInterceptor</span> <span class="keyword">implements</span> <span class="title">ClientHttpRequestInterceptor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">static</span> Logger log = LoggerFactory.getLogger(LoggingRequestInterceptor<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ClientHttpResponse <span class="title">intercept</span><span class="params">(HttpRequest request, <span class="keyword">byte</span>[] body, ClientHttpRequestExecution execution)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        traceRequest(request, body);</span><br><span class="line">        ClientHttpResponse response = execution.execute(request, body);</span><br><span class="line">        traceResponse(response);</span><br><span class="line">        <span class="keyword">return</span> response;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">traceRequest</span><span class="params">(HttpRequest request, <span class="keyword">byte</span>[] body)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        log.debug(<span class="string">"===========================request begin================================================"</span>);</span><br><span class="line">        log.debug(<span class="string">"URI         : &#123;&#125;"</span>, request.getURI());</span><br><span class="line">        log.debug(<span class="string">"Method      : &#123;&#125;"</span>, request.getMethod());</span><br><span class="line">        log.debug(<span class="string">"Headers     : &#123;&#125;"</span>, request.getHeaders() );</span><br><span class="line">        log.debug(<span class="string">"Request body: &#123;&#125;"</span>, <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>));</span><br><span class="line">        log.debug(<span class="string">"==========================request end================================================"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">traceResponse</span><span class="params">(ClientHttpResponse response)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        StringBuilder inputStringBuilder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        BufferedReader bufferedReader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(response.getBody(), <span class="string">"UTF-8"</span>));</span><br><span class="line">        String line = bufferedReader.readLine();</span><br><span class="line">        <span class="keyword">while</span> (line != <span class="keyword">null</span>) &#123;</span><br><span class="line">            inputStringBuilder.append(line);</span><br><span class="line">            inputStringBuilder.append(<span class="string">'\n'</span>);</span><br><span class="line">            line = bufferedReader.readLine();</span><br><span class="line">        &#125;</span><br><span class="line">        log.debug(<span class="string">"============================response begin=========================================="</span>);</span><br><span class="line">        log.debug(<span class="string">"Status code  : &#123;&#125;"</span>, response.getStatusCode());</span><br><span class="line">        log.debug(<span class="string">"Status text  : &#123;&#125;"</span>, response.getStatusText());</span><br><span class="line">        log.debug(<span class="string">"Headers      : &#123;&#125;"</span>, response.getHeaders());</span><br><span class="line">        log.debug(<span class="string">"Response body: &#123;&#125;"</span>, inputStringBuilder.toString());</span><br><span class="line">        log.debug(<span class="string">"=======================response end================================================="</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><em>构造</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// BufferingClientHttpRequestFactory 使用这个 requestFactory 是为了允许重复读取</span></span><br><span class="line"><span class="keyword">this</span>.restTemplate = builder.requestFactory(() -&gt; <span class="keyword">new</span> BufferingClientHttpRequestFactory(<span class="keyword">new</span> SimpleClientHttpRequestFactory()))</span><br><span class="line">                .interceptors(<span class="keyword">new</span> LoggingRequestInterceptor())</span><br><span class="line">                .rootUri(properties.getUrl())</span><br><span class="line">                .build();</span><br></pre></td></tr></table></figure></p>
-<p>然后修改日志等级就可以了。</p>
 
       
     </div>
@@ -1199,7 +1198,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-count">75</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

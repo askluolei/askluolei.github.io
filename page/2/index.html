@@ -213,6 +213,86 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/10/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/10/%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">开发笔记</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-10 10:17:07 / 修改时间：10:34:57" itemprop="dateCreated datePublished" datetime="2019-11-10T10:17:07+08:00">2019-11-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">技术笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这里记录一下之前遇到的开发上的问题  </p>
+<h2 id="JPA-的时区问题"><a href="#JPA-的时区问题" class="headerlink" title="JPA 的时区问题"></a>JPA 的时区问题</h2><p>表现为表中的时间字段，在数据库中存储的是 0 时区的（比北京时间少了8小时），查询出来展示没有问题。<br><code>jdbcurl</code> 已经加上了 <code>serverTimezone=GMT%2B8</code>    </p>
+<p>最后定位在配置<br><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">spring.jpa.properties.hibernate.jdbc.time_zone</span>=<span class="string">UTC</span></span><br></pre></td></tr></table></figure><br>这个配置，会导致，插入数据库的时候，将时间转换为 0 时区</p>
+<h2 id="gson-的泛型处理"><a href="#gson-的泛型处理" class="headerlink" title="gson 的泛型处理"></a>gson 的泛型处理</h2><p>在提交安全测试的时候，被检测到 <code>fastjson</code> 的安全漏洞，之前其实已经暴漏过了，因此，已经调整到版本 <code>1.2.60</code> ，但是不知道为啥又检测到了。<br>当前到最新版本为 <code>1.2.62</code> 。不过，我们只是在打印日志，或者外部对接到时候用到了 <code>fastjson</code>，只是当作一个 <code>jsonutil</code> 来用，<br>因此，为了防止以后又检测出安全漏洞，使用 <code>gson</code> 代替。<br>这里记录一下 <code>gson</code> 的简单用法。主要是泛型相关的。      </p>
+<p><em>实例话</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Gson();</span><br><span class="line"><span class="keyword">new</span> GsonBuilder().setDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>).create();</span><br></pre></td></tr></table></figure></p>
+<p><em>序列化</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gson.toJson(request);</span><br></pre></td></tr></table></figure></p>
+<p><em>反序列化</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 基本用法  如果暂时不知道内部的具体类型，可以使用 JsonObject</span></span><br><span class="line">fromJson(String json, Class&lt;T&gt; classOfT);</span><br><span class="line"><span class="comment">// 带有泛型的用法 如 List&lt;T&gt;   JsonObject 可以替换为自己的类型</span></span><br><span class="line"><span class="comment">// 这个应该是新版本的，如果在 百度上 搜索，大部分好像是 new TypeToken 的示例</span></span><br><span class="line">gson.fromJson(resp, TypeToken.getParameterized(ArrayList<span class="class">.<span class="keyword">class</span>, <span class="title">JsonObject</span>.<span class="title">class</span>).<span class="title">getType</span>())</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="spring-RestTemplate-日志拦截"><a href="#spring-RestTemplate-日志拦截" class="headerlink" title="spring RestTemplate 日志拦截"></a>spring RestTemplate 日志拦截</h2><p>其实可以通过调整日志等级来展示 <code>RestTemplate</code> 的日志,但是我进源码稍微看了一下，只发现打印了请求日志，没有看到响应日志<br>请求日志的打印，也不是我们响应的信息，因此，就加拦截器自己打印日志了。<br>下面的代码，也是参考其他的博文。不过具体是谁的。忘记了。  </p>
+<p><em>拦截器</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.HttpRequest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.client.ClientHttpRequestExecution;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.client.ClientHttpRequestInterceptor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.client.ClientHttpResponse;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * description:</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: luolei</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span>: 2019/10/24 14:27</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoggingRequestInterceptor</span> <span class="keyword">implements</span> <span class="title">ClientHttpRequestInterceptor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">static</span> Logger log = LoggerFactory.getLogger(LoggingRequestInterceptor<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ClientHttpResponse <span class="title">intercept</span><span class="params">(HttpRequest request, <span class="keyword">byte</span>[] body, ClientHttpRequestExecution execution)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        traceRequest(request, body);</span><br><span class="line">        ClientHttpResponse response = execution.execute(request, body);</span><br><span class="line">        traceResponse(response);</span><br><span class="line">        <span class="keyword">return</span> response;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">traceRequest</span><span class="params">(HttpRequest request, <span class="keyword">byte</span>[] body)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        log.debug(<span class="string">"===========================request begin================================================"</span>);</span><br><span class="line">        log.debug(<span class="string">"URI         : &#123;&#125;"</span>, request.getURI());</span><br><span class="line">        log.debug(<span class="string">"Method      : &#123;&#125;"</span>, request.getMethod());</span><br><span class="line">        log.debug(<span class="string">"Headers     : &#123;&#125;"</span>, request.getHeaders() );</span><br><span class="line">        log.debug(<span class="string">"Request body: &#123;&#125;"</span>, <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>));</span><br><span class="line">        log.debug(<span class="string">"==========================request end================================================"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">traceResponse</span><span class="params">(ClientHttpResponse response)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        StringBuilder inputStringBuilder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        BufferedReader bufferedReader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(response.getBody(), <span class="string">"UTF-8"</span>));</span><br><span class="line">        String line = bufferedReader.readLine();</span><br><span class="line">        <span class="keyword">while</span> (line != <span class="keyword">null</span>) &#123;</span><br><span class="line">            inputStringBuilder.append(line);</span><br><span class="line">            inputStringBuilder.append(<span class="string">'\n'</span>);</span><br><span class="line">            line = bufferedReader.readLine();</span><br><span class="line">        &#125;</span><br><span class="line">        log.debug(<span class="string">"============================response begin=========================================="</span>);</span><br><span class="line">        log.debug(<span class="string">"Status code  : &#123;&#125;"</span>, response.getStatusCode());</span><br><span class="line">        log.debug(<span class="string">"Status text  : &#123;&#125;"</span>, response.getStatusText());</span><br><span class="line">        log.debug(<span class="string">"Headers      : &#123;&#125;"</span>, response.getHeaders());</span><br><span class="line">        log.debug(<span class="string">"Response body: &#123;&#125;"</span>, inputStringBuilder.toString());</span><br><span class="line">        log.debug(<span class="string">"=======================response end================================================="</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><em>构造</em><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// BufferingClientHttpRequestFactory 使用这个 requestFactory 是为了允许重复读取</span></span><br><span class="line"><span class="keyword">this</span>.restTemplate = builder.requestFactory(() -&gt; <span class="keyword">new</span> BufferingClientHttpRequestFactory(<span class="keyword">new</span> SimpleClientHttpRequestFactory()))</span><br><span class="line">                .interceptors(<span class="keyword">new</span> LoggingRequestInterceptor())</span><br><span class="line">                .rootUri(properties.getUrl())</span><br><span class="line">                .build();</span><br></pre></td></tr></table></figure></p>
+<p>然后修改日志等级就可以了。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/10/hexo-%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1352,130 +1432,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/27/spring-%E6%BA%90%E7%A0%81%E5%86%8D%E5%88%86%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/27/spring-%E6%BA%90%E7%A0%81%E5%86%8D%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">spring 源码再分析</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2019-07-27 12:32:26 / 修改时间：12:34:12" itemprop="dateCreated datePublished" datetime="2019-07-27T12:32:26+08:00">2019-07-27</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" itemprop="url" rel="index">
-                    <span itemprop="name">源码阅读</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <img src="/2019/07/27/spring-%E6%BA%90%E7%A0%81%E5%86%8D%E5%88%86%E6%9E%90/spring%E5%88%9D%E5%A7%8B%E5%8C%96-%E5%8D%95%E4%BE%8B%E5%AE%9E%E4%BE%8B%E5%8C%96%E8%BF%87%E7%A8%8B.svg" class="" title="This is an example image">
-<p>ConfigurationClassPostProcessor        BeanDefinitionRegistryPostProcessor<br>AutowiredAnnotationBeanPostProcessor            InstantiationAwareBeanPostProcessorAdapter<br>CommonAnnotationBeanPostProcessor             InstantiationAwareBeanPostProcessor</p>
-<p>EventListenerMethodProcessor        SmartInitializingSingleton<br>DefaultEventListenerFactory                EventListenerFactory<br>ApplicationContextAwareProcessor        BeanPostProcessor</p>
-<p>ApplicationListenerDetector        BeanPostProcessor</p>
-<p>BeanPostProcessorChecker</p>
-<ol>
-<li>prepareRefresh<br> 记录启动时间</li>
-<li>prepareBeanFactory<br> 忽略和设置框架依赖注入</li>
-<li>postProcessBeanFactory<br> 扩展方法，</li>
-<li><p>invokeBeanFactoryPostProcessors<br> 调用 BeanFactoryPostProcessor  BeanDefinitionRegistryPostProcessor 扩展</p>
-<ol>
-<li>直接挂在 context 上的 BeanDefinitionRegistryPostProcessor   -&gt; postProcessBeanDefinitionRegistry</li>
-<li>beanFactory 里面的  BeanDefinitionRegistryPostProcessor ,PriorityOrdered -&gt;  postProcessBeanDefinitionRegistry</li>
-<li>beanFactory 里面的  BeanDefinitionRegistryPostProcessor ,Ordered -&gt;  postProcessBeanDefinitionRegistry</li>
-<li>beanFactory 里面的  BeanDefinitionRegistryPostProcessor -&gt;  postProcessBeanDefinitionRegistry</li>
-<li>上面执行过的 继续执行 BeanFactoryPostProcessor —&gt; postProcessBeanFactory</li>
-<li>直接挂在 context 上的 BeanFactoryPostProcessor —&gt; postProcessBeanFactory</li>
-<li>beanFactory 里面的 BeanFactoryPostProcessor , PriorityOrdered  -&gt;  postProcessBeanFactory</li>
-<li>beanFactory 里面的 BeanFactoryPostProcessor , Ordered -&gt;  postProcessBeanFactory</li>
-<li>beanFactory 里面的 BeanFactoryPostProcessor  -&gt;  postProcessBeanFactory<br>这里核心的是 ConfigurationClassPostProcessor</li>
-</ol>
-</li>
-<li><p>registerBeanPostProcessors<br> 添加 BeanPostProcessor<br> beanFactory 自身带的<br> 添加 BeanPostProcessorChecker<br> 容器里面的<br> BeanPostProcessor - PriorityOrdered<br> BeanPostProcessor - Ordered<br> BeanPostProcessor -<br> 上面三个，按照顺序添加到自身带的后面<br> BeanPostProcessor - MergedBeanDefinitionPostProcessor - PriorityOrdered<br> BeanPostProcessor - MergedBeanDefinitionPostProcessor - Ordered<br> BeanPostProcessor - MergedBeanDefinitionPostProcessor<br> 再添加一次 MergedBeanDefinitionPostProcessor 类型的，按照上面的顺序<br> 最后添加 ApplicationListenerDetector</p>
-</li>
-<li>initMessageSource<br> 这个是国际化的地方<br> DelegatingMessageSource</li>
-<li>initApplicationEventMulticaster<br> 事件<br> SimpleApplicationEventMulticaster</li>
-<li>onRefresh<br>空的，扩展接口</li>
-<li>registerListeners<br>添加 ApplicationListener<br>先 beanFactory 上挂的，然后 beanFactory 里面的<br>然后将这之前的事件发布了</li>
-<li>finishBeanFactoryInitialization<br>特殊处理 LoadTimeWeaverAware 先进行初始化 （getBean）<br>冻结 beanDefinition ,不再改变<br>实例化非延时加载的单例</li>
-<li>finishRefresh<br>结束</li>
-</ol>
-<p>实例化非延时加载的单例</p>
-<p>spring 实例化 bean 其实就是调用 getBean<br>内部实现是 doGetBean<br>先看 普通的 bean  后面再看 factoryBean</p>
-<ol>
-<li>就是去手动注册的 bean 里面检查是否存在，如果存在，直接返回了  一般只有部分 spring 内部的 bean 是手动注册的</li>
-<li>在创建 bean 之前，用 InstantiationAwareBeanPostProcessor -&gt; postProcessBeforeInstantiation 处理<br> 这里参数是 class 和 beanName ，如果返回非 null ，那么就使用这里返回的 bean 然后<pre><code> BeanPostProcessor -&gt; postProcessAfterInitialization 处理生成的 bean
-</code></pre></li>
-<li>如果没被上面的扩展接口处理，那么进入标准的创建流程</li>
-<li>如果提供了 bean 的工厂类，那么使用工厂类创建 （可以是 Supplier 或者 factoryMethod）</li>
-<li>核心创建方法两个 autowireConstructor （有构造依赖的构建） 和 instantiateBean （标准创建）</li>
-<li>创建完成后 调用扩展 MergedBeanDefinitionPostProcessor -&gt; postProcessMergedBeanDefinition  这里是修改 BeanDefinetion 的地方</li>
-<li>populateBean  处理扩展接口 InstantiationAwareBeanPostProcessor -&gt; postProcessAfterInstantiation   返回值决定是否继续处理 propertyValue<br> 后面继续处理扩展接口  InstantiationAwareBeanPostProcessor -&gt; postProcessProperties  postProcessPropertyValues</li>
-</ol>
-<p>BeanPostProcessor -&gt; postProcessBeforeInitialization  </p>
-<p>afterPropertiesSet  initMethod<br>BeanPostProcessor -&gt; postProcessAfterInitialization<br>注册 destoryMethod</p>
-<p>几个核心的 BeanPostProcessor<br>ApplicationContextAwareProcessor<br>ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor<br>PostProcessorRegistrationDelegate$BeanPostProcessorChecker<br>CommonAnnotationBeanPostProcessor<br>AutowiredAnnotationBeanPostProcessor<br>ApplicationListenerDetector</p>
-<ol>
-<li>ApplicationContextAwareProcessor  实现  BeanPostProcessor<br>作用：<br>在 init 方法之前，调用 bean 的 Aware 接口<br>EnvironmentAware<br>EmbeddedValueResolverAware<br>ResourceLoaderAware<br>ApplicationEventPublisherAware<br>MessageSourceAware<br>ApplicationContextAware</li>
-<li>ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor 实现 InstantiationAwareBeanPostProcessor<br>作用:<br>在依赖注入前，设置 BeanFactory 接口  EnhancedConfiguration<br>在 init 方法前 调用<br>ImportAware</li>
-<li>PostProcessorRegistrationDelegate$BeanPostProcessorChecker<br>这个扩展是用来检测 bean 是否经过了所有 BeanPostProcess 的处理 ，如果没有，会有 info 日志<br>因为在实例化 bean 之前，首先处理的是 BeanPostProcessor 实例，按照顺序，是内建 -&gt; PriorityOrdered -&gt; Ordered -&gt; 非排序的<br>如果直接存在依赖注入的问题，那么，会有一个问题，在 BeanPostProcessor 里面依赖了其他普通的 bean，那么会先触发普通 bean 的实例化，但是没法享受 BeanPostProcessor 的处理了<br>要知道 无论是 ioc 还是 aop 都是使用 BeanPostProcessor 扩展的</li>
-<li>CommonAnnotationBeanPostProcessor 实现 InstantiationAwareBeanPostProcessor MergedBeanDefinitionPostProcessor DestructionAwareBeanPostProcessor<br>这里处理的是 init 和 destroy 和 JSR-250 注解依赖注入的地方<br>这里的注解属于标准注解 javax.annotation.PostConstruct javax.annotation.PreDestroy  javax.annotation.Resource 等</li>
-<li>AutowiredAnnotationBeanPostProcessor 实现 InstantiationAwareBeanPostProcessor  MergedBeanDefinitionPostProcessor<br>这里是处理内置注解 @Autowired   @Value  javax.inject.Inject  的注入</li>
-<li>ApplicationListenerDetector<br>这里是处理 ApplicationListener 的地方，单例的 ApplicationListener 实例注册，非单例，打印警告信息</li>
-</ol>
-<p>ConfigurationClassPostProcessor 这个是核心类，还要仔细看看</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1526,7 +1482,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-count">75</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
