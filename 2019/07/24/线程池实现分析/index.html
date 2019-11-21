@@ -52,7 +52,7 @@
 </script>
 
   <meta name="description" content="线程池，主要是用来重复使用线程，省去每次任务都去创建线程这个开销。这样一说，最简单的实现就是 run 方法了吗一个死循环，然后从阻塞队列里面获取任务执行。其实大体思路是这样，我们看一下 JDK 线程池的具体实现。知道了他是怎样实现的，我们就知道了他的不足，以及如何扩展。   最简单的创建线程池的方法就是 Executors.new** 方法，Executors 是一个线程池相关的工具类，我们进到里">
-<meta name="keywords" content="java,jdk,源码,线程池">
+<meta name="keywords" content="线程池,java,jdk,源码">
 <meta property="og:type" content="article">
 <meta property="og:title" content="线程池实现分析">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;07&#x2F;24&#x2F;%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90&#x2F;index.html">
@@ -309,10 +309,10 @@
 
       <footer class="post-footer">
           <div class="post-tags">
+              <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag"># 线程池</a>
               <a href="/tags/java/" rel="tag"># java</a>
               <a href="/tags/jdk/" rel="tag"># jdk</a>
               <a href="/tags/%E6%BA%90%E7%A0%81/" rel="tag"># 源码</a>
-              <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag"># 线程池</a>
           </div>
 
         
@@ -385,7 +385,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-count">76</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
