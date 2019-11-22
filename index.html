@@ -213,6 +213,105 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/22/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/22/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">线程池常见问题记录</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-22 12:03:26" itemprop="dateCreated datePublished" datetime="2019-11-22T12:03:26+08:00">2019-11-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">技术笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>记录一些常见的关于线程池的问题，参考其他看过的资料，总结为自己的答案</p>
+<h2 id="为什么不推荐使用-Executors-创建线程池"><a href="#为什么不推荐使用-Executors-创建线程池" class="headerlink" title="为什么不推荐使用 Executors 创建线程池"></a>为什么不推荐使用 Executors 创建线程池</h2><p><code>Executors</code> 内部使用的是 <code>ThreadPoolExecutor</code>，如果转为直接使用 <code>ThreadPoolExecutor</code>, 那么需要使用者了解内部的原理，至少知道几个参数是干嘛的。如果使用 <code>Executors</code> 创建，可能不太清楚内部的规则，而导致资源耗尽的异常。</p>
+<h2 id="线程池的参数有哪些"><a href="#线程池的参数有哪些" class="headerlink" title="线程池的参数有哪些"></a>线程池的参数有哪些</h2><p>这里，其实就是问的 <code>ThreadPoolExecutor</code> 构造需要哪些参数，当然，<code>ThreadPoolExecutor</code> 内部也有几个非构造传入的参数，其中重点参数有</p>
+<ol>
+<li>corePoolSize 核心线程数</li>
+<li>maximumPoolSize 最大线程数</li>
+<li>keepAliveTime 超过核心线程数，最大空闲存活时间</li>
+<li>unit 上面的单位</li>
+<li>workQueue 工作队列</li>
+<li>threadFactory 线程工程，这里注意修改线程名和是否后台线程</li>
+<li>handler  拒绝策略 <code>RejectedExecutionHandler</code> 接口的实现</li>
+</ol>
+<p>除了上面的构造参数，还有一个 <code>allowCoreThreadTimeOut</code> 是否允许释放核心线程，正常情况下，线程池会维持至少 core 个核心线程，如果配置了这个参数，那么核心线程也会使用 <code>keepAliveTime</code> 的配置来释放自己</p>
+<h2 id="线程池的任务提交流程"><a href="#线程池的任务提交流程" class="headerlink" title="线程池的任务提交流程"></a>线程池的任务提交流程</h2><ol>
+<li>如果线程池中线程的数量 小于 core ，那么创建新的任务线程</li>
+<li>如果已经到达了 core 线程，那么丢任务队列 workQueue</li>
+<li>如果队列满了，继续新建线程数量 小于 maximumPoolSize （对单个任务来说，只是建一个线程，当然，也可能建不了，因为 core == maximumPoolSize）</li>
+<li>如果线程数量达到 maximumPoolSize ，那么使用拒绝策略 <code>RejectedExecutionHandler</code></li>
+</ol>
+<h2 id="线程池的关闭方法是上面，对正在运行的线程有怎样的影响"><a href="#线程池的关闭方法是上面，对正在运行的线程有怎样的影响" class="headerlink" title="线程池的关闭方法是上面，对正在运行的线程有怎样的影响"></a>线程池的关闭方法是上面，对正在运行的线程有怎样的影响</h2><p>关闭方法有两个</p>
+<ol>
+<li>shutdown<br>设置为 <code>SHUTDOWN</code> 状态，不再接受新的任务，已有的任务继续执行</li>
+<li>shutdownNow<br>设置为 <code>STOP</code> 状态，不再接受新的任务，尝试停止所有正在执行的任务（设置中断），返回还未执行的任务队列</li>
+</ol>
+<h2 id="线程池有哪些拒绝策略"><a href="#线程池有哪些拒绝策略" class="headerlink" title="线程池有哪些拒绝策略"></a>线程池有哪些拒绝策略</h2><p>拒绝策略是实现 <code>RejectedExecutionHandler</code> 接口。内部有以下几种实现  </p>
+<ol>
+<li>AbortPolicy 抛 <code>RejectedExecutionException</code> 异常， 这个是默认的</li>
+<li>DiscardPolicy  啥事也不做，默默的丢到任务</li>
+<li>DiscardOldestPolicy  丢到队列头部的任务，也就是最老（早）的任务</li>
+<li>CallerRunsPolicy 直接在调用线程执行任务</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/22/centos-%E5%AE%89%E8%A3%85-ES/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1000,92 +1099,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/12/%E7%94%B1-spring-cloud-alibaba-sentinel-%E7%A4%BA%E4%BE%8B%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E5%BC%95%E8%B5%B7%E7%9A%84%E7%A0%94%E7%A9%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/12/%E7%94%B1-spring-cloud-alibaba-sentinel-%E7%A4%BA%E4%BE%8B%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E5%BC%95%E8%B5%B7%E7%9A%84%E7%A0%94%E7%A9%B6/" class="post-title-link" itemprop="url">由 spring-cloud-alibaba sentinel 示例启动失败引起的研究</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2019-11-12 20:47:26 / 修改时间：20:48:55" itemprop="dateCreated datePublished" datetime="2019-11-12T20:47:26+08:00">2019-11-12</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">技术笔记</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="问题起因"><a href="#问题起因" class="headerlink" title="问题起因"></a>问题起因</h2><p>在看 <code>sentinel</code> 的时候，写了一个示例，添加以下配置<br><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sentinel 测试</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">sentinel:</span></span><br><span class="line">      <span class="attr">datasource:</span></span><br><span class="line">        <span class="comment"># 名称随意</span></span><br><span class="line">        <span class="attr">ds1:</span></span><br><span class="line">          <span class="attr">file:</span></span><br><span class="line">            <span class="attr">file:</span> <span class="string">"classpath: rules/flowRules.json"</span></span><br><span class="line">            <span class="attr">rule-type:</span> <span class="string">flow</span></span><br></pre></td></tr></table></figure></p>
-<p>这是一个本地配置文件来配置 <code>sentinel</code> 规则的示例<br>然后启动应用，发现异常  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">***************************</span><br><span class="line">APPLICATION FAILED TO START</span><br><span class="line">***************************</span><br><span class="line"></span><br><span class="line">Description:</span><br><span class="line"></span><br><span class="line">Failed to bind properties under &apos;spring.cloud.sentinel.datasource.ds1.file.rule-type&apos; to org.springframework.cloud.alibaba.sentinel.datasource.RuleType:</span><br><span class="line"></span><br><span class="line">    Property: spring.cloud.sentinel.datasource.ds1.file.rule-type</span><br><span class="line">    Value: flow</span><br><span class="line">    Origin: class path resource [application.yml]:23:24</span><br><span class="line">    Reason: 2</span><br><span class="line"></span><br><span class="line">Action:</span><br><span class="line"></span><br><span class="line">Update your application&apos;s configuration</span><br></pre></td></tr></table></figure>
-<p><code>sentinel</code> 的配置类是 <code>SentinelProperties</code>, <code>ruleType</code> 所在类为 <code>AbstractDataSourceProperties</code>,类型为枚举 <code>RuleType</code>  </p>
-<p>上面，没有任何异常信息，只是一个绑定错误，我还以为哪里拼写错了。<br>最后实在没办法，直接进 <code>spring</code> 处理 <code>@EnableConfigurationProperties(SentinelProperties.class)</code> 的地方  </p>
-<p>在类 <code>ConfigurationPropertiesBindingPostProcessor</code> 的 <code>bind</code> 方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">(Object bean, String beanName, ConfigurationProperties annotation)</span> </span>&#123;</span><br><span class="line">	ResolvableType type = getBeanType(bean, beanName);</span><br><span class="line">	Validated validated = getAnnotation(bean, beanName, Validated<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">	Annotation[] annotations = (validated != <span class="keyword">null</span>)</span><br><span class="line">			? <span class="keyword">new</span> Annotation[] &#123; annotation, validated &#125;</span><br><span class="line">			: <span class="keyword">new</span> Annotation[] &#123; annotation &#125;;</span><br><span class="line">	Bindable&lt;?&gt; target = Bindable.of(type).withExistingValue(bean)</span><br><span class="line">			.withAnnotations(annotations);</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="keyword">this</span>.configurationPropertiesBinder.bind(target);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> ConfigurationPropertiesBindException(beanName, bean, annotation,</span><br><span class="line">				ex);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>可以根据条件断点，然后在异常那里打印堆栈日志，发现是一个数组越界。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Caused by: java.lang.ArrayIndexOutOfBoundsException: <span class="number">2</span></span><br><span class="line">	at java.lang.reflect.Parameter.getAnnotatedType(Parameter.java:<span class="number">237</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider.getParameterMetaData(AnnotationMetaDataProvider.java:<span class="number">427</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider.findExecutableMetaData(AnnotationMetaDataProvider.java:<span class="number">300</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider.getMetaData(AnnotationMetaDataProvider.java:<span class="number">285</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider.getConstructorMetaData(AnnotationMetaDataProvider.java:<span class="number">266</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider.retrieveBeanConfiguration(AnnotationMetaDataProvider.java:<span class="number">135</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider.getBeanConfiguration(AnnotationMetaDataProvider.java:<span class="number">124</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.BeanMetaDataManager.getBeanConfigurationForHierarchy(BeanMetaDataManager.java:<span class="number">232</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.BeanMetaDataManager.createBeanMetaData(BeanMetaDataManager.java:<span class="number">199</span>)</span><br><span class="line">	at org.hibernate.validator.internal.metadata.BeanMetaDataManager.getBeanMetaData(BeanMetaDataManager.java:<span class="number">166</span>)</span><br><span class="line">	at org.hibernate.validator.internal.engine.ValidatorImpl.validate(ValidatorImpl.java:<span class="number">157</span>)</span><br><span class="line">	at org.springframework.validation.beanvalidation.SpringValidatorAdapter.validate(SpringValidatorAdapter.java:<span class="number">108</span>)</span><br></pre></td></tr></table></figure></p>
-<p>但是。越界发生在内部，我也无法干预，为了具体定位越界到底在哪里出现，跟踪调试<br>最后定位到 <code>org.hibernate.validator.internal.metadata.provider.AnnotationMetaDataProvider</code>  的方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> List&lt;ConstrainedParameter&gt; <span class="title">getParameterMetaData</span><span class="params">(Executable executable)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> ( executable.getParameterCount() == <span class="number">0</span> ) &#123;</span><br><span class="line">    <span class="keyword">return</span> Collections.emptyList();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ****  这里返回的构造方法参数是 4 引起了疑惑 ****</span></span><br><span class="line">  Parameter[] parameters = executable.getParameters();</span><br><span class="line"></span><br><span class="line">  List&lt;ConstrainedParameter&gt; metaData = <span class="keyword">new</span> ArrayList&lt;&gt;( parameters.length );</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> ( Parameter parameter : parameters ) &#123;</span><br><span class="line">    Annotation[] parameterAnnotations;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      parameterAnnotations = parameter.getAnnotations();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (ArrayIndexOutOfBoundsException ex) &#123;</span><br><span class="line">      LOG.warn( MESSAGES.constraintOnConstructorOfNonStaticInnerClass(), ex );</span><br><span class="line">      parameterAnnotations = EMPTY_PARAMETER_ANNOTATIONS;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Set&lt;MetaConstraint&lt;?&gt;&gt; parameterConstraints = newHashSet();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ( annotationProcessingOptions.areParameterConstraintsIgnoredFor( executable, i ) ) &#123;</span><br><span class="line">      Type type = ReflectionHelper.typeOf( executable, i );</span><br><span class="line">      metaData.add(</span><br><span class="line">          <span class="keyword">new</span> ConstrainedParameter(</span><br><span class="line">              ConfigurationSource.ANNOTATION,</span><br><span class="line">              executable,</span><br><span class="line">              type,</span><br><span class="line">              i,</span><br><span class="line">              parameterConstraints,</span><br><span class="line">              Collections.emptySet(),</span><br><span class="line">              CascadingMetaDataBuilder.nonCascading()</span><br><span class="line">          )</span><br><span class="line">      );</span><br><span class="line">      i++;</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ConstraintLocation location = ConstraintLocation.forParameter( executable, i );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> ( Annotation parameterAnnotation : parameterAnnotations ) &#123;</span><br><span class="line">      <span class="comment">// collect constraints if this annotation is a constraint annotation</span></span><br><span class="line">      List&lt;ConstraintDescriptorImpl&lt;?&gt;&gt; constraints = findConstraintAnnotations(</span><br><span class="line">          executable, parameterAnnotation, ElementType.PARAMETER</span><br><span class="line">      );</span><br><span class="line">      <span class="keyword">for</span> ( ConstraintDescriptorImpl&lt;?&gt; constraintDescriptorImpl : constraints ) &#123;</span><br><span class="line">        parameterConstraints.add(</span><br><span class="line">            MetaConstraints.create( typeResolutionHelper, valueExtractorManager, constraintDescriptorImpl, location )</span><br><span class="line">        );</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// **** 问题出在这里  ****</span></span><br><span class="line">    AnnotatedType parameterAnnotatedType = parameter.getAnnotatedType();</span><br><span class="line"></span><br><span class="line">    Set&lt;MetaConstraint&lt;?&gt;&gt; typeArgumentsConstraints = findTypeAnnotationConstraintsForExecutableParameter( executable, i, parameterAnnotatedType );</span><br><span class="line">    CascadingMetaDataBuilder cascadingMetaData = findCascadingMetaData( executable, parameters, i, parameterAnnotatedType );</span><br><span class="line"></span><br><span class="line">    metaData.add(</span><br><span class="line">        <span class="keyword">new</span> ConstrainedParameter(</span><br><span class="line">            ConfigurationSource.ANNOTATION,</span><br><span class="line">            executable,</span><br><span class="line">            ReflectionHelper.typeOf( executable, i ),</span><br><span class="line">            i,</span><br><span class="line">            parameterConstraints,</span><br><span class="line">            typeArgumentsConstraints,</span><br><span class="line">            cascadingMetaData</span><br><span class="line">        )</span><br><span class="line">    );</span><br><span class="line">    i++;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> metaData;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上面有两个中文注释，就是问题所在。<br>首先，第一个问题，参数是 4 引起了我的疑惑。我们看下 <code>RuleType</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> RuleType &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * flow</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	FLOW(<span class="string">"flow"</span>, FlowRule<span class="class">.<span class="keyword">class</span>),</span></span><br><span class="line"><span class="class">	/**</span></span><br><span class="line"><span class="class">	 * <span class="title">degrade</span></span></span><br><span class="line"><span class="class">	 */</span></span><br><span class="line">	DEGRADE("degrade", DegradeRule.class),</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * param flow</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	PARAM_FLOW(<span class="string">"param-flow"</span>, ParamFlowRule<span class="class">.<span class="keyword">class</span>),</span></span><br><span class="line"><span class="class">	/**</span></span><br><span class="line"><span class="class">	 * <span class="title">system</span></span></span><br><span class="line"><span class="class">	 */</span></span><br><span class="line">	SYSTEM("system", SystemRule.class),</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * authority</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	AUTHORITY(<span class="string">"authority"</span>, AuthorityRule<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * alias for &#123;<span class="doctag">@link</span> AbstractRule&#125;</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * concrete &#123;<span class="doctag">@link</span> AbstractRule&#125; class</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Class clazz;</span><br><span class="line"></span><br><span class="line">	RuleType(String name, Class clazz) &#123;</span><br><span class="line">		<span class="keyword">this</span>.name = name;</span><br><span class="line">		<span class="keyword">this</span>.clazz = clazz;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Class <span class="title">getClazz</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> clazz;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Optional&lt;RuleType&gt; <span class="title">getByName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (StringUtils.isEmpty(name)) &#123;</span><br><span class="line">			<span class="keyword">return</span> Optional.empty();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> Arrays.stream(RuleType.values())</span><br><span class="line">				.filter(ruleType -&gt; name.equals(ruleType.getName())).findFirst();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Optional&lt;RuleType&gt; <span class="title">getByClass</span><span class="params">(Class clazz)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Arrays.stream(RuleType.values())</span><br><span class="line">				.filter(ruleType -&gt; clazz == ruleType.getClazz()).findFirst();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>只有一个构造方法，两个构造参数，为啥这里是 4 呢？<br>调试的时候可以看到 前面两个参数 ，一个是枚举的 name ,一个是 ordinal 坐标<br>说实话，以前还真没注意这个细节  </p>
-<p>继续找问题所在<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AnnotatedType parameterAnnotatedType = parameter.getAnnotatedType();</span><br></pre></td></tr></table></figure></p>
-<p>上面就是跑异常的地方<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> AnnotatedType <span class="title">getAnnotatedType</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// no caching for now</span></span><br><span class="line">    <span class="keyword">return</span> executable.getAnnotatedParameterTypes()[index];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这里已经是 <code>jdk</code> 源码了<br>最后发现，问题在这里 <code>executable.getAnnotatedParameterTypes()</code> 这个方法返回的数组长度为 2<br>但是，我们可以看到，外层是在遍历 <code>executable.getParameters()</code> 这里返回的是 4 个元素，因此越界 </p>
-<p>去获取 <code>spring-cloud-alibaba</code> 的源码，运行 <code>sentinel</code> 示例，也出现同样的问题  </p>
-<p>写了一个测试例子<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">enum</span> EnumTest &#123;</span><br><span class="line"></span><br><span class="line">    A(<span class="number">0</span>, <span class="string">"A"</span>),</span><br><span class="line"></span><br><span class="line">    B(<span class="number">1</span>, <span class="string">"B"</span>)</span><br><span class="line"></span><br><span class="line">    ;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> code;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String msg;</span><br><span class="line"></span><br><span class="line">    EnumTest(<span class="keyword">int</span> code, String msg) &#123;</span><br><span class="line">        <span class="keyword">this</span>.code = code;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">enum</span> Enum2 &#123;</span><br><span class="line">    A</span><br><span class="line">    ;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">(Class&lt;?&gt; aClass)</span> </span>&#123;</span><br><span class="line">    Constructor&lt;?&gt;[] declaredConstructors = aClass.getDeclaredConstructors();</span><br><span class="line">    <span class="keyword">for</span> (Constructor&lt;?&gt; constructor : declaredConstructors) &#123;</span><br><span class="line">        <span class="keyword">int</span> parameterCount = constructor.getParameterCount();</span><br><span class="line">        System.out.printf(<span class="string">"parameterCount:%s\n"</span>, parameterCount);</span><br><span class="line">        <span class="keyword">int</span> length = constructor.getAnnotatedParameterTypes().length;</span><br><span class="line">        System.out.printf(<span class="string">"length:%s\n"</span>, length);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test4</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        show(EnumTest<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        System.out.println(<span class="string">"---"</span>);</span><br><span class="line">        show(Enum2<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>怀疑可能是 <code>jdk</code> 小版本的问题,目前用的 <code>jdk</code> 版本为 <code>1.8.25</code><br>因此去网上下载一个 <code>1.8.172</code> 发现没有问题<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.8.25    parameterCount = 4,  length = 2</span><br><span class="line">1.8.172   parameterCount = 4,  length = 4</span><br></pre></td></tr></table></figure></p>
-<p>到此，问题定位完毕。<br>然而 <code>1.8.25</code> 是公司定的版本。<br>通常搜索查询，这个 bug 在 <code>JDK 1.8.0_40</code> 之后修复了 </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1136,7 +1149,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">78</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1149,7 +1162,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-count">38</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

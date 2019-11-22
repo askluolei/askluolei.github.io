@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Askluolei" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="redis 之前只是会用，经常看一些博客和官网的使用说明，但是还没成体系的学习过最近买了本 Redis 开发与运维 ，买这本书对理由是我虽然会用，但是对譬如哨兵，集群方案，内部 redis 之间是怎么通信对等一些细节不是很了解。想要详细了解下    写这篇笔记，目的是，以后redis 相关等至少看自己等这篇笔记就可以了，不用经常回去翻书其实书早就看完了。感觉要补一篇学习笔记。顺便用耗子哥说的总结归">
+<meta name="keywords" content="redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis 学习笔记">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;09&#x2F;15&#x2F;redis-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;index.html">
+<meta property="og:site_name" content="Askluolei">
+<meta property="og:description" content="redis 之前只是会用，经常看一些博客和官网的使用说明，但是还没成体系的学习过最近买了本 Redis 开发与运维 ，买这本书对理由是我虽然会用，但是对譬如哨兵，集群方案，内部 redis 之间是怎么通信对等一些细节不是很了解。想要详细了解下    写这篇笔记，目的是，以后redis 相关等至少看自己等这篇笔记就可以了，不用经常回去翻书其实书早就看完了。感觉要补一篇学习笔记。顺便用耗子哥说的总结归">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-11-22T03:22:50.600Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/09/15/redis-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>redis 学习笔记 | Askluolei</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Askluolei</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">个人的学习吐槽网站</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/askluolei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/15/redis-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          redis 学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-15 10:41:03" itemprop="dateCreated datePublished" datetime="2019-09-15T10:41:03+08:00">2019-09-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-11-22 11:22:50" itemprop="dateModified" datetime="2019-11-22T11:22:50+08:00">2019-11-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">技术笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>redis 之前只是会用，经常看一些博客和官网的使用说明，但是还没成体系的学习过<br>最近买了本 <code>Redis 开发与运维</code> ，买这本书对理由是我虽然会用，但是对譬如哨兵，集群方案，<br>内部 redis 之间是怎么通信对等一些细节不是很了解。想要详细了解下   </p>
+<p>写这篇笔记，目的是，以后redis 相关等至少看自己等这篇笔记就可以了，不用经常回去翻书<br>其实书早就看完了。感觉要补一篇学习笔记。顺便用耗子哥说的总结归纳方法试一下<br>只归纳以下重点，具体细节就不罗列了</p>
+<p>先套下学习模板  </p>
+<ol>
+<li>这个技术出现的背景，初衷和要达到什么样的目标或者是要解决什么样的问题</li>
+<li>这个技术的优势和劣势分别是什么，或者说，这个技术的 trade-off 是什么</li>
+<li>这个技术的适用场景</li>
+<li>技术的组成部分和关键点</li>
+<li>技术的底层原理和关键实现</li>
+<li>已有的实现和它之间的对比</li>
+</ol>
+<h2 id="这个技术出现的背景"><a href="#这个技术出现的背景" class="headerlink" title="这个技术出现的背景"></a>这个技术出现的背景</h2><p><code>redis</code> 的作者实现原因是因为想要实现高性能的队列功能，用传统的 <code>mysql</code> 没办法达到性能要求<br>因此想要做一个专属的 <code>LLOOGG</code> 数据库。<br>这样看起来，简单的来说，<code>redis</code> 的出现背景是针对 传统数据库存储的性能不足 </p>
+<h2 id="这个技术的优势和劣势分别是什么"><a href="#这个技术的优势和劣势分别是什么" class="headerlink" title="这个技术的优势和劣势分别是什么"></a>这个技术的优势和劣势分别是什么</h2><ol>
+<li>速度快。 读写达到10w/s</li>
+<li>基于键值对对数据结构服务器。支持常用的数据结构</li>
+<li>丰富的功能。键过期，发布订阅，lua脚本，简单事务，流水线</li>
+<li>简单稳定。单线程模型</li>
+<li>支持的客户端语言多</li>
+<li>支持持久化</li>
+<li>主从复制</li>
+<li>高可用和分布式</li>
+</ol>
+<h2 id="这个技术的适用场景"><a href="#这个技术的适用场景" class="headerlink" title="这个技术的适用场景"></a>这个技术的适用场景</h2><ol>
+<li>缓存。大部分使用场景都是这个</li>
+<li>消息队列系统。简单的消息队列，基于发布订阅或者阻塞队列。这个只针对简单的队列功能，无持久化，重复，等复杂功能</li>
+<li>排行榜和计数器应用。。。这是书上说的，感觉其实就是使用 <code>redis</code> 里面的数据结构实现的一些功能。</li>
+</ol>
+<p>不适用的场景：1. 数据存储。<code>redis</code> 是基于内存的，不应该将全部数据或者冷数据放到 <code>redis</code> </p>
+<h2 id="技术的组成部分和关键点"><a href="#技术的组成部分和关键点" class="headerlink" title="技术的组成部分和关键点"></a>技术的组成部分和关键点</h2><p><strong>单线程模型</strong><br>首先，就是单线程模型，这个一定要知道。<br>所谓单线程模型，不代表 redis 进程内部只有一个线程，而是，只用单线程处理客户请求的命令<br>所以从客户端发请求到响应要经过以下过程：</p>
+<ol>
+<li>命令网络传输</li>
+<li>命令队列等待时间</li>
+<li>命令处理时间</li>
+<li>命令响应网络传输</li>
+</ol>
+<p>通常 redis 保证命令处理时间很短，当然，在有大量 key 的 redis 使用 keys 命令也是会执行很长时间的</p>
+<p><strong>数据结构</strong><br>支持5种数据结构。 string，hash，list，set，zset</p>
+<p>string 内部编码是 </p>
+<ol>
+<li>raw &gt;39个字节的字符串</li>
+<li>int 8个字节长整型</li>
+<li>embstr &lt;= 39 个字节的字符串<br>hash 的内部编码：</li>
+<li>hashtable  不满足下面的情况下使用</li>
+<li>ziplist  hash类型元素个数小于 hash-max-ziplist-entries 默认 512 个，这个是一个紧凑的结构，节省内存<br>list 的内部编码是 </li>
+<li>linkedlist 不满足下面的条件</li>
+<li>ziplist 列表元素个数小于 list-max-ziplist-entries 默认 512 个，同时列表每个元素的值小于 list-max-ziplist-value 默认 64 字节<br>set 的内部编码是 </li>
+<li>hashtable 不满足下面</li>
+<li>intset 元素是整数，并且数量小于 set-man-intset-entries<br>zset 的内部编码是 </li>
+<li>skiplist 不满足下面条件</li>
+<li>ziplist 元素个数小于 zet-max-ziplist-entries 默认 128 个 同时元素小于 zset-max-ziplist-value 默认 64 字节</li>
+</ol>
+<p><strong>键过期</strong><br><code>expire</code> 设置过期时间 和 <code>ttl</code> 查询存活时间，返回 -1 代表没设置过期时间，-2 键不存在<br>键过期有两种方式，一种是惰性的，当访问到 key 到时候检查 key 过期了才移除，另一种是定时抽样检查移除过期的 key，如果比例大于 25%，继续进行抽样，直到运行超时 25ms </p>
+<p><strong>pipeline</strong><br>pipeline 简单点说，就是将一批命令，整体打包发送给 redis，这样节省了 客户端与redis 的网络通信时间</p>
+<p><strong>持久化</strong><br>主要有两种持久化方式 rdb 和 aof </p>
+<ol>
+<li><p>rdb<br>rdb 相当于当前 redis 数据的快照，生成文件存放在硬盘<br>分为自动触发和手动触发，手动使用 <code>bgsave</code> 自动就是配置 <code>save m n</code> 标示 m 秒内有 n 次修改触发<br>文件保存 dir 配置的目录下，文件名韦 dbfilename 配置<br>rdb 没办法做到实时持久化，是一个紧凑的 二进制文件，redis 加载 rdb 文件比 aof 快</p>
+</li>
+<li><p>aof<br>就是以独立日志记录每次写命令，<br>开启需要 appendonly yes 配置开启 文件名为 appendfilename 配置<br>里面关键的是文件同步策略。每次命令是写在缓冲区，什么时候刷盘，需要配置 appendfsync 有 always everysec no 默认是 everysec<br>当 aof 文件很大的时候可以重写，直接使用当前 redis 的数据重写 aof 文件<br>手动触发 使用命令 bgrewriteaof<br>自动触发 根据配置 auto-aof-rewrite-min-size 和 auto-aof-rewrite-percentage </p>
+</li>
+</ol>
+<p><strong>事务</strong><br>将一组要执行的命令放在 multi  和 exec 命令中间<br>可以使用 discard 命令停止事务<br>如果命令过程中有语法错误，事务不执行<br>如果命令用错了，譬如 sadd 写成了 zadd ，错误前面的命令会执行。。</p>
+<p><strong>支持主从复制</strong><br>主从是高可用的基础<br>启动的时候使用配置 slaveof host port 配置<br>也可以在运行过程中执行命令 slaveof host port<br>查看主从信息，可以 info replication 命令<br>断开主从，可以 slaveof no one 断开主从连接，不会删除已有数据，只是无法接收新的数据变化<br>可以先断开主从，然后切换新的主节点，注意，切换过程中原有数据将删除，重新同步新的主节点数据，slave 默认只读<br>每个 redis 节点根据 运行id 区分，每次启动都会动态分配一个 40 位的运行 id</p>
+<p><strong>高可用-哨兵</strong><br>哨兵基于主从复制，在主节点出现故障的时候完成故障转移操作，提升一个从节点为主节点，并将其他从节点修改主节点地址<br>判断主节点故障至少需要 n/2 + 1 个哨兵确认<br>客户端获取主节点地址要通过哨兵获取，每监控一个主键点，其实就是一个 mastername，一套哨兵可以同时监控多个主节点</p>
+<p>故障转移的步骤简单说</p>
+<ol>
+<li>判断主节点故障</li>
+<li>选择一个 sentinal 节点完成故障转移功能</li>
+<li>选择一个数据最全的从节点作为新的主节点</li>
+<li>切换</li>
+</ol>
+<p>当然，中间有很多细节，就不写了。就算看了也估计就能记一段时间，这些概念还是能够理解的</p>
+<p><strong>高可用-集群</strong><br>当数据量过大，单个节点存不下所有数据，需要多个 redis 节点分担的时候，使用 redis 集群方案<br>数据分区规则：<br>根据虚拟槽分区，使用一个 hash 函数，将数据映射到一个 整数集合中，定义为 slot 槽，redis 到 slot 范围为 0 - 16383<br>每个 redis 主节点负责一部分 slot，一个 redis 集群，必须每个 slot 都有节点负责，这个时候 redis 集群才能正常工作  </p>
+<p>以集群模式启动 redis 需要配置<br>cluster-enabled yes<br>配置内部配置文件，这个通常是生成的配置<br>cluster-config-file node-port.conf  </p>
+<p>然后完成节点握手 通过 gossip 流言协议，达到互相感知<br>cluster meet host port 命令</p>
+<p>然后分配 slot<br>cluster addslots {0…5461} </p>
+<p>分配了slot 的节点可以认为是主节点，然后配置其他节点复制响应的主节点，根据 nodeid 复制<br>cluster replicate nodeid</p>
+<p>当然，手动配置比较复杂，使用 redis-trib.rb 搭建集群简单点 </p>
+<p>当有新的节点加入，可以将部分 slot 转移个新节点<br>当有主节点退出，也可以将他负责的 slot 转移给其他节点</p>
+<h2 id="已有的实现和它之间的对比"><a href="#已有的实现和它之间的对比" class="headerlink" title="已有的实现和它之间的对比"></a>已有的实现和它之间的对比</h2><p>memcached 多线程模型，只支持 key value<br>好吧，其实我没用过，也没了解过这个东西。。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>除了上面的5个数据结构，还有一些扩展 </p>
+<p><strong>位图</strong><br>bitmap<br>事件上是字符串，内部存 0 1<br>命令 setbit key offset value    getbit key offset<br>还有一些其他的命令，用到的时候可以详细看  </p>
+<p><strong>hyperloglog</strong><br>这实际上是一个基数算法，可以使用更少的内存空间完成集合运算，当然存在一定误差</p>
+<p><strong>pub/sub</strong><br>基于频道的发布订阅，之前高可用内部通信很多都是基于这个<br>可以看着简单的队列<br>命令：<br>publish chennel message<br>subscribe channel<br>unsubscribe channel</p>
+<p><strong>geo</strong><br>地理位置信息<br>geoadd key longtitude latitude member 。。。</p>
+<p>完成地理位置信息的录入后，可以做些计算。。没用过  </p>
+<p><strong>stream</strong><br>redis5 新增的一个消息队列<br>与 kafka 类型，之前的发布订阅，订阅者可以获取全量数据，并且无法获取之前的数据<br>stream 目前会存一份原数据，消费者也分为消费者组，每个组消费全量数据，组内每个消费者竞争获取</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/redis/" rel="tag"># redis</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/09/13/MySQL-%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/" rel="next" title="MySQL 索引使用的注意事项">
+                  <i class="fa fa-chevron-left"></i> MySQL 索引使用的注意事项
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/09/16/OpenSSL%E4%BD%BF%E7%94%A8/" rel="prev" title="OpenSSL使用">
+                  OpenSSL使用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#这个技术出现的背景"><span class="nav-number">1.</span> <span class="nav-text">这个技术出现的背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#这个技术的优势和劣势分别是什么"><span class="nav-number">2.</span> <span class="nav-text">这个技术的优势和劣势分别是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#这个技术的适用场景"><span class="nav-number">3.</span> <span class="nav-text">这个技术的适用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术的组成部分和关键点"><span class="nav-number">4.</span> <span class="nav-text">技术的组成部分和关键点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#已有的实现和它之间的对比"><span class="nav-number">5.</span> <span class="nav-text">已有的实现和它之间的对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">6.</span> <span class="nav-text">其他</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="Luo lei"
+    src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Luo lei</p>
+  <div class="site-description" itemprop="description">主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Luo lei</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      element.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: '92bdc8d867fdb9d00042',
+      clientSecret: 'afd4318e433e4378a762bff838bd6e14df754d7e',
+      repo: 'askluolei.github.io',
+      owner: 'Askluolei',
+      admin: ['luo lei'],
+      id: '1816452d2c5b2e0def52733034e9020f',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+    </div>
+</body>
+</html>
