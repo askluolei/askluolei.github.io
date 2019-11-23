@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Askluolei" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="深入理解 Java 虚拟机 读书笔记  运行时数据区域划分 方法区（元空间）线程共享区域，主要存储已被虚拟机加载的类信息，常量，静态变量，即时编译后的产物，也叫非堆（Non Heap）运行时常量池。 虚拟机栈线程私有的，生命周期和线程相同，每个方法执行的同时都会创建一个栈帧（Stack Frame），用来存局部变量表，操作数栈，动态链接，方法出口等信息，局部变量表存放编译期可知的各种基本数据类型，">
+<meta name="keywords" content="java,jvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jvm-自动内存管理">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;23&#x2F;jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86&#x2F;index.html">
+<meta property="og:site_name" content="Askluolei">
+<meta property="og:description" content="深入理解 Java 虚拟机 读书笔记  运行时数据区域划分 方法区（元空间）线程共享区域，主要存储已被虚拟机加载的类信息，常量，静态变量，即时编译后的产物，也叫非堆（Non Heap）运行时常量池。 虚拟机栈线程私有的，生命周期和线程相同，每个方法执行的同时都会创建一个栈帧（Stack Frame），用来存局部变量表，操作数栈，动态链接，方法出口等信息，局部变量表存放编译期可知的各种基本数据类型，">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;23&#x2F;jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86&#x2F;JVM32-obj-header.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;23&#x2F;jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86&#x2F;JVM32-obj-header.png">
+<meta property="og:updated_time" content="2019-11-23T09:34:00.550Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;23&#x2F;jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86&#x2F;JVM32-obj-header.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/23/jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>jvm-自动内存管理 | Askluolei</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Askluolei</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">个人的学习吐槽网站</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/askluolei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/23/jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          jvm-自动内存管理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-23 17:32:11 / 修改时间：17:34:00" itemprop="dateCreated datePublished" datetime="2019-11-23T17:32:11+08:00">2019-11-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">技术笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><code>深入理解 Java 虚拟机</code> 读书笔记 </p>
+<h2 id="运行时数据区域划分"><a href="#运行时数据区域划分" class="headerlink" title="运行时数据区域划分"></a>运行时数据区域划分</h2><ol>
+<li>方法区（元空间）<br>线程共享区域，主要存储已被虚拟机加载的类信息，常量，静态变量，即时编译后的产物，也叫非堆（Non Heap）<br>运行时常量池。</li>
+<li>虚拟机栈<br>线程私有的，生命周期和线程相同，每个方法执行的同时都会创建一个栈帧（Stack Frame），用来存局部变量表，操作数栈，动态链接，方法出口等信息，<br>局部变量表存放编译期可知的各种基本数据类型，每个局部变量空间（slot）为 32 位，64 为长度的类型占用两个 slot</li>
+<li>本地方法栈<br>为 native 方法服务的</li>
+<li>堆<br>最大的一块内存区域，也是线程共享的内存区域，几乎所有的对象都在这里分配内存。<br>这里也是垃圾回收的主要区域，因为分代搜集算法，所以堆还可细分为 新生代 和 老年代，新生代再细致一点有 eden，from survivor， to survivor，</li>
+<li>程序计数器<br>可以看作是当前线程所执行的字节码行号指示器，线程私有的</li>
+<li>直接内存<br>DirectByteBuffer 引用一块堆外内存</li>
+</ol>
+<h2 id="对象创建"><a href="#对象创建" class="headerlink" title="对象创建"></a>对象创建</h2><p>普通对象创建（不包含数组，<code>Class</code> 对象）  </p>
+<ol>
+<li>类加载过程<br>在常量池中是否定位一个类的符号引用<br>类是否已被加载，解析，初始化</li>
+<li>新生对象分配内存<br>对象所需的内存大小在类加载完成后就已经确定？<br>分配内存的方式<ul>
+<li>指针碰撞： 假设内存规整，由于对象所需内存大小已知，只需要记录边界指针，移动响应的大小就行类</li>
+<li>空闲列表： 内存不规整，那么就需要记录哪些空间是可用的，需要维护一个列表<br>内存是否规整由采用的垃圾回收器决定。 Serial ， ParNew 等垃圾搜集完毕，会整理内存，因此是 指针碰撞<br>CMS 基于标记-清除，没有内存整理，因此是空闲列表<br>创建对象是非常频繁的操作，直接指针修改位置，是非线程安全的，有两种解决方式<ul>
+<li>CAS 失败重试，并发常用的模式</li>
+<li>TLAB 本地线程分配缓冲，每个线程先预分配一小块内存，用完了，才需要同步锁定<br>内存分配完毕后，会初始化零值，应该可以理解为所有位全部置 0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>对象设置<br>例如，这个对象是哪个类的实例。如何找到类的元数据，对象哈希码，对象的 GC 分代年龄。这些信息放对象头中</li>
+<li>init 方法<br>从虚拟机角度，上面3个步骤后，对象就已经创建完了，但是还没执行 init 方法，也就是构造方法，当然，字段的初值也是在 init 方法里面执行</li>
+</ol>
+<h2 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h2><p>可以分为 3 个区域：对象头，实例数据，对齐填充 </p>
+<p><em>对象头</em><br>包含两部分数据</p>
+<ol>
+<li>对象自身运行时数据：哈希码，GC 分代年龄，锁状态标志，线程持有的锁，偏向线程id，偏向时间戳等，在 64 为虚拟机中占 64 位，也就是常说的 Mark Word</li>
+<li>类型指针：指向类的元数据指针，并不是所有虚拟机实现都必须在对象上保留类型指针</li>
+<li>如果是数组，那么还有数组长度</li>
+</ol>
+<p>32位 对象头内存布局<br><img src="/2019/11/23/jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/JVM32-obj-header.png" class="" title="JVM 32位对象头内存布局"></p>
+<p>64位 对象头内存布局<br><img src="/2019/11/23/jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/JVM32-obj-header.png" class="" title="JVM 64位对象头内存布局"></p>
+<p><em>实例数据</em><br>各种类型的字段内容，包括父类继承的和自己的</p>
+<p><em>填充*</em><br>对象内存起始地址必须是 8 字节的整数倍，如果没对齐，就有对齐填充了</p>
+<h2 id="对象访问定位"><a href="#对象访问定位" class="headerlink" title="对象访问定位"></a>对象访问定位</h2><p>Java 程序需要使用栈上的 reference 数据来操作具体的堆上的具体对象。<br>reference 指向一个的对象的引用，有两种访问方式</p>
+<ol>
+<li>句柄：堆中单独划分一块内存，用来存句柄池，reference 指向句柄地址，句柄包含对象实例数据，类型数据的具体地址</li>
+<li>直接指针: reference 直接指向对象地址</li>
+</ol>
+<p>句柄的好处是 referenc 存储稳定，对象移动（GC 影响）只修改 句柄到对象的指向。<br>直接指针的好处就是速度快。<br><code>Hotspot</code> 采用的是 直接指针</p>
+<h2 id="内存溢出问题-OutOfMemoryError"><a href="#内存溢出问题-OutOfMemoryError" class="headerlink" title="内存溢出问题 OutOfMemoryError"></a>内存溢出问题 OutOfMemoryError</h2><p><em>堆内存溢出</em><br>堆内存大小设置以及内存溢出时候 dump，这几个 JVM 参数是常用的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">设置最小堆内存</span><br><span class="line">-Xms20m</span><br><span class="line">设置最大堆内存</span><br><span class="line">-Xmx20m</span><br><span class="line">发生内存溢出的时候 dump，通常 JVM 用 -XX:+/- 来代表 true/false</span><br><span class="line">-XX:+HeapDumpOnOutOfMemoryError</span><br></pre></td></tr></table></figure></p>
+<p>有来 dump 文件，可以使用 MAT 进行分析。查看哪个对象占用空间大，也可以查看泄露对象到 GC root 的引用链，分析为什么没有释放内存  </p>
+<p><em>虚拟机栈和本地方法栈</em><br>栈空间大小设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-Xss</span><br><span class="line">-Xsx</span><br></pre></td></tr></table></figure></p>
+<p>栈空间，如果请求深度过大，会是 <code>StackOverflowError</code> , 也是栈溢出，通常在递归调用的时候容易出现<br>当虚拟机在扩展栈空间的时候，无法申请到足够的内存空间，则抛出 <code>OutOfMemoryError</code> </p>
+<p><em>方法区/元空间</em><br>这里导致溢出，通常是动态代理，或者字节码技术生成 class 过多导致的</p>
+<p><em>本机直接内存溢出*</em><br>由于 nio 可以申请使用堆外内存。<br>堆外内存限制可以使用参 <code>-XX: MaxDirectMemorySize</code> 指定<br>由直接内存导致的内存溢出，一个明显的特征是 Heap Dump 文件中看不到明显的异常，Dump 文件也很小</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/jvm/" rel="tag"># jvm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/23/leetcode/27/" rel="next" title="移除元素">
+                  <i class="fa fa-chevron-left"></i> 移除元素
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#运行时数据区域划分"><span class="nav-number">1.</span> <span class="nav-text">运行时数据区域划分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象创建"><span class="nav-number">2.</span> <span class="nav-text">对象创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象的内存布局"><span class="nav-number">3.</span> <span class="nav-text">对象的内存布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象访问定位"><span class="nav-number">4.</span> <span class="nav-text">对象访问定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存溢出问题-OutOfMemoryError"><span class="nav-number">5.</span> <span class="nav-text">内存溢出问题 OutOfMemoryError</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="Luo lei"
+    src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Luo lei</p>
+  <div class="site-description" itemprop="description">主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Luo lei</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      element.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: '92bdc8d867fdb9d00042',
+      clientSecret: 'afd4318e433e4378a762bff838bd6e14df754d7e',
+      repo: 'askluolei.github.io',
+      owner: 'Askluolei',
+      admin: ['luo lei'],
+      id: '2238cb54c650bf9bdb85dfbf713c7f13',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+    </div>
+</body>
+</html>

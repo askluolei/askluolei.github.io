@@ -1,6 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>jvm-自动内存管理</title>
+    <url>/2019/11/23/jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<p><code>深入理解 Java 虚拟机</code> 读书笔记 </p>
+<h2 id="运行时数据区域划分"><a href="#运行时数据区域划分" class="headerlink" title="运行时数据区域划分"></a>运行时数据区域划分</h2><ol>
+<li>方法区（元空间）<br>线程共享区域，主要存储已被虚拟机加载的类信息，常量，静态变量，即时编译后的产物，也叫非堆（Non Heap）<br>运行时常量池。</li>
+<li>虚拟机栈<br>线程私有的，生命周期和线程相同，每个方法执行的同时都会创建一个栈帧（Stack Frame），用来存局部变量表，操作数栈，动态链接，方法出口等信息，<br>局部变量表存放编译期可知的各种基本数据类型，每个局部变量空间（slot）为 32 位，64 为长度的类型占用两个 slot</li>
+<li>本地方法栈<br>为 native 方法服务的</li>
+<li>堆<br>最大的一块内存区域，也是线程共享的内存区域，几乎所有的对象都在这里分配内存。<br>这里也是垃圾回收的主要区域，因为分代搜集算法，所以堆还可细分为 新生代 和 老年代，新生代再细致一点有 eden，from survivor， to survivor，</li>
+<li>程序计数器<br>可以看作是当前线程所执行的字节码行号指示器，线程私有的</li>
+<li>直接内存<br>DirectByteBuffer 引用一块堆外内存</li>
+</ol>
+<h2 id="对象创建"><a href="#对象创建" class="headerlink" title="对象创建"></a>对象创建</h2><p>普通对象创建（不包含数组，<code>Class</code> 对象）  </p>
+<ol>
+<li>类加载过程<br>在常量池中是否定位一个类的符号引用<br>类是否已被加载，解析，初始化</li>
+<li>新生对象分配内存<br>对象所需的内存大小在类加载完成后就已经确定？<br>分配内存的方式<ul>
+<li>指针碰撞： 假设内存规整，由于对象所需内存大小已知，只需要记录边界指针，移动响应的大小就行类</li>
+<li>空闲列表： 内存不规整，那么就需要记录哪些空间是可用的，需要维护一个列表<br>内存是否规整由采用的垃圾回收器决定。 Serial ， ParNew 等垃圾搜集完毕，会整理内存，因此是 指针碰撞<br>CMS 基于标记-清除，没有内存整理，因此是空闲列表<br>创建对象是非常频繁的操作，直接指针修改位置，是非线程安全的，有两种解决方式<ul>
+<li>CAS 失败重试，并发常用的模式</li>
+<li>TLAB 本地线程分配缓冲，每个线程先预分配一小块内存，用完了，才需要同步锁定<br>内存分配完毕后，会初始化零值，应该可以理解为所有位全部置 0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>对象设置<br>例如，这个对象是哪个类的实例。如何找到类的元数据，对象哈希码，对象的 GC 分代年龄。这些信息放对象头中</li>
+<li>init 方法<br>从虚拟机角度，上面3个步骤后，对象就已经创建完了，但是还没执行 init 方法，也就是构造方法，当然，字段的初值也是在 init 方法里面执行</li>
+</ol>
+<h2 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h2><p>可以分为 3 个区域：对象头，实例数据，对齐填充 </p>
+<p><em>对象头</em><br>包含两部分数据</p>
+<ol>
+<li>对象自身运行时数据：哈希码，GC 分代年龄，锁状态标志，线程持有的锁，偏向线程id，偏向时间戳等，在 64 为虚拟机中占 64 位，也就是常说的 Mark Word</li>
+<li>类型指针：指向类的元数据指针，并不是所有虚拟机实现都必须在对象上保留类型指针</li>
+<li>如果是数组，那么还有数组长度</li>
+</ol>
+<p>32位 对象头内存布局<br><img src="/2019/11/23/jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/JVM32-obj-header.png" class="" title="JVM 32位对象头内存布局"></p>
+<p>64位 对象头内存布局<br><img src="/2019/11/23/jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/JVM32-obj-header.png" class="" title="JVM 64位对象头内存布局"></p>
+<p><em>实例数据</em><br>各种类型的字段内容，包括父类继承的和自己的</p>
+<p><em>填充*</em><br>对象内存起始地址必须是 8 字节的整数倍，如果没对齐，就有对齐填充了</p>
+<h2 id="对象访问定位"><a href="#对象访问定位" class="headerlink" title="对象访问定位"></a>对象访问定位</h2><p>Java 程序需要使用栈上的 reference 数据来操作具体的堆上的具体对象。<br>reference 指向一个的对象的引用，有两种访问方式</p>
+<ol>
+<li>句柄：堆中单独划分一块内存，用来存句柄池，reference 指向句柄地址，句柄包含对象实例数据，类型数据的具体地址</li>
+<li>直接指针: reference 直接指向对象地址</li>
+</ol>
+<p>句柄的好处是 referenc 存储稳定，对象移动（GC 影响）只修改 句柄到对象的指向。<br>直接指针的好处就是速度快。<br><code>Hotspot</code> 采用的是 直接指针</p>
+<h2 id="内存溢出问题-OutOfMemoryError"><a href="#内存溢出问题-OutOfMemoryError" class="headerlink" title="内存溢出问题 OutOfMemoryError"></a>内存溢出问题 OutOfMemoryError</h2><p><em>堆内存溢出</em><br>堆内存大小设置以及内存溢出时候 dump，这几个 JVM 参数是常用的<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">设置最小堆内存</span><br><span class="line">-Xms20m</span><br><span class="line">设置最大堆内存</span><br><span class="line">-Xmx20m</span><br><span class="line">发生内存溢出的时候 dump，通常 JVM 用 -XX:+/- 来代表 true/false</span><br><span class="line">-XX:+HeapDumpOnOutOfMemoryError</span><br></pre></td></tr></table></figure></p>
+<p>有来 dump 文件，可以使用 MAT 进行分析。查看哪个对象占用空间大，也可以查看泄露对象到 GC root 的引用链，分析为什么没有释放内存  </p>
+<p><em>虚拟机栈和本地方法栈</em><br>栈空间大小设置<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-Xss</span><br><span class="line">-Xsx</span><br></pre></td></tr></table></figure></p>
+<p>栈空间，如果请求深度过大，会是 <code>StackOverflowError</code> , 也是栈溢出，通常在递归调用的时候容易出现<br>当虚拟机在扩展栈空间的时候，无法申请到足够的内存空间，则抛出 <code>OutOfMemoryError</code> </p>
+<p><em>方法区/元空间</em><br>这里导致溢出，通常是动态代理，或者字节码技术生成 class 过多导致的</p>
+<p><em>本机直接内存溢出*</em><br>由于 nio 可以申请使用堆外内存。<br>堆外内存限制可以使用参 <code>-XX: MaxDirectMemorySize</code> 指定<br>由直接内存导致的内存溢出，一个明显的特征是 Heap Dump 文件中看不到明显的异常，Dump 文件也很小</p>
+]]></content>
+      <categories>
+        <category>技术笔记</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>jvm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>移除元素</title>
+    <url>/2019/11/23/leetcode/27/</url>
+    <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个数组 <code>nums</code> 和一个值 <code>val</code>，你需要原地移除所有数值等于 <code>val</code> 的元素，返回移除后数组的新长度。</p>
+<p>不要使用额外的数组空间，你必须在原地修改输入数组并在使用 <code>O(1)</code> 额外空间的条件下完成。</p>
+<p>元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。</p>
+<p><em>示例1</em><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定 nums = [3,2,2,3], val = 3,</span><br><span class="line"></span><br><span class="line">函数应该返回新的长度 2, 并且 nums 中的前两个元素均为 2。</span><br><span class="line"></span><br><span class="line">你不需要考虑数组中超出新长度后面的元素。</span><br></pre></td></tr></table></figure></p>
+<p><em>示例2</em><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定 nums = [0,1,2,2,3,0,4,2], val = 2,</span><br><span class="line"></span><br><span class="line">函数应该返回新的长度 5, 并且 nums 中的前五个元素为 0, 1, 3, 0, 4。</span><br><span class="line"></span><br><span class="line">注意这五个元素可为任意顺序。</span><br><span class="line"></span><br><span class="line">你不需要考虑数组中超出新长度后面的元素。</span><br></pre></td></tr></table></figure></p>
+<p>首先，理解一下题目，最后想要的结果，是数组中 <code>!= val</code> 的数量，并且，这些数需要被挪到数组前面，不管顺序<br>过程条件,额外空间为 <code>O(1)</code>,那就是不能使用额外数组空间了 </p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><h3 id="思路1"><a href="#思路1" class="headerlink" title="思路1"></a>思路1</h3><p>快慢指针，慢指针用来记录最后结果存储的下标，快指针遍历原数组<br><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">removeElement</span><span class="params">(nums []<span class="keyword">int</span>, val <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="comment">// 快慢双指针，i 为填充数组的坐标，j 遍历原数组</span></span><br><span class="line">	<span class="comment">// 当不等于 val 当时候，保留， == val 当时候 j++ 了后面保留在 i 的位置</span></span><br><span class="line">	<span class="comment">// 这里问题在于，如果 nums 全不同，实际上，会有很多无效的赋值操作</span></span><br><span class="line">	i := <span class="number">0</span></span><br><span class="line">	<span class="built_in">len</span> := <span class="built_in">len</span>(nums)</span><br><span class="line">	<span class="keyword">for</span> j:=<span class="number">0</span>; j &lt; <span class="built_in">len</span>; j++ &#123;</span><br><span class="line">		<span class="keyword">if</span> nums[j] != val &#123;</span><br><span class="line">			nums[i] = nums[j]</span><br><span class="line">			i++</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> i</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="思路2"><a href="#思路2" class="headerlink" title="思路2"></a>思路2</h3><p>将 <code>== val</code> 的数丢到数组后面就行了<br><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">removeElement</span><span class="params">(nums []<span class="keyword">int</span>, val <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="comment">// 理解题目，其实就是将 != val 的数挪到前面去，那我们把 == val 的丢到数组最后就行了</span></span><br><span class="line">	i := <span class="number">0</span></span><br><span class="line">	n := <span class="built_in">len</span>(nums)</span><br><span class="line">	<span class="keyword">for</span> ; i &lt; n; &#123;</span><br><span class="line">		<span class="keyword">if</span> nums[i] == val &#123;</span><br><span class="line">			nums[i] = nums[n - <span class="number">1</span>]</span><br><span class="line">			n--</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			i++</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> n</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>线程池常见问题记录</title>
     <url>/2019/11/22/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</url>
     <content><![CDATA[<p>记录一些常见的关于线程池的问题，参考其他看过的资料，总结为自己的答案</p>
@@ -384,7 +463,7 @@
 <tr>
 <td>数组</td>
 <td>50</td>
-<td>6</td>
+<td>8</td>
 </tr>
 </tbody>
 </table>
@@ -435,6 +514,18 @@
 <td>中等</td>
 <td><a href="/2019/11/20/leetcode/18">四数之和</a></td>
 <td><a href="https://leetcode-cn.com/problems/4sum/" target="_blank" rel="noopener">四数之和</a></td>
+</tr>
+<tr>
+<td>数组</td>
+<td>简单</td>
+<td><a href="/2019/11/21/leetcode/26">删除排序数组中的重复项</a></td>
+<td><a href="https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/" target="_blank" rel="noopener">删除排序数组中的重复项</a></td>
+</tr>
+<tr>
+<td>数组</td>
+<td>简单</td>
+<td><a href="/2019/11/23/leetcode/27">移除元素</a></td>
+<td><a href="https://leetcode-cn.com/problems/remove-element/" target="_blank" rel="noopener">移除元素</a></td>
 </tr>
 </tbody>
 </table>
