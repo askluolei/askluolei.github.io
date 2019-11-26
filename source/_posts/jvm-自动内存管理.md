@@ -1,11 +1,11 @@
 ---
 title: jvm-自动内存管理
+date: 2019-11-23 17:32:11
 tags:
   - java
   - jvm
 categories:
   - 技术笔记
-date: 2019-11-23 17:32:11
 ---
 
 
@@ -64,7 +64,7 @@ date: 2019-11-23 17:32:11
 {% asset_img JVM32-obj-header.png JVM 32位对象头内存布局 %}
 
 64位 对象头内存布局
-{% asset_img JVM32-obj-header.png JVM 64位对象头内存布局 %}
+{% asset_img JVM64-obj-header.png JVM 64位对象头内存布局 %}
 
 *实例数据*
 各种类型的字段内容，包括父类继承的和自己的
