@@ -590,7 +590,7 @@
 <tr>
 <td>数组</td>
 <td>50</td>
-<td>9</td>
+<td>10</td>
 </tr>
 </tbody>
 </table>
@@ -659,6 +659,12 @@
 <td>中等</td>
 <td><a href="/2019/11/24/leetcode/31">下一个排列</a></td>
 <td><a href="https://leetcode-cn.com/problems/next-permutation/" target="_blank" rel="noopener">下一个排列</a></td>
+</tr>
+<tr>
+<td>数组</td>
+<td>中等</td>
+<td><a href="/2019/11/26/leetcode/33">搜索旋转排序数组</a></td>
+<td><a href="https://leetcode-cn.com/problems/search-in-rotated-sorted-array/" target="_blank" rel="noopener">搜索旋转排序数组</a></td>
 </tr>
 </tbody>
 </table>
