@@ -1,6 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>搜索旋转排序数组</title>
+    <url>/2019/11/26/leetcode/33/</url>
+    <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>假设按照升序排序的数组在预先未知的某个点上进行了旋转。</p>
+<p>( 例如，数组 <code>[0,1,2,4,5,6,7]</code> 可能变为 <code>[4,5,6,7,0,1,2]</code> )。</p>
+<p>搜索一个给定的目标值，如果数组中存在这个目标值，则返回它的索引，否则返回 -1 。</p>
+<p>你可以假设数组中不存在重复的元素。</p>
+<p>你的算法时间复杂度必须是 O(log n) 级别。</p>
+<p><em>示例1</em><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums = [4,5,6,7,0,1,2], target = 0</span><br><span class="line">输出: 4</span><br></pre></td></tr></table></figure><br><em>示例2</em><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums = [4,5,6,7,0,1,2], target = 3</span><br><span class="line">输出: -1</span><br></pre></td></tr></table></figure></p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><p>O(log n) 肯定是需要二分法的,思路直接看注释了</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">search</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="comment">// logn 肯定是需要二分法了</span></span><br><span class="line">	result := <span class="number">-1</span></span><br><span class="line">	start := <span class="number">0</span></span><br><span class="line">	end := <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">	<span class="comment">// 头尾指针</span></span><br><span class="line">	<span class="keyword">for</span> ; start &lt;= end; &#123;</span><br><span class="line">		<span class="comment">// 取中间的数</span></span><br><span class="line">		mid := start + (end - start) / <span class="number">2</span></span><br><span class="line">		<span class="comment">// 刚好等于，那就返回结果</span></span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target &#123;</span><br><span class="line">			<span class="keyword">return</span> mid</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 开始 比 mid 小， start - mid 是一个升序</span></span><br><span class="line">		<span class="keyword">if</span> nums[start] &lt;= nums[mid] &#123;</span><br><span class="line">			<span class="comment">// 如果 target 在 start 和 mid 中间，那么就在 start，mid-1 里面找</span></span><br><span class="line">			<span class="keyword">if</span> target &gt;= nums[start] &amp;&amp; target &lt; nums[mid] &#123;</span><br><span class="line">				end = mid - <span class="number">1</span></span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="comment">// 否则 就是在 mid + 1， end</span></span><br><span class="line">				start = mid + <span class="number">1</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="comment">// 那么  mid - end 是升序，类似的处理</span></span><br><span class="line">			<span class="keyword">if</span> target &gt; nums[mid] &amp;&amp; target &lt;= nums[end] &#123;</span><br><span class="line">				start = mid + <span class="number">1</span></span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				end = mid - <span class="number">1</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>jvm-垃圾搜集器</title>
+    <url>/2019/11/26/jvm-%E5%9E%83%E5%9C%BE%E6%90%9C%E9%9B%86%E5%99%A8/</url>
+    <content><![CDATA[<p>垃圾回收需要考虑三件事  </p>
+<ol>
+<li>哪些内存需要回收</li>
+<li>什么时候回收</li>
+<li>如何回收</li>
+</ol>
+<h2 id="对象是否已死"><a href="#对象是否已死" class="headerlink" title="对象是否已死"></a>对象是否已死</h2><ol>
+<li>引用计数</li>
+<li>可达性分析</li>
+</ol>
+<p>引用类型  </p>
+<ul>
+<li>强引用  常用的，new </li>
+<li>软引用  将要发生内存溢出，会回收软引用</li>
+<li>弱引用  下一次 gc 到来的时候回收</li>
+<li>虚引用  不知道啥时候回收，只是为了获取通知</li>
+</ul>
+<p>类卸载条件</p>
+<ul>
+<li>类的所有实例已被回收</li>
+<li>加载该类的 ClassLoader 已经被回收</li>
+<li>类的 Class 对象没有被其他地方引用</li>
+</ul>
+<h2 id="垃圾搜集算法"><a href="#垃圾搜集算法" class="headerlink" title="垃圾搜集算法"></a>垃圾搜集算法</h2><ol>
+<li>标记清除 Mark-Sweep</li>
+<li>复制算法</li>
+<li>标记整理 Mark-Compact</li>
+<li><p>分代收集算法 </p>
+</li>
+<li><p>枚举根节点<br>从 GCRoot 找引用链，不在链路上的就是垃圾了</p>
+</li>
+<li>安全点<br>SafePoint，在特定的位置，记录引用，就是安全点</li>
+<li>安全区域<br>线程没在执行的情况，不会引起引用发生变化的区域，是安全区域</li>
+</ol>
+<h2 id="垃圾搜集器"><a href="#垃圾搜集器" class="headerlink" title="垃圾搜集器"></a>垃圾搜集器</h2><ul>
+<li>Young: Serial，ParNew，Parallel Scavenge，   G1</li>
+<li>Old: CMS, Serial Old, Parallel Old     G1</li>
+</ul>
+<ol>
+<li>Serial<br>最基本的垃圾搜集器，是单线程的搜集器，在垃圾搜集的时候，需要停止其他工作线程</li>
+<li>ParNew<br>是 Serial 的多线程版本</li>
+<li>Parallel Scavenge<br>关注点在达到可控制的吞吐量。<br>上面三个都是复制算法</li>
+<li>Seril Old<br>1 的老年代版本</li>
+<li>Parallel Old<br>Parallel Scavenge 的老年代版本，多线程和标记整理算法</li>
+<li>CMS<br>多线程+标记清除，工作分为 4 步<ol>
+<li>初始标记   stop the world   速度很快</li>
+<li>并发标记</li>
+<li>重新标记   stop the world</li>
+<li>并发清除<br>缺点：</li>
+<li>会占用用户线程 CPU 资源</li>
+<li>无法清除浮动垃圾 并发清理阶段产生的垃圾</li>
+<li>会有空间碎片，如果过多，可能导致 Full GC</li>
+</ol>
+</li>
+<li>G1<br>并发，分代搜集，空间整合，可预测的停顿<br>基本和上面的不一样了，将真个内存区域划分为 Region ，Region 可以用来作为新生代，老年代，不需要空间连续<br>步骤<ol>
+<li>初始标记  stop the world  时间很短</li>
+<li>并发标记</li>
+<li>最终标记</li>
+<li>筛选回收</li>
+</ol>
+</li>
+</ol>
+<h2 id="内存分配和回收策略"><a href="#内存分配和回收策略" class="headerlink" title="内存分配和回收策略"></a>内存分配和回收策略</h2><ol>
+<li>优先在 Eden 分配</li>
+<li>当 Eden 没有足够的空间进行分配，将发起一次 Minor GC</li>
+<li>大对象直接进老年代，长字符串，数组</li>
+<li>长期存活多对象进老年代，对象在 Eden 出生经过一次 Minor GC，进入 Survivor 区，年龄为1，没熬过一次 Minor GC 年龄 + 1，到 15（默认），进老年代，例外：如果相同年龄占 survivor 一半以上，年龄大于等于这个年龄的，直接进老年代</li>
+</ol>
+<p><em>空间分配担保</em><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">在发生 Minor GC 之前，检测</span><br><span class="line">if 老年代 最大连续可用空间 &gt; 新生代所有对象空间</span><br><span class="line">  Minor GC</span><br><span class="line">else if 允许担保是吧 &amp;&amp; 老年代 最大连续可用空间 &gt; 历次晋升到老年代的空间</span><br><span class="line">  Minor GC</span><br><span class="line">else </span><br><span class="line">  Full GC</span><br></pre></td></tr></table></figure><br>空间分配担保，主要是为了减少 <code>Full GC</code></p>
+]]></content>
+      <categories>
+        <category>技术笔记</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>jvm</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>下一个排列</title>
     <url>/2019/11/24/leetcode/31/</url>
     <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>实现获取下一个排列的函数，算法需要将给定数字序列重新排列成字典序中下一个更大的排列。</p>
@@ -61,7 +162,7 @@
 <li>如果是数组，那么还有数组长度</li>
 </ol>
 <p>32位 对象头内存布局<br><img src="/2019/11/23/jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/JVM32-obj-header.png" class="" title="JVM 32位对象头内存布局"></p>
-<p>64位 对象头内存布局<br><img src="/2019/11/23/jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/JVM32-obj-header.png" class="" title="JVM 64位对象头内存布局"></p>
+<p>64位 对象头内存布局<br><img src="/2019/11/23/jvm-%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/JVM64-obj-header.png" class="" title="JVM 64位对象头内存布局"></p>
 <p><em>实例数据</em><br>各种类型的字段内容，包括父类继承的和自己的</p>
 <p><em>填充*</em><br>对象内存起始地址必须是 8 字节的整数倍，如果没对齐，就有对齐填充了</p>
 <h2 id="对象访问定位"><a href="#对象访问定位" class="headerlink" title="对象访问定位"></a>对象访问定位</h2><p>Java 程序需要使用栈上的 reference 数据来操作具体的堆上的具体对象。<br>reference 指向一个的对象的引用，有两种访问方式</p>
