@@ -213,6 +213,96 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/07/JVM-%E5%8F%82%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/09/07/JVM-%E5%8F%82%E6%95%B0/" class="post-title-link" itemprop="url">JVM 参数</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-07 21:15:57" itemprop="dateCreated datePublished" datetime="2019-09-07T21:15:57+08:00">2019-09-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-11-22 11:21:47" itemprop="dateModified" datetime="2019-11-22T11:21:47+08:00">2019-11-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">技术笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Trace-跟踪参数"><a href="#Trace-跟踪参数" class="headerlink" title="Trace 跟踪参数"></a>Trace 跟踪参数</h2><h3 id="XX-PrintGC"><a href="#XX-PrintGC" class="headerlink" title="-XX:+PrintGC"></a>-XX:+PrintGC</h3><p>打印GC 的简要信息<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[GC (Allocation Failure) [PSYoungGen: <span class="number">975</span>K-&gt;<span class="number">480</span>K(<span class="number">1536</span>K)] <span class="number">14287</span>K-&gt;<span class="number">14016</span>K(<span class="number">15360</span>K), <span class="number">0.0067338</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.01</span> secs]</span><br></pre></td></tr></table></figure></p>
+<h3 id="XX-PrintGCTimeStamps"><a href="#XX-PrintGCTimeStamps" class="headerlink" title="-XX:+PrintGCTimeStamps"></a>-XX:+PrintGCTimeStamps</h3><p>打印 GC 发生的时间戳</p>
+<h3 id="XX-PrintGCDetails"><a href="#XX-PrintGCDetails" class="headerlink" title="-XX:+PrintGCDetails"></a>-XX:+PrintGCDetails</h3><p>程序运行结束后，打印GC的日志<br>PSYongGen 新生代 包含下面三个<br>eden 对象出生的地方<br>from 幸存 from to 两个对等<br>to<br>ParOldGen 老年代<br>元空间<br>Metaspace<br>JDK 好像没有永久代了<br>JDK 8开始把类的元数据放到本地化的堆内存(native heap)中，这一块区域就叫Metaspace，中文名叫元空间。<br>新增参数<br>-XX:MetaspaceSize是分配给类元数据空间（以字节计）的初始大小(Oracle逻辑存储上的初始高水位，the initial high-water-mark )，此值为估计值。MetaspaceSize的值设置的过大会延长垃圾回收时间。垃圾回收过后，引起下一次垃圾回收的类元数据空间的大小可能会变大。<br>-XX:MaxMetaspaceSize是分配给类元数据空间的最大值，超过此值就会触发Full GC，此值默认没有限制，但应取决于系统内存的大小。JVM会动态地改变此值。<br>-XX:MinMetaspaceFreeRatio表示一次GC以后，为了避免增加元数据空间的大小，空闲的类元数据的容量的最小比例，不够就会导致垃圾回收。<br>-XX:MaxMetaspaceFreeRatio表示一次GC以后，为了避免增加元数据空间的大小，空闲的类元数据的容量的最大比例，不够就会导致垃圾回收。<br>后面括号里面<br>分别为 低边界， 当前边界， 最高边界<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Heap</span><br><span class="line"> PSYoungGen total <span class="number">1536</span>K, used <span class="number">31</span>K [<span class="number">0x00000000ff980000</span>, <span class="number">0x00000000ffb80000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line">  eden space <span class="number">1024</span>K, <span class="number">3</span>% used [<span class="number">0x00000000ff980000</span>,<span class="number">0x00000000ff987c68</span>,<span class="number">0x00000000ffa80000</span>)</span><br><span class="line">  from space <span class="number">512</span>K, <span class="number">0</span>% used [<span class="number">0x00000000ffa80000</span>,<span class="number">0x00000000ffa80000</span>,<span class="number">0x00000000ffb00000</span>)</span><br><span class="line">  to space <span class="number">512</span>K, <span class="number">0</span>% used [<span class="number">0x00000000ffb00000</span>,<span class="number">0x00000000ffb00000</span>,<span class="number">0x00000000ffb80000</span>)</span><br><span class="line"> ParOldGen total <span class="number">10240</span>K, used <span class="number">8863</span>K [<span class="number">0x00000000fec00000</span>, <span class="number">0x00000000ff600000</span>, <span class="number">0x00000000ff980000</span>) </span><br><span class="line">  object space <span class="number">10240</span>K, <span class="number">86</span>% used [<span class="number">0x00000000fec00000</span>,<span class="number">0x00000000ff4a7e68</span>,<span class="number">0x00000000ff600000</span>)</span><br><span class="line"> Metaspace used <span class="number">2690</span>K, capacity <span class="number">4486</span>K, committed <span class="number">4864</span>K, reserved <span class="number">1056768</span>K</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">space</span> <span class="title">used</span> 297<span class="title">K</span>, <span class="title">capacity</span> 386<span class="title">K</span>, <span class="title">committed</span> 512<span class="title">K</span>, <span class="title">reserved</span> 1048576<span class="title">K</span></span></span><br></pre></td></tr></table></figure></p>
+<h3 id="Xloggc-log-gc-log"><a href="#Xloggc-log-gc-log" class="headerlink" title="-Xloggc:log/gc.log"></a>-Xloggc:log/gc.log</h3><p>指定 GC log 的位置，以文件输出<br>注意一点，上级目录要存在</p>
+<h3 id="XX-PrintHeapAtGC"><a href="#XX-PrintHeapAtGC" class="headerlink" title="-XX:+PrintHeapAtGC"></a>-XX:+PrintHeapAtGC</h3><p>每一次GC后，打印堆信息（GC 前后）<br>开发调试的时候可以用一下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;Heap before GC invocations=<span class="number">1</span> (full <span class="number">0</span>):</span><br><span class="line"> PSYoungGen total <span class="number">1536</span>K, used <span class="number">975</span>K [<span class="number">0x00000000ff980000</span>, <span class="number">0x00000000ffb80000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line">  eden space <span class="number">1024</span>K, <span class="number">95</span>% used [<span class="number">0x00000000ff980000</span>,<span class="number">0x00000000ffa73c20</span>,<span class="number">0x00000000ffa80000</span>)</span><br><span class="line">  from space <span class="number">512</span>K, <span class="number">0</span>% used [<span class="number">0x00000000ffb00000</span>,<span class="number">0x00000000ffb00000</span>,<span class="number">0x00000000ffb80000</span>)</span><br><span class="line">  to space <span class="number">512</span>K, <span class="number">0</span>% used [<span class="number">0x00000000ffa80000</span>,<span class="number">0x00000000ffa80000</span>,<span class="number">0x00000000ffb00000</span>)</span><br><span class="line"> ParOldGen total <span class="number">13824</span>K, used <span class="number">13312</span>K [<span class="number">0x00000000fec00000</span>, <span class="number">0x00000000ff980000</span>, <span class="number">0x00000000ff980000</span>)</span><br><span class="line">  object space <span class="number">13824</span>K, <span class="number">96</span>% used [<span class="number">0x00000000fec00000</span>,<span class="number">0x00000000ff9000d0</span>,<span class="number">0x00000000ff980000</span>)</span><br><span class="line"> Metaspace used <span class="number">2682</span>K, capacity <span class="number">4486</span>K, committed <span class="number">4864</span>K, reserved <span class="number">1056768</span>K</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">space</span> <span class="title">used</span> 296<span class="title">K</span>, <span class="title">capacity</span> 386<span class="title">K</span>, <span class="title">committed</span> 512<span class="title">K</span>, <span class="title">reserved</span> 1048576<span class="title">K</span></span></span><br><span class="line">0.116: [GC (Allocation Failure) 14287K-&gt;14008K(15360K), 0.0011068 secs]</span><br><span class="line">Heap after GC invocations=<span class="number">1</span> (full <span class="number">0</span>):</span><br><span class="line"> PSYoungGen total <span class="number">1536</span>K, used <span class="number">496</span>K [<span class="number">0x00000000ff980000</span>, <span class="number">0x00000000ffb80000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line">  eden space <span class="number">1024</span>K, <span class="number">0</span>% used [<span class="number">0x00000000ff980000</span>,<span class="number">0x00000000ff980000</span>,<span class="number">0x00000000ffa80000</span>)</span><br><span class="line">  from space <span class="number">512</span>K, <span class="number">96</span>% used [<span class="number">0x00000000ffa80000</span>,<span class="number">0x00000000ffafc040</span>,<span class="number">0x00000000ffb00000</span>)</span><br><span class="line">  to space <span class="number">512</span>K, <span class="number">0</span>% used [<span class="number">0x00000000ffb00000</span>,<span class="number">0x00000000ffb00000</span>,<span class="number">0x00000000ffb80000</span>)</span><br><span class="line"> ParOldGen total <span class="number">13824</span>K, used <span class="number">13512</span>K [<span class="number">0x00000000fec00000</span>, <span class="number">0x00000000ff980000</span>, <span class="number">0x00000000ff980000</span>)</span><br><span class="line">  object space <span class="number">13824</span>K, <span class="number">97</span>% used [<span class="number">0x00000000fec00000</span>,<span class="number">0x00000000ff9320d0</span>,<span class="number">0x00000000ff980000</span>)</span><br><span class="line"> Metaspace used <span class="number">2682</span>K, capacity <span class="number">4486</span>K, committed <span class="number">4864</span>K, reserved <span class="number">1056768</span>K</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">space</span> <span class="title">used</span> 296<span class="title">K</span>, <span class="title">capacity</span> 386<span class="title">K</span>, <span class="title">committed</span> 512<span class="title">K</span>, <span class="title">reserved</span> 1048576<span class="title">K</span></span></span><br><span class="line"><span class="class">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="XX-TraceClassLoading"><a href="#XX-TraceClassLoading" class="headerlink" title="-XX:+TraceClassLoading"></a>-XX:+TraceClassLoading</h3><p>监控加载的类，每一个类加载都记录<br>同样，在跟踪调试的时候可以用一下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[Opened C:\Program Files\Java\jre1<span class="number">.8</span><span class="number">.0_161</span>\lib\rt.jar]</span><br><span class="line">[Loaded java.lang.Object from C:\Program Files\Java\jre1<span class="number">.8</span><span class="number">.0_161</span>\lib\rt.jar]</span><br><span class="line">[Loaded java.io.Serializable from C:\Program Files\Java\jre1<span class="number">.8</span><span class="number">.0_161</span>\lib\rt.jar]</span><br><span class="line">[Loaded java.lang.Comparable from C:\Program Files\Java\jre1<span class="number">.8</span><span class="number">.0_161</span>\lib\rt.jar]</span><br><span class="line">[Loaded java.lang.CharSequence from C:\Program Files\Java\jre1<span class="number">.8</span><span class="number">.0_161</span>\lib\rt.jar]</span><br><span class="line">[Loaded java.lang.String from C:\Program Files\Java\jre1<span class="number">.8</span><span class="number">.0_161</span>\lib\rt.jar]</span><br><span class="line">[Loaded java.lang.reflect.AnnotatedElement from C:\Program Files\Java\jre1<span class="number">.8</span><span class="number">.0_161</span>\lib\rt.jar]</span><br><span class="line">[Loaded java.lang.reflect.GenericDeclaration from C:\Program Files\Java\jre1<span class="number">.8</span><span class="number">.0_161</span>\</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<h3 id="XX-PrintClassHistogram"><a href="#XX-PrintClassHistogram" class="headerlink" title="-XX:+PrintClassHistogram"></a>-XX:+PrintClassHistogram</h3><p>控制台在运行的时候，按 Ctrl + Break 打印类的信息<br>windows 上好像按不出来<br>就是打印每个类实例的数量，使用空间</p>
+<h2 id="堆分配参数"><a href="#堆分配参数" class="headerlink" title="堆分配参数"></a>堆分配参数</h2><h3 id="Xmx-Xms"><a href="#Xmx-Xms" class="headerlink" title="-Xmx -Xms"></a>-Xmx -Xms</h3><p>指定最大堆和最小堆<br>-Xmx20m -Xms5m</p>
+<h3 id="Xmn"><a href="#Xmn" class="headerlink" title="-Xmn"></a>-Xmn</h3><p>设置新生代大小<br>-Xmn2m<br>一个 eden 加上两个 survivor 为 2m<br>设置新生代为 2m<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">PS E:\study\java\jvm\jvm01&gt; java -Xmx20m -Xms20m -Xmn2m -XX:+PrintGCDetails TestGC</span><br><span class="line">[GC (Allocation Failure) [PSYoungGen: <span class="number">974</span>K-&gt;<span class="number">504</span>K(<span class="number">1536</span>K)] <span class="number">18383</span>K-&gt;<span class="number">18160</span>K(<span class="number">19968</span>K), <span class="number">0.0016176</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.00</span> secs]</span><br><span class="line">[GC (Allocation Failure) [PSYoungGen: <span class="number">504</span>K-&gt;<span class="number">496</span>K(<span class="number">1536</span>K)] <span class="number">18160</span>K-&gt;<span class="number">18160</span>K(<span class="number">19968</span>K), <span class="number">0.0009107</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.00</span> secs]</span><br><span class="line">[<span class="function">Full <span class="title">GC</span> <span class="params">(Allocation Failure)</span> [PSYoungGen: 496K-&gt;0<span class="title">K</span><span class="params">(<span class="number">1536</span>K)</span>] [ParOldGen: 17664K-&gt;1695<span class="title">K</span><span class="params">(<span class="number">18432</span>K)</span>] 18160K-&gt;1695<span class="title">K</span><span class="params">(<span class="number">19968</span>K)</span>, [Metaspace: 2683K-&gt;2683<span class="title">K</span><span class="params">(<span class="number">1056768</span>K)</span>], 0.0056298 secs] [Times: user</span>=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.01</span> secs]</span><br><span class="line">end</span><br><span class="line">Heap</span><br><span class="line"> PSYoungGen total <span class="number">1536</span>K, used <span class="number">31</span>K [<span class="number">0x00000000ffe00000</span>, <span class="number">0x0000000100000000</span>, <span class="number">0x0000000100000000</span>) </span><br><span class="line">  eden space <span class="number">1024</span>K, <span class="number">3</span>% used [<span class="number">0x00000000ffe00000</span>,<span class="number">0x00000000ffe07c68</span>,<span class="number">0x00000000fff00000</span>)</span><br><span class="line">  from space <span class="number">512</span>K, <span class="number">0</span>% used [<span class="number">0x00000000fff80000</span>,<span class="number">0x00000000fff80000</span>,<span class="number">0x0000000100000000</span>)</span><br><span class="line">  to space <span class="number">512</span>K, <span class="number">0</span>% used [<span class="number">0x00000000fff00000</span>,<span class="number">0x00000000fff00000</span>,<span class="number">0x00000000fff80000</span>)</span><br><span class="line"> ParOldGen total <span class="number">18432</span>K, used <span class="number">4767</span>K [<span class="number">0x00000000fec00000</span>, <span class="number">0x00000000ffe00000</span>, <span class="number">0x00000000ffe00000</span>) </span><br><span class="line">  object space <span class="number">18432</span>K, <span class="number">25</span>% used [<span class="number">0x00000000fec00000</span>,<span class="number">0x00000000ff0a7ef0</span>,<span class="number">0x00000000ffe00000</span>)</span><br><span class="line"> Metaspace used <span class="number">2690</span>K, capacity <span class="number">4486</span>K, committed <span class="number">4864</span>K, reserved <span class="number">1056768</span>K</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">space</span> <span class="title">used</span> 297<span class="title">K</span>, <span class="title">capacity</span> 386<span class="title">K</span>, <span class="title">committed</span> 512<span class="title">K</span>, <span class="title">reserved</span> 1048576<span class="title">K</span></span></span><br></pre></td></tr></table></figure><br>上面可以看到对象都到老年代去了，因为新生代空间不够<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">PS E:\study\java\jvm\jvm01&gt; java -Xmx20m -Xms20m -Xmn15m -XX:+PrintGCDetails TestGC</span><br><span class="line">[GC (Allocation Failure) [PSYoungGen: <span class="number">11565</span>K-&gt;<span class="number">1504</span>K(<span class="number">13824</span>K)] <span class="number">11565</span>K-&gt;<span class="number">1736</span>K(<span class="number">18944</span>K), <span class="number">0.0012016</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.00</span> secs]</span><br><span class="line">end</span><br><span class="line">Heap</span><br><span class="line"> PSYoungGen total <span class="number">13824</span>K, used <span class="number">12107</span>K [<span class="number">0x00000000ff100000</span>, <span class="number">0x0000000100000000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line">  eden space <span class="number">12288</span>K, <span class="number">86</span>% used [<span class="number">0x00000000ff100000</span>,<span class="number">0x00000000ffb5afb8</span>,<span class="number">0x00000000ffd00000</span>)</span><br><span class="line">  from space <span class="number">1536</span>K, <span class="number">97</span>% used [<span class="number">0x00000000ffd00000</span>,<span class="number">0x00000000ffe78040</span>,<span class="number">0x00000000ffe80000</span>)</span><br><span class="line">  to space <span class="number">1536</span>K, <span class="number">0</span>% used [<span class="number">0x00000000ffe80000</span>,<span class="number">0x00000000ffe80000</span>,<span class="number">0x0000000100000000</span>)</span><br><span class="line"> ParOldGen total <span class="number">5120</span>K, used <span class="number">232</span>K [<span class="number">0x00000000fec00000</span>, <span class="number">0x00000000ff100000</span>, <span class="number">0x00000000ff100000</span>)</span><br><span class="line">  object space <span class="number">5120</span>K, <span class="number">4</span>% used [<span class="number">0x00000000fec00000</span>,<span class="number">0x00000000fec3a000</span>,<span class="number">0x00000000ff100000</span>)</span><br><span class="line"> Metaspace used <span class="number">2690</span>K, capacity <span class="number">4486</span>K, committed <span class="number">4864</span>K, reserved <span class="number">1056768</span>K</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">space</span> <span class="title">used</span> 297<span class="title">K</span>, <span class="title">capacity</span> 386<span class="title">K</span>, <span class="title">committed</span> 512<span class="title">K</span>, <span class="title">reserved</span> 1048576<span class="title">K</span></span></span><br></pre></td></tr></table></figure><br>调大新生代后，对象在新生代</p>
+<h3 id="XX-NewRatio"><a href="#XX-NewRatio" class="headerlink" title="-XX:NewRatio"></a>-XX:NewRatio</h3><p>新生代(eden + 2s) 和老年代的比值<br>4 标识 新生代：老年代= 1：4，即年轻代占堆的 1/5</p>
+<h3 id="XX-SurvivorRatio"><a href="#XX-SurvivorRatio" class="headerlink" title="-XX:SurvivorRatio"></a>-XX:SurvivorRatio</h3><p>设置两个 Survivor 区 和 eden 的比<br>8 标识两个 Survivor:eden = 2：8 即，一个 Survivor 占年轻代的 1/10</p>
+<h3 id="XX-HeapDumpOnOutOfMemoryError"><a href="#XX-HeapDumpOnOutOfMemoryError" class="headerlink" title="-XX:+HeapDumpOnOutOfMemoryError"></a>-XX:+HeapDumpOnOutOfMemoryError</h3><p>OOM 的时候导出堆到文件</p>
+<h3 id="XX-HeapDumpPath"><a href="#XX-HeapDumpPath" class="headerlink" title="-XX:HeapDumpPath"></a>-XX:HeapDumpPath</h3><p>导出文件路径<br>-XX:HeapDumpPath=logs/a.dump</p>
+<h3 id="XX-OnOutOfMemoryError"><a href="#XX-OnOutOfMemoryError" class="headerlink" title="-XX:OnOutOfMemoryError"></a>-XX:OnOutOfMemoryError</h3><p>在 OOM 时候，执行一个脚本<br>-XX:OnOutOfMemoryError=”test.bat %p”<br>可以在 OOM 的时候发送邮件，甚至重启程序<br>外面套引号<br>测试了一下，可以执行脚本，但是 %p 进程没有传进去，在windows 上测试的</p>
+<h3 id="堆分配总结"><a href="#堆分配总结" class="headerlink" title="堆分配总结"></a>堆分配总结</h3><p>官方推荐<br>新生代占堆的 3/8<br>幸存代占新生代的 1/10<br>OOM的时候记得 Dump 堆，确保可以排查现场问题</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/04/java-%E6%B3%9B%E5%9E%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -990,97 +1080,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/19/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/19/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">适配器模式</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-08-19 20:52:38" itemprop="dateCreated datePublished" datetime="2019-08-19T20:52:38+08:00">2019-08-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-22 11:19:45" itemprop="dateModified" datetime="2019-11-22T11:19:45+08:00">2019-11-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a href="https://github.com/iluwatar/java-design-patterns" target="_blank" rel="noopener">引用地址</a> </p>
-<p>适配器模式（Adapter Pattern）是作为两个不兼容的接口之间的桥梁。这种类型的设计模式属于结构型模式，它结合了两个独立接口的功能。</p>
-<p>这种模式涉及到一个单一的类，该类负责加入独立的或不兼容的接口功能。举个真实的例子，读卡器是作为内存卡和笔记本之间的适配器。您将内存卡插入读卡器，再将读卡器插入笔记本，这样就可以通过笔记本来读取内存卡。</p>
-<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p><strong>意图：</strong>将一个类的接口转换成客户希望的另外一个接口。适配器模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。</p>
-<p><strong>主要解决：</strong>主要解决在软件系统中，常常要将一些”现存的对象”放到新的环境中，而新环境要求的接口是现对象不能满足的。</p>
-<p><strong>何时使用：</strong> </p>
-<ol>
-<li>系统需要使用现有的类，而此类的接口不符合系统的需要。 </li>
-<li>想要建立一个可以重复使用的类，用于与一些彼此之间没有太大关联的一些类，包括一些可能在将来引进的类一起工作，这些源类不一定有一致的接口。 </li>
-<li>通过接口转换，将一个类插入另一个类系中。（比如老虎和飞禽，现在多了一个飞虎，在不增加实体的需求下，增加一个适配器，在里面包容一个虎对象，实现飞的接口。）</li>
-</ol>
-<p><strong>如何解决：</strong>继承或依赖（组合）。</p>
-<h2 id="代码实例"><a href="#代码实例" class="headerlink" title="代码实例"></a>代码实例</h2><p>代码结构相似的几个设计模式，适配，代理等<br>适配主要要从含义去理解，譬如在系统里面定义好了接口，系统都在使用接口<br>现在需要扩展，功能有第三方包实现了，他肯定没有实现系统里面定义的接口，怎么使用呢，那就是适配</p>
-<p>下面的例子，船长开游艇，现在有一个渔船需要船长开，咋开，把它当做一个游艇开。。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Captain</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> RowingBoat rowingBoat;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Captain</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Captain</span><span class="params">(RowingBoat rowingBoat)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.rowingBoat = rowingBoat;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRowingBoat</span><span class="params">(RowingBoat rowingBoat)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.rowingBoat = rowingBoat;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">row</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    rowingBoat.row();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">RowingBoat</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">row</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FishingBoat</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOGGER = LoggerFactory.getLogger(FishingBoat<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sail</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    LOGGER.info(<span class="string">"The fishing boat is sailing"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FishingBoatAdapter</span> <span class="keyword">implements</span> <span class="title">RowingBoat</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> FishingBoat boat;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">FishingBoatAdapter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    boat = <span class="keyword">new</span> FishingBoat();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">row</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    boat.sail();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"><span class="comment">// The captain can only operate rowing boats but with adapter he is able to use fishing boats as well</span></span><br><span class="line">Captain captain = <span class="keyword">new</span> Captain(<span class="keyword">new</span> FishingBoatAdapter());</span><br><span class="line">captain.row();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里需要注意一点就是，如果用到了上面涉及模式，要在类名里面体现出来（FishingBoatAdapter），这样看的人就知道了</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1131,7 +1130,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">83</span>
+          <span class="site-state-item-count">84</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
