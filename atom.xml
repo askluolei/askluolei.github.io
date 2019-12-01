@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-11-30T16:52:42.917Z</updated>
+  <updated>2019-12-01T14:41:18.296Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>组合总和</title>
+    <link href="http://yoursite.com/2019/12/01/leetcode/39/"/>
+    <id>http://yoursite.com/2019/12/01/leetcode/39/</id>
+    <published>2019-12-01T14:33:35.000Z</published>
+    <updated>2019-12-01T14:41:18.296Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个无重复元素的数组 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。</p><p>candidates 中的数字可以无限制重复被选取。</p><p>说明：</p><p>所有数字（包括 target）都是正整数。<br>解集不能包含重复的组合。<br><em>示例 1:</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入: candidates = [2,3,6,7], target = 7,</span><br><span class="line">所求解集为:</span><br><span class="line">[</span><br><span class="line">  [7],</span><br><span class="line">  [2,2,3]</span><br><span class="line">]</span><br></pre></td></tr></table></figure><br><em>示例 2:</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">输入: candidates = [2,3,5], target = 8,</span><br><span class="line">所求解集为:</span><br><span class="line">[</span><br><span class="line">  [2,2,2,2],</span><br><span class="line">  [2,3,3],</span><br><span class="line">  [3,5]</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p><h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><p>先排序，用来剔除重复的结果<br>譬如 <code>candidates = [2, 3, 7], target = 18</code><br>思路就是从 <code>18 - 2</code> <code>18 - 3</code> <code>18 - 7</code> ，然后递归调用。  </p><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">combinationSum</span><span class="params">(candidates []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> [][]<span class="title">int</span></span> &#123;</span><br><span class="line"><span class="comment">// 可以重复使用列表里面的数</span></span><br><span class="line"><span class="comment">// 结果不能重复</span></span><br><span class="line"><span class="keyword">var</span> res [][]<span class="keyword">int</span></span><br><span class="line">n := <span class="built_in">len</span>(candidates)</span><br><span class="line"><span class="keyword">if</span> n != <span class="number">0</span> &#123;</span><br><span class="line"><span class="comment">// n*logn</span></span><br><span class="line">sort.Ints(candidates)</span><br><span class="line">findByCanditates(<span class="number">0</span>, target, candidates, []<span class="keyword">int</span>&#123;&#125;, &amp;res)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> res</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">findByCanditates</span><span class="params">(i, target <span class="keyword">int</span>, nums []<span class="keyword">int</span>, candidates []<span class="keyword">int</span>, res *[][]<span class="keyword">int</span>)</span></span>  &#123;</span><br><span class="line">  <span class="comment">// 结果在这里</span></span><br><span class="line"><span class="keyword">if</span> target == <span class="number">0</span> &#123;</span><br><span class="line">*res = <span class="built_in">append</span>(*res, candidates)</span><br><span class="line"><span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 截止情况</span></span><br><span class="line"><span class="keyword">if</span> i == <span class="built_in">len</span>(nums) || target &lt; nums[i] &#123;</span><br><span class="line"><span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 问题在这里，如果直接对 candidates 进行修改，这里是 go 这里是引用传参，会导致其他地方都会有问题</span></span><br><span class="line"><span class="comment">// 因此，新建一个 slice 然后 copy，但是，copy 对时候，注意 newCandidate 对初始长度与 candidates 一样，否则多出来对会为0，如果少了，它也不自动扩容</span></span><br><span class="line"><span class="comment">// 因此这里使用 make 创建，而不是初始定义，初始定义为 nil，copy 没作用</span></span><br><span class="line"><span class="keyword">var</span> newCandidate = <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="built_in">len</span>(candidates))</span><br><span class="line"><span class="built_in">copy</span>(newCandidate, candidates)</span><br><span class="line">  newCandidate = <span class="built_in">append</span>(newCandidate, nums[i])</span><br><span class="line">  <span class="comment">// 使用递归调用，来构建树，这里代表深度，尝试先用小的数累加，然后看看有没有结果</span></span><br><span class="line">  findByCanditates(i, target - nums[i], nums, newCandidate, res)</span><br><span class="line">  <span class="comment">// 这里是广度，target 没变化，i + 1，代表，尝试往后面看，有没有用最少的数量组成结果</span></span><br><span class="line">findByCanditates(i+<span class="number">1</span>, target, nums, candidates, res)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;问题&quot;&gt;&lt;a href=&quot;#问题&quot; class=&quot;headerlink&quot; title=&quot;问题&quot;&gt;&lt;/a&gt;问题&lt;/h2&gt;&lt;p&gt;给定一个无重复元素的数组 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target
+      
+    
+    </summary>
+    
+    
+      <category term="leetcode" scheme="http://yoursite.com/categories/leetcode/"/>
+    
+    
+      <category term="leetcode" scheme="http://yoursite.com/tags/leetcode/"/>
+    
+      <category term="数组" scheme="http://yoursite.com/tags/%E6%95%B0%E7%BB%84/"/>
+    
+  </entry>
   
   <entry>
     <title>搜索插入位置</title>
@@ -567,33 +595,6 @@
       <category term="leetcode" scheme="http://yoursite.com/tags/leetcode/"/>
     
       <category term="数组" scheme="http://yoursite.com/tags/%E6%95%B0%E7%BB%84/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>leetcode 练习</title>
-    <link href="http://yoursite.com/2019/11/10/leetcode/0/"/>
-    <id>http://yoursite.com/2019/11/10/leetcode/0/</id>
-    <published>2019-11-10T02:56:51.000Z</published>
-    <updated>2019-11-30T16:54:35.589Z</updated>
-    
-    <content type="html"><![CDATA[<p>开辟一个新的模块练习算法，准备用 <code>go</code> 语言来写。<br>主要是为了熟悉 <code>go</code> 语言,还有算法，不至于每次看到算法题就完全没有思路。<br>顺序的话，按照不同类型训练，先练习数组类的，目标先订 20 题    </p><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><div class="table-container"><table><thead><tr><th>类型</th><th>目标</th><th>完成</th></tr></thead><tbody><tr><td>数组</td><td>20</td><td>12</td></tr></tbody></table></div><h2 id="汇总"><a href="#汇总" class="headerlink" title="汇总"></a>汇总</h2><div class="table-container"><table><thead><tr><th>类型</th><th>难度</th><th>博文</th><th>leetcode 地址</th></tr></thead><tbody><tr><td>数组</td><td>简单</td><td><a href="/2019/11/10/leetcode/1">两数之和</a></td><td><a href="https://leetcode-cn.com/problems/two-sum/" target="_blank" rel="noopener">两数之和</a></td></tr><tr><td>数组</td><td>困难</td><td><a href="/2019/11/16/leetcode/4">寻找两个有序数组的中位数</a></td><td><a href="https://leetcode-cn.com/problems/median-of-two-sorted-arrays/" target="_blank" rel="noopener">寻找两个有序数组的中位数</a></td></tr><tr><td>数组</td><td>中等</td><td><a href="/2019/11/16/leetcode/11">盛最多水的容器</a></td><td><a href="https://leetcode-cn.com/problems/container-with-most-water/" target="_blank" rel="noopener">盛最多水的容器</a></td></tr><tr><td>数组</td><td>中等</td><td><a href="/2019/11/18/leetcode/15">三数之和</a></td><td><a href="https://leetcode-cn.com/problems/3sum/" target="_blank" rel="noopener">三数之和</a></td></tr><tr><td>数组</td><td>中等</td><td><a href="/2019/11/19/leetcode/16">最接近的三数之和</a></td><td><a href="https://leetcode-cn.com/problems/3sum-closest/" target="_blank" rel="noopener">最接近的三数之和</a></td></tr><tr><td>数组</td><td>中等</td><td><a href="/2019/11/20/leetcode/18">四数之和</a></td><td><a href="https://leetcode-cn.com/problems/4sum/" target="_blank" rel="noopener">四数之和</a></td></tr><tr><td>数组</td><td>简单</td><td><a href="/2019/11/21/leetcode/26">删除排序数组中的重复项</a></td><td><a href="https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/" target="_blank" rel="noopener">删除排序数组中的重复项</a></td></tr><tr><td>数组</td><td>简单</td><td><a href="/2019/11/23/leetcode/27">移除元素</a></td><td><a href="https://leetcode-cn.com/problems/remove-element/" target="_blank" rel="noopener">移除元素</a></td></tr><tr><td>数组</td><td>中等</td><td><a href="/2019/11/24/leetcode/31">下一个排列</a></td><td><a href="https://leetcode-cn.com/problems/next-permutation/" target="_blank" rel="noopener">下一个排列</a></td></tr><tr><td>数组</td><td>中等</td><td><a href="/2019/11/26/leetcode/33">搜索旋转排序数组</a></td><td><a href="https://leetcode-cn.com/problems/search-in-rotated-sorted-array/" target="_blank" rel="noopener">搜索旋转排序数组</a></td></tr><tr><td>数组</td><td>中等</td><td><a href="/2019/11/28/leetcode/34">在排序数组中查找元素的第一个和最后一个位置</a></td><td><a href="https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/" target="_blank" rel="noopener">在排序数组中查找元素的第一个和最后一个位置</a></td></tr><tr><td>数组</td><td>简单</td><td><a href="/2019/11/30/leetcode/35">搜索插入位置</a></td><td><a href="https://leetcode-cn.com/problems/search-insert-position/" target="_blank" rel="noopener">搜索插入位置</a></td></tr></tbody></table></div>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;开辟一个新的模块练习算法，准备用 &lt;code&gt;go&lt;/code&gt; 语言来写。&lt;br&gt;主要是为了熟悉 &lt;code&gt;go&lt;/code&gt; 语言,还有算法，不至于每次看到算法题就完全没有思路。&lt;br&gt;顺序的话，按照不同类型训练，先练习数组类的，目标先订 20 题    &lt;/p&gt;
-&lt;
-      
-    
-    </summary>
-    
-    
-      <category term="leetcode" scheme="http://yoursite.com/categories/leetcode/"/>
-    
-    
-      <category term="leetcode" scheme="http://yoursite.com/tags/leetcode/"/>
     
   </entry>
   
