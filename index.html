@@ -213,6 +213,81 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/04/leetcode/41/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/04/leetcode/41/" class="post-title-link" itemprop="url">缺失的第一个正数</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-12-04 21:58:25 / 修改时间：22:28:44" itemprop="dateCreated datePublished" datetime="2019-12-04T21:58:25+08:00">2019-12-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/leetcode/" itemprop="url" rel="index">
+                    <span itemprop="name">leetcode</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个未排序的整数数组，找出其中没有出现的最小的正整数。</p>
+<p><em>示例 1:</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [1,2,0]</span><br><span class="line">输出: 3</span><br></pre></td></tr></table></figure><br><em>示例 2:</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [3,4,-1,1]</span><br><span class="line">输出: 2</span><br></pre></td></tr></table></figure><br><em>示例 3:</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [7,8,9,11,12]</span><br><span class="line">输出: 1</span><br></pre></td></tr></table></figure><br><em>说明:</em><br>你的算法的时间复杂度应为O(n)，并且只能使用常数级别的空间。</p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><h3 id="思路1"><a href="#思路1" class="headerlink" title="思路1"></a>思路1</h3><p>不考虑空间限制，使用 <code>map</code> 记录出现的数字<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">firstMissingPositive</span><span class="params">(nums []<span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="comment">// 空间换时间，暴力解法</span></span><br><span class="line">	m := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">bool</span>)</span><br><span class="line">	<span class="keyword">for</span> _, num := <span class="keyword">range</span> nums &#123;</span><br><span class="line">		m[num] = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">	n := <span class="built_in">len</span>(nums) + <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">1</span>;i&lt;n;i++ &#123;</span><br><span class="line">		_, ok := m[i]</span><br><span class="line">		<span class="keyword">if</span> !ok &#123;</span><br><span class="line">			<span class="keyword">return</span> i</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> n</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="思路2"><a href="#思路2" class="headerlink" title="思路2"></a>思路2</h3><p>还是上面的思路，不过，依据结果肯定在 <code>(0,n]</code> 之间,因此可以使用一个数组来记录<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">firstMissingPositive</span><span class="params">(nums []<span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="comment">// 使用数组 结果只可能是 (0, len+1] 中间，因此，构建一个数组，坐标元素相同</span></span><br><span class="line">	length := <span class="built_in">len</span>(nums)</span><br><span class="line">	m := <span class="built_in">make</span>([]<span class="keyword">int</span>, length + <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">for</span> _, num := <span class="keyword">range</span> nums &#123;</span><br><span class="line">		<span class="keyword">if</span> num&gt;<span class="number">0</span> &amp;&amp; num &lt;= length &#123;</span><br><span class="line">			m[num] = num</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 不相同的，代表不存在，直接取结果了</span></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">1</span>;i&lt;=length;i++ &#123;</span><br><span class="line">		<span class="keyword">if</span> m[i] != i &#123;</span><br><span class="line">			<span class="keyword">return</span> i</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> length + <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="思路3"><a href="#思路3" class="headerlink" title="思路3"></a>思路3</h3><p>上面两个解法空间都不满足要求，题目要求常量级别空间，基本就断定，只能在原数组都基础上修改来。还是利用结果在 <code>(0,n]</code>, 剔除掉不在范围内都。都使用 <code>1</code> 来填充,上面思路2，我们使用 <code>a[i] = i + 1</code> 来表示出现来数字 <code>i</code>,现在，使用取负数，来表示出现过 <code>i</code>.<br>为啥取负数，因为，当我们有 <code>a = nums[i]</code> 在范围 <code>(0,n]</code> ， 我们需要记录 <code>nums[a]</code> .如何记录，上面思路2，是等于 i + 1.但是，这样就修改来原有都数字来，我们需要保留这个数字，因此取负数</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">firstMissingPositive</span><span class="params">(nums []<span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	length := <span class="built_in">len</span>(nums)</span><br><span class="line"></span><br><span class="line">	has1 := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>;i&lt;length;i++ &#123;</span><br><span class="line">		<span class="keyword">if</span> nums[i]==<span class="number">1</span> &#123;</span><br><span class="line">			has1++</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> has1 == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> length == <span class="number">1</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>; i &lt; length;i++ &#123;</span><br><span class="line">		<span class="keyword">if</span> nums[i] &lt;= <span class="number">0</span> || nums[i] &gt; length &#123;</span><br><span class="line">			nums[i]=<span class="number">1</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>; i&lt;length;i++&#123;</span><br><span class="line">		a := abs(nums[i])</span><br><span class="line">		<span class="keyword">if</span> a == length &#123;</span><br><span class="line">			nums[<span class="number">0</span>] = - abs(nums[<span class="number">0</span>])</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			nums[a] = - abs(nums[a])</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">1</span>;i&lt;length;i++ &#123;</span><br><span class="line">		<span class="keyword">if</span> nums[i] &gt; <span class="number">0</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> i</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[<span class="number">0</span>] &gt; <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> length</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> length + <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">abs</span><span class="params">(a <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> a &lt; <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> -a</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> a</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/02/leetcode/40/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1018,105 +1093,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/22/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/22/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">线程池常见问题记录</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-22 12:03:26" itemprop="dateCreated datePublished" datetime="2019-11-22T12:03:26+08:00">2019-11-22</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">技术笔记</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>记录一些常见的关于线程池的问题，参考其他看过的资料，总结为自己的答案</p>
-<h2 id="为什么不推荐使用-Executors-创建线程池"><a href="#为什么不推荐使用-Executors-创建线程池" class="headerlink" title="为什么不推荐使用 Executors 创建线程池"></a>为什么不推荐使用 Executors 创建线程池</h2><p><code>Executors</code> 内部使用的是 <code>ThreadPoolExecutor</code>，如果转为直接使用 <code>ThreadPoolExecutor</code>, 那么需要使用者了解内部的原理，至少知道几个参数是干嘛的。如果使用 <code>Executors</code> 创建，可能不太清楚内部的规则，而导致资源耗尽的异常。</p>
-<h2 id="线程池的参数有哪些"><a href="#线程池的参数有哪些" class="headerlink" title="线程池的参数有哪些"></a>线程池的参数有哪些</h2><p>这里，其实就是问的 <code>ThreadPoolExecutor</code> 构造需要哪些参数，当然，<code>ThreadPoolExecutor</code> 内部也有几个非构造传入的参数，其中重点参数有</p>
-<ol>
-<li>corePoolSize 核心线程数</li>
-<li>maximumPoolSize 最大线程数</li>
-<li>keepAliveTime 超过核心线程数，最大空闲存活时间</li>
-<li>unit 上面的单位</li>
-<li>workQueue 工作队列</li>
-<li>threadFactory 线程工程，这里注意修改线程名和是否后台线程</li>
-<li>handler  拒绝策略 <code>RejectedExecutionHandler</code> 接口的实现</li>
-</ol>
-<p>除了上面的构造参数，还有一个 <code>allowCoreThreadTimeOut</code> 是否允许释放核心线程，正常情况下，线程池会维持至少 core 个核心线程，如果配置了这个参数，那么核心线程也会使用 <code>keepAliveTime</code> 的配置来释放自己</p>
-<h2 id="线程池的任务提交流程"><a href="#线程池的任务提交流程" class="headerlink" title="线程池的任务提交流程"></a>线程池的任务提交流程</h2><ol>
-<li>如果线程池中线程的数量 小于 core ，那么创建新的任务线程</li>
-<li>如果已经到达了 core 线程，那么丢任务队列 workQueue</li>
-<li>如果队列满了，继续新建线程数量 小于 maximumPoolSize （对单个任务来说，只是建一个线程，当然，也可能建不了，因为 core == maximumPoolSize）</li>
-<li>如果线程数量达到 maximumPoolSize ，那么使用拒绝策略 <code>RejectedExecutionHandler</code></li>
-</ol>
-<h2 id="线程池的关闭方法是上面，对正在运行的线程有怎样的影响"><a href="#线程池的关闭方法是上面，对正在运行的线程有怎样的影响" class="headerlink" title="线程池的关闭方法是上面，对正在运行的线程有怎样的影响"></a>线程池的关闭方法是上面，对正在运行的线程有怎样的影响</h2><p>关闭方法有两个</p>
-<ol>
-<li>shutdown<br>设置为 <code>SHUTDOWN</code> 状态，不再接受新的任务，已有的任务继续执行</li>
-<li>shutdownNow<br>设置为 <code>STOP</code> 状态，不再接受新的任务，尝试停止所有正在执行的任务（设置中断），返回还未执行的任务队列</li>
-</ol>
-<h2 id="线程池有哪些拒绝策略"><a href="#线程池有哪些拒绝策略" class="headerlink" title="线程池有哪些拒绝策略"></a>线程池有哪些拒绝策略</h2><p>拒绝策略是实现 <code>RejectedExecutionHandler</code> 接口。内部有以下几种实现  </p>
-<ol>
-<li>AbortPolicy 抛 <code>RejectedExecutionException</code> 异常， 这个是默认的</li>
-<li>DiscardPolicy  啥事也不做，默默的丢到任务</li>
-<li>DiscardOldestPolicy  丢到队列头部的任务，也就是最老（早）的任务</li>
-<li>CallerRunsPolicy 直接在调用线程执行任务</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1167,7 +1143,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">87</span>
+          <span class="site-state-item-count">88</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
