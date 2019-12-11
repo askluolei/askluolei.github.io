@@ -213,6 +213,114 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/13/MySQL-%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/09/13/MySQL-%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/" class="post-title-link" itemprop="url">MySQL 索引使用的注意事项</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-13 21:20:27" itemprop="dateCreated datePublished" datetime="2019-09-13T21:20:27+08:00">2019-09-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-11-22 11:22:41" itemprop="dateModified" datetime="2019-11-22T11:22:41+08:00">2019-11-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">技术笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>索引能够加快查询速度，但是维护索引和更新索引也会消耗时间，<br>不过通常只要建立合适的索引，从加快查询速度获取的收益是可以忽略掉维护和更新索引的消耗时间的  </p>
+<p>创建索引的原则：</p>
+<ol>
+<li>更新频繁的列不应设置索引</li>
+<li>重复数据多的字段不应设为索引</li>
+<li>首先应该考虑对where 和 order by 涉及的列上建立索引</li>
+</ol>
+<p>可以使用 explain 来查看查询是否走索引了。<br>重点是</p>
+<ol>
+<li><p>type </p>
+<ul>
+<li>system 表中就一行</li>
+<li>const 通过索引一次找到</li>
+<li>eq_ref 唯一索引，包括主键索引</li>
+<li>ref 索引</li>
+<li>range 范围索引</li>
+<li>index  只遍历索引树</li>
+<li>all 全部扫描</li>
+</ul>
+<p>顺便说下，走索引不一定查询时间就慢，还有看表里面有多少行数据<br>实际上一条查询语句的快慢是根据扫描行数确定的  </p>
+</li>
+</ol>
+<p>优化语句：</p>
+<ol>
+<li>不要在 <code>=</code> 左边用函数，例如 where a/2 = 10</li>
+<li>不要用 <code>&lt;&gt;</code>, <code>!=</code>, <code>not in</code></li>
+<li>不用 null 判断</li>
+<li>like 不要用左模糊 %abc</li>
+<li>避免用 or ，用 union 代替</li>
+<li>exist 代替 in</li>
+<li>不要使用类型隐式转换</li>
+<li>联合索引的时候条件顺序<br>。。。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/11/mybatis%E7%BB%86%E8%8A%82%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1105,99 +1213,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/30/%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/30/%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">原型模式</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-08-30 22:53:43" itemprop="dateCreated datePublished" datetime="2019-08-30T22:53:43+08:00">2019-08-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-22 11:20:36" itemprop="dateModified" datetime="2019-11-22T11:20:36+08:00">2019-11-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a href="https://github.com/iluwatar/java-design-patterns" target="_blank" rel="noopener">引用地址</a> </p>
-<p>原型模式（Prototype Pattern）是用于创建重复的对象，同时又能保证性能。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p>
-<p>这种模式是实现了一个原型接口，该接口用于创建当前对象的克隆。当直接创建对象的代价比较大时，则采用这种模式。例如，一个对象需要在一个高代价的数据库操作之后被创建。我们可以缓存该对象，在下一个请求时返回它的克隆，在需要的时候更新数据库，以此来减少数据库调用。</p>
-<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p><strong>意图：</strong>用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。</p>
-<p><strong>主要解决：</strong>在运行期建立和删除原型。</p>
-<p><strong>何时使用：</strong></p>
-<ol>
-<li>当一个系统应该独立于它的产品创建，构成和表示时。 </li>
-<li>当要实例化的类是在运行时刻指定时，例如，通过动态装载。 </li>
-<li>为了避免创建一个与产品类层次平行的工厂类层次时。 </li>
-<li>当一个类的实例只能有几个不同状态组合中的一种时。建立相应数目的原型并克隆它们可能比每次用合适的状态手工实例化该类更方便一些。</li>
-</ol>
-<p><strong>如何解决：</strong>利用已有的一个原型对象，快速地生成和原型对象一样的实例。</p>
-<h2 id="代码实例"><a href="#代码实例" class="headerlink" title="代码实例"></a>代码实例</h2><p>简单点说就是对象的深复制。。<br>通常会给个基本接口有个 copy， deepcopy 等方法名的方法，构造方法接收本对象类型的参数<br>这里的例子依然是游戏世界的，魔法师，兽人，军队的创建</p>
-<p><strong>基础接口抽象类</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Prototype</span> <span class="keyword">implements</span> <span class="title">Cloneable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Object <span class="title">copy</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>支持深复制的对象</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Beast</span> <span class="keyword">extends</span> <span class="title">Prototype</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Beast <span class="title">copy</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Mage</span> <span class="keyword">extends</span> <span class="title">Prototype</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Mage <span class="title">copy</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Warlord</span> <span class="keyword">extends</span> <span class="title">Prototype</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Warlord <span class="title">copy</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ElfBeast</span> <span class="keyword">extends</span> <span class="title">Beast</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">private</span> String helpType;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ElfBeast</span><span class="params">(String helpType)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.helpType = helpType;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ElfBeast</span><span class="params">(ElfBeast elfBeast)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.helpType = elfBeast.helpType;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Beast <span class="title">copy</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ElfBeast(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Elven eagle helps in "</span> + helpType;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ElfMage</span> <span class="keyword">extends</span> <span class="title">Mage</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">  <span class="keyword">private</span> String helpType;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ElfMage</span><span class="params">(String helpType)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.helpType = helpType;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ElfMage</span><span class="params">(ElfMage elfMage)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.helpType = elfMage.helpType;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> ElfMage <span class="title">copy</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ElfMage(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Elven mage helps in "</span> + helpType;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ElfWarlord</span> <span class="keyword">extends</span> <span class="title">Warlord</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> String helpType;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ElfWarlord</span><span class="params">(String helpType)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.helpType = helpType;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ElfWarlord</span><span class="params">(ElfWarlord elfWarlord)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.helpType = elfWarlord.helpType;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> ElfWarlord <span class="title">copy</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ElfWarlord(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Elven warlord helps in "</span> + helpType;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrcBeast</span> <span class="keyword">extends</span> <span class="title">Beast</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">private</span> String weapon;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">OrcBeast</span><span class="params">(String weapon)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.weapon = weapon;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">OrcBeast</span><span class="params">(OrcBeast orcBeast)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.weapon = orcBeast.weapon;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Beast <span class="title">copy</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> OrcBeast(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Orcish wolf attacks with "</span> + weapon;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrcMage</span> <span class="keyword">extends</span> <span class="title">Mage</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> String weapon;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">OrcMage</span><span class="params">(String weapon)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.weapon = weapon;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">OrcMage</span><span class="params">(OrcMage orcMage)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.weapon = orcMage.weapon;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> OrcMage <span class="title">copy</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> OrcMage(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Orcish mage attacks with "</span> + weapon;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrcWarlord</span> <span class="keyword">extends</span> <span class="title">Warlord</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> String weapon;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">OrcWarlord</span><span class="params">(String weapon)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.weapon = weapon;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">OrcWarlord</span><span class="params">(OrcWarlord orcWarlord)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.weapon = orcWarlord.weapon;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> OrcWarlord <span class="title">copy</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> OrcWarlord(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Orcish warlord attacks with "</span> + weapon;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">**使用**</span><br><span class="line">```java</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">HeroFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function">Mage <span class="title">createMage</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">Warlord <span class="title">createWarlord</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">Beast <span class="title">createBeast</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HeroFactoryImpl</span> <span class="keyword">implements</span> <span class="title">HeroFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> Mage mage;</span><br><span class="line">  <span class="keyword">private</span> Warlord warlord;</span><br><span class="line">  <span class="keyword">private</span> Beast beast;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Constructor</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">HeroFactoryImpl</span><span class="params">(Mage mage, Warlord warlord, Beast beast)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.mage = mage;</span><br><span class="line">    <span class="keyword">this</span>.warlord = warlord;</span><br><span class="line">    <span class="keyword">this</span>.beast = beast;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Create mage</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Mage <span class="title">createMage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> mage.copy();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Create warlord</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Warlord <span class="title">createWarlord</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> warlord.copy();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Create beast</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Beast <span class="title">createBeast</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> beast.copy();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    HeroFactory factory;</span><br><span class="line">    Mage mage;</span><br><span class="line">    Warlord warlord;</span><br><span class="line">    Beast beast;</span><br><span class="line"></span><br><span class="line">    factory = <span class="keyword">new</span> HeroFactoryImpl(<span class="keyword">new</span> ElfMage(<span class="string">"cooking"</span>), <span class="keyword">new</span> ElfWarlord(<span class="string">"cleaning"</span>), <span class="keyword">new</span> ElfBeast(<span class="string">"protecting"</span>));</span><br><span class="line">    mage = factory.createMage();</span><br><span class="line">    warlord = factory.createWarlord();</span><br><span class="line">    beast = factory.createBeast();</span><br><span class="line">    LOGGER.info(mage.toString());</span><br><span class="line">    LOGGER.info(warlord.toString());</span><br><span class="line">    LOGGER.info(beast.toString());</span><br><span class="line"></span><br><span class="line">    factory = <span class="keyword">new</span> HeroFactoryImpl(<span class="keyword">new</span> OrcMage(<span class="string">"axe"</span>), <span class="keyword">new</span> OrcWarlord(<span class="string">"sword"</span>), <span class="keyword">new</span> OrcBeast(<span class="string">"laser"</span>));</span><br><span class="line">    mage = factory.createMage();</span><br><span class="line">    warlord = factory.createWarlord();</span><br><span class="line">    beast = factory.createBeast();</span><br><span class="line">    LOGGER.info(mage.toString());</span><br><span class="line">    LOGGER.info(warlord.toString());</span><br><span class="line">    LOGGER.info(beast.toString());</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>构建工厂的时候先传原型进去，每次创建都是根据原型对象深复制来创建新对象。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1248,7 +1263,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-count">90</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
