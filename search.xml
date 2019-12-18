@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>旋转图像</title>
+    <url>/2019/12/18/leetcode/48/</url>
+    <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个 <code>n × n</code> 的二维矩阵表示一个图像。</p>
+<p>将图像顺时针旋转 90 度。</p>
+<p>说明：</p>
+<p>你必须在原地旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要<em>使用</em>另一个矩阵来旋转图像。</p>
+<p><strong>示例 1:</strong><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定 matrix = </span><br><span class="line">[</span><br><span class="line">  [1,2,3],</span><br><span class="line">  [4,5,6],</span><br><span class="line">  [7,8,9]</span><br><span class="line">],</span><br><span class="line"></span><br><span class="line">原地旋转输入矩阵，使其变为:</span><br><span class="line">[</span><br><span class="line">  [7,4,1],</span><br><span class="line">  [8,5,2],</span><br><span class="line">  [9,6,3]</span><br><span class="line">]</span><br></pre></td></tr></table></figure><br><strong>示例 2:</strong><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给定 matrix =</span><br><span class="line">[</span><br><span class="line">  [ 5, 1, 9,11],</span><br><span class="line">  [ 2, 4, 8,10],</span><br><span class="line">  [13, 3, 6, 7],</span><br><span class="line">  [15,14,12,16]</span><br><span class="line">], </span><br><span class="line"></span><br><span class="line">原地旋转输入矩阵，使其变为:</span><br><span class="line">[</span><br><span class="line">  [15,13, 2, 5],</span><br><span class="line">  [14, 3, 4, 1],</span><br><span class="line">  [12, 6, 8, 9],</span><br><span class="line">  [16, 7,10,11]</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><h3 id="思路1"><a href="#思路1" class="headerlink" title="思路1"></a>思路1</h3><p>先矩阵转置，然后每行翻转。<br>时间复杂度 O（n*n）<br><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">rotate</span><span class="params">(matrix [][]<span class="keyword">int</span>)</span></span>  &#123;</span><br><span class="line">	n := <span class="built_in">len</span>(matrix)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 先矩阵转置，就是沿着对角线互换</span></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>;i&lt;n;i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> j:=i; j&lt;n;j++ &#123;</span><br><span class="line">			tmp := matrix[i][j]</span><br><span class="line">			matrix[i][j] = matrix[j][i]</span><br><span class="line">			matrix[j][i] = tmp</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 然后每行翻转</span></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>;i&lt;n;i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> j:=<span class="number">0</span>;j&lt;n/<span class="number">2</span>;j++ &#123;</span><br><span class="line">			tmp := matrix[i][j]</span><br><span class="line">			matrix[i][j] = matrix[i][n-j<span class="number">-1</span>]</span><br><span class="line">			matrix[i][n-j<span class="number">-1</span>] = tmp</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="思路2"><a href="#思路2" class="headerlink" title="思路2"></a>思路2</h3><p>就是将每4个对应的元素顺时针旋转一下<br><figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">rotate</span><span class="params">(matrix [][]<span class="keyword">int</span>)</span></span>  &#123;</span><br><span class="line">	n := <span class="built_in">len</span>(matrix)</span><br><span class="line">	<span class="comment">// 很自然的想法，就是对应位置的 4个元素顺时针转了一圈。</span></span><br><span class="line">	<span class="comment">// 可以以 n-4 的矩阵画一下，以 i=0,j=1 这个元素，来尝试一下下标变化</span></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>;i&lt;(n+<span class="number">1</span>)/<span class="number">2</span>;i++&#123;</span><br><span class="line">		<span class="keyword">for</span> j:=<span class="number">0</span>;j&lt;n/<span class="number">2</span>;j++&#123;</span><br><span class="line">			tmp := matrix[i][j]</span><br><span class="line">			matrix[i][j] = matrix[n<span class="number">-1</span>-j][i]</span><br><span class="line">			matrix[n<span class="number">-1</span>-j][i]=matrix[n<span class="number">-1</span>-i][n<span class="number">-1</span>-j]</span><br><span class="line">			matrix[n<span class="number">-1</span>-i][n<span class="number">-1</span>-j]=matrix[j][n<span class="number">-1</span>-i]</span><br><span class="line">			matrix[j][n<span class="number">-1</span>-i]=tmp</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>跳跃游戏 II</title>
     <url>/2019/12/11/leetcode/45/</url>
     <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个非负整数数组，你最初位于数组的第一个位置。</p>
@@ -723,7 +742,7 @@
 <tr>
 <td>数组</td>
 <td>20</td>
-<td>17</td>
+<td>18</td>
 </tr>
 </tbody>
 </table>
@@ -840,6 +859,12 @@
 <td>困难</td>
 <td><a href="/2019/12/11/leetcode/45">跳跃游戏 II</a></td>
 <td><a href="https://leetcode-cn.com/problems/jump-game-ii/" target="_blank" rel="noopener">跳跃游戏 II</a></td>
+</tr>
+<tr>
+<td>数组</td>
+<td>中等</td>
+<td><a href="/2019/12/18/leetcode/48">旋转图像</a></td>
+<td><a href="https://leetcode-cn.com/problems/rotate-image/" target="_blank" rel="noopener">旋转图像</a></td>
 </tr>
 </tbody>
 </table>

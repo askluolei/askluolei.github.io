@@ -213,6 +213,82 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/18/leetcode/48/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Luo lei">
+      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Askluolei">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/18/leetcode/48/" class="post-title-link" itemprop="url">旋转图像</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-12-18 21:41:21 / 修改时间：22:15:41" itemprop="dateCreated datePublished" datetime="2019-12-18T21:41:21+08:00">2019-12-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/leetcode/" itemprop="url" rel="index">
+                    <span itemprop="name">leetcode</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个 <code>n × n</code> 的二维矩阵表示一个图像。</p>
+<p>将图像顺时针旋转 90 度。</p>
+<p>说明：</p>
+<p>你必须在原地旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要<em>使用</em>另一个矩阵来旋转图像。</p>
+<p><strong>示例 1:</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">给定 matrix = </span><br><span class="line">[</span><br><span class="line">  [1,2,3],</span><br><span class="line">  [4,5,6],</span><br><span class="line">  [7,8,9]</span><br><span class="line">],</span><br><span class="line"></span><br><span class="line">原地旋转输入矩阵，使其变为:</span><br><span class="line">[</span><br><span class="line">  [7,4,1],</span><br><span class="line">  [8,5,2],</span><br><span class="line">  [9,6,3]</span><br><span class="line">]</span><br></pre></td></tr></table></figure><br><strong>示例 2:</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">给定 matrix =</span><br><span class="line">[</span><br><span class="line">  [ 5, 1, 9,11],</span><br><span class="line">  [ 2, 4, 8,10],</span><br><span class="line">  [13, 3, 6, 7],</span><br><span class="line">  [15,14,12,16]</span><br><span class="line">], </span><br><span class="line"></span><br><span class="line">原地旋转输入矩阵，使其变为:</span><br><span class="line">[</span><br><span class="line">  [15,13, 2, 5],</span><br><span class="line">  [14, 3, 4, 1],</span><br><span class="line">  [12, 6, 8, 9],</span><br><span class="line">  [16, 7,10,11]</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><h3 id="思路1"><a href="#思路1" class="headerlink" title="思路1"></a>思路1</h3><p>先矩阵转置，然后每行翻转。<br>时间复杂度 O（n*n）<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">rotate</span><span class="params">(matrix [][]<span class="keyword">int</span>)</span></span>  &#123;</span><br><span class="line">	n := <span class="built_in">len</span>(matrix)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 先矩阵转置，就是沿着对角线互换</span></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>;i&lt;n;i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> j:=i; j&lt;n;j++ &#123;</span><br><span class="line">			tmp := matrix[i][j]</span><br><span class="line">			matrix[i][j] = matrix[j][i]</span><br><span class="line">			matrix[j][i] = tmp</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 然后每行翻转</span></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>;i&lt;n;i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> j:=<span class="number">0</span>;j&lt;n/<span class="number">2</span>;j++ &#123;</span><br><span class="line">			tmp := matrix[i][j]</span><br><span class="line">			matrix[i][j] = matrix[i][n-j<span class="number">-1</span>]</span><br><span class="line">			matrix[i][n-j<span class="number">-1</span>] = tmp</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="思路2"><a href="#思路2" class="headerlink" title="思路2"></a>思路2</h3><p>就是将每4个对应的元素顺时针旋转一下<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">rotate</span><span class="params">(matrix [][]<span class="keyword">int</span>)</span></span>  &#123;</span><br><span class="line">	n := <span class="built_in">len</span>(matrix)</span><br><span class="line">	<span class="comment">// 很自然的想法，就是对应位置的 4个元素顺时针转了一圈。</span></span><br><span class="line">	<span class="comment">// 可以以 n-4 的矩阵画一下，以 i=0,j=1 这个元素，来尝试一下下标变化</span></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>;i&lt;(n+<span class="number">1</span>)/<span class="number">2</span>;i++&#123;</span><br><span class="line">		<span class="keyword">for</span> j:=<span class="number">0</span>;j&lt;n/<span class="number">2</span>;j++&#123;</span><br><span class="line">			tmp := matrix[i][j]</span><br><span class="line">			matrix[i][j] = matrix[n<span class="number">-1</span>-j][i]</span><br><span class="line">			matrix[n<span class="number">-1</span>-j][i]=matrix[n<span class="number">-1</span>-i][n<span class="number">-1</span>-j]</span><br><span class="line">			matrix[n<span class="number">-1</span>-i][n<span class="number">-1</span>-j]=matrix[j][n<span class="number">-1</span>-i]</span><br><span class="line">			matrix[j][n<span class="number">-1</span>-i]=tmp</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/11/leetcode/45/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -967,100 +1043,11 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/24/leetcode/31/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Luo lei">
-      <meta itemprop="description" content="主要涉猎的编程语言为 java ，js，go 主要是服务端开发和一丢丢前端，外加一些读书笔记和吐槽">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Askluolei">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/24/leetcode/31/" class="post-title-link" itemprop="url">下一个排列</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-11-24 23:46:39" itemprop="dateCreated datePublished" datetime="2019-11-24T23:46:39+08:00">2019-11-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-25 00:08:24" itemprop="dateModified" datetime="2019-11-25T00:08:24+08:00">2019-11-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/leetcode/" itemprop="url" rel="index">
-                    <span itemprop="name">leetcode</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>实现获取下一个排列的函数，算法需要将给定数字序列重新排列成字典序中下一个更大的排列。</p>
-<p>如果不存在下一个更大的排列，则将数字重新排列成最小的排列（即升序排列）。</p>
-<p>必须<em>原地</em>修改，只允许使用额外常数空间。</p>
-<p>以下是一些例子，输入位于左侧列，其相应输出位于右侧列。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1,2,3 → 1,3,2</span><br><span class="line">3,2,1 → 1,2,3</span><br><span class="line">1,1,5 → 1,5,1</span><br></pre></td></tr></table></figure>
-<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><p>首先要理解题目意思，什么是下一个序列，最小序列，最大序列<br><code>1,2,3</code>  可以看做数字 <code>123</code> 那么使用 <code>1,2,3</code> 数字组合的下一个序列是 <code>1,3,2</code> 其实就是 <code>1,2,3</code> 三个数字排列组合后，当前排列的更大的一个排列。   什么时候最小呢？升序的时候，就是 <code>123</code> 什么时候最大呢 ？ 降序的时候 <code>321</code> 。<br>来一个更普通的例子 <code>1,5,8,4,7,5,3,1</code> ,它的下一个序列是什么呢？ <code>1,5,8,5,1,3,4,7</code><br>我们直接看换的思路是什么？首先降序排列是最大的，同样适用于局部，这里的分界是 <code>4,7</code>,我们只要将 <code>4</code> 替换为 <code>5</code>(刚好比 <code>4</code> 大的) 后面的变成升序（最小）就行了。<br>具体到思路  </p>
-<ol>
-<li>找到 <code>a[i] &lt;= a[i + 1]</code></li>
-<li>在 <code>i</code> 的右侧，找到刚好大于 <code>a[i]</code> 的数 <code>a[j]</code></li>
-<li>交互 <code>a[i], a[j]</code></li>
-<li>从 <code>i + 1</code> 开始，后面的数变成降序</li>
-</ol>
-<p>大体思路就是上面的，当然，基于这个思路还可以有一些细节优化</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">nextPermutation</span><span class="params">(nums []<span class="keyword">int</span>)</span></span>  &#123;</span><br><span class="line">	i := <span class="built_in">len</span>(nums) - <span class="number">2</span></span><br><span class="line">	<span class="keyword">for</span> ; i &gt;= <span class="number">0</span> &amp;&amp; nums[i + <span class="number">1</span>] &lt;= nums[i]; i--&#123;&#125;</span><br><span class="line">	<span class="keyword">if</span> i &gt;= <span class="number">0</span> &#123;</span><br><span class="line">		j := <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">		<span class="keyword">for</span> ; j &gt;= <span class="number">0</span> &amp;&amp; nums[j] &lt;= nums[i]; j--&#123;&#125;</span><br><span class="line">		swap(nums, i, j)</span><br><span class="line">	&#125;</span><br><span class="line">	reverse(nums, i + <span class="number">1</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">reverse</span><span class="params">(nums []<span class="keyword">int</span>, start <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	i := start</span><br><span class="line">	j := <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> ; i &lt; j ; &#123;</span><br><span class="line">		swap(nums, i, j)</span><br><span class="line">		i++</span><br><span class="line">		j--</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">swap</span><span class="params">(nums []<span class="keyword">int</span>, i, j <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	temp := nums[i]</span><br><span class="line">	nums[i] = nums[j]</span><br><span class="line">	nums[j] = temp</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1106,7 +1093,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
