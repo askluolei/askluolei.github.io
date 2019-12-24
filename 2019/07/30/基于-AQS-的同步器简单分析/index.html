@@ -52,7 +52,7 @@
 </script>
 
   <meta name="description" content="大部分同步器的实现都是基于 AQS 的。在了解了 AQS 的实现后，理解其他同步器的实现就比较轻松了。这里只是简单介绍一下。可重入锁 ReentrantLock 已经单独看过了，就不在分析了  Semaphore信号量（不知道是不是这样翻译）里面有一堆许可，每次可以请求一个或多个许可，当请求成功，内部许可数量减少相应许可如果内部许可不够，就请求失败（看调用的方法，是阻塞还是返回false）使用完要">
-<meta name="keywords" content="java,jdk,源码,AQS">
+<meta name="keywords" content="java,jdk,AQS,源码">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于 AQS 的同步器简单分析">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;07&#x2F;30&#x2F;%E5%9F%BA%E4%BA%8E-AQS-%E7%9A%84%E5%90%8C%E6%AD%A5%E5%99%A8%E7%AE%80%E5%8D%95%E5%88%86%E6%9E%90&#x2F;index.html">
@@ -325,8 +325,8 @@
           <div class="post-tags">
               <a href="/tags/java/" rel="tag"># java</a>
               <a href="/tags/jdk/" rel="tag"># jdk</a>
-              <a href="/tags/%E6%BA%90%E7%A0%81/" rel="tag"># 源码</a>
               <a href="/tags/AQS/" rel="tag"># AQS</a>
+              <a href="/tags/%E6%BA%90%E7%A0%81/" rel="tag"># 源码</a>
           </div>
 
         
@@ -399,7 +399,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-count">92</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

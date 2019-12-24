@@ -52,7 +52,7 @@
 </script>
 
   <meta name="description" content="juc 下面很多同步器都是基于 AQS 的。因此，掌握了 AQS ,其他同步器的实现原理就都明白了     概述AQS 的阻塞使用的是 LockSupport 这个类来实现的阻塞可以被线程的中断标记唤醒     内部使用双向链表（prev，next）来维持阻塞的线程（使用 Node 来代表）链表的头节点为当前获取资源的线程节点链表是延时加载的，如果没有竞争发生的时候，链表不会初始化     节点分">
-<meta name="keywords" content="java,jdk,源码,AQS">
+<meta name="keywords" content="java,jdk,AQS,源码">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AQS 分析">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;07&#x2F;28&#x2F;AQS-%E5%88%86%E6%9E%90&#x2F;index.html">
@@ -351,8 +351,8 @@
           <div class="post-tags">
               <a href="/tags/java/" rel="tag"># java</a>
               <a href="/tags/jdk/" rel="tag"># jdk</a>
-              <a href="/tags/%E6%BA%90%E7%A0%81/" rel="tag"># 源码</a>
               <a href="/tags/AQS/" rel="tag"># AQS</a>
+              <a href="/tags/%E6%BA%90%E7%A0%81/" rel="tag"># 源码</a>
           </div>
 
         
@@ -425,7 +425,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-count">92</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
