@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>螺旋矩阵</title>
+    <url>/2019/12/26/leetcode/54/</url>
+    <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个包含 m x n 个元素的矩阵（m 行, n 列），请按照顺时针螺旋顺序，返回矩阵中的所有元素。</p>
+<p>示例 1:<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">*输入:*</span><br><span class="line">[</span><br><span class="line"> [ 1, 2, 3 ],</span><br><span class="line"> [ 4, 5, 6 ],</span><br><span class="line"> [ 7, 8, 9 ]</span><br><span class="line">]</span><br><span class="line">输出: [1,2,3,6,9,8,7,4,5]</span><br></pre></td></tr></table></figure><br><em>示例 2:</em><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入:</span><br><span class="line">[</span><br><span class="line">  [1, 2, 3, 4],</span><br><span class="line">  [5, 6, 7, 8],</span><br><span class="line">  [9,10,11,12]</span><br><span class="line">]</span><br><span class="line">输出: [1,2,3,4,8,12,11,10,9,5,6,7]</span><br></pre></td></tr></table></figure></p>
+<h2 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h2><h3 id="思路1"><a href="#思路1" class="headerlink" title="思路1"></a>思路1</h3><p>由外到内，顺时针访问<br>尾递归，可以使用 for 循环代替</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">spiralOrder</span><span class="params">(matrix [][]<span class="keyword">int</span>)</span> []<span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="comment">// 坑方法，递归调用</span></span><br><span class="line">	m := <span class="built_in">len</span>(matrix)</span><br><span class="line">	<span class="keyword">if</span> m == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> []<span class="keyword">int</span>&#123;&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	n := <span class="built_in">len</span>(matrix[<span class="number">0</span>])</span><br><span class="line">	<span class="keyword">var</span> res []<span class="keyword">int</span></span><br><span class="line">	toR(matrix, &amp;res, <span class="number">0</span>, m, <span class="number">0</span>, n)</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">toR</span><span class="params">(matrix [][]<span class="keyword">int</span>, res *[]<span class="keyword">int</span>, xs, xe, ys, ye <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> xs &gt;= xe || ys &gt;= ye &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> i:= ys;i&lt;ye;i++&#123;</span><br><span class="line">		*res=<span class="built_in">append</span>(*res, matrix[xs][i])</span><br><span class="line">	&#125;</span><br><span class="line">	xs++</span><br><span class="line">	toD(matrix, res, xs, xe, ys, ye)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">toD</span><span class="params">(matrix [][]<span class="keyword">int</span>, res *[]<span class="keyword">int</span>, xs, xe, ys, ye <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> xs &gt;= xe || ys &gt;= ye &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> i:=xs;i&lt;xe;i++&#123;</span><br><span class="line">		*res=<span class="built_in">append</span>(*res, matrix[i][ye<span class="number">-1</span>])</span><br><span class="line">	&#125;</span><br><span class="line">	ye--</span><br><span class="line">	toL(matrix, res, xs, xe, ys, ye)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">toL</span><span class="params">(matrix [][]<span class="keyword">int</span>, res *[]<span class="keyword">int</span>, xs, xe, ys, ye <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> xs &gt;= xe || ys &gt;= ye &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> i:=ye<span class="number">-1</span>;i&gt;=ys;i-- &#123;</span><br><span class="line">		*res=<span class="built_in">append</span>(*res, matrix[xe<span class="number">-1</span>][i])</span><br><span class="line">	&#125;</span><br><span class="line">	xe--</span><br><span class="line">	toU(matrix, res, xs, xe, ys, ye)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">toU</span><span class="params">(matrix [][]<span class="keyword">int</span>, res *[]<span class="keyword">int</span>, xs, xe, ys, ye <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> xs &gt;= xe || ys &gt;= ye &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> i:=xe<span class="number">-1</span>;i&gt;=xs;i--&#123;</span><br><span class="line">		*res=<span class="built_in">append</span>(*res, matrix[i][ys])</span><br><span class="line">	&#125;</span><br><span class="line">	ys++</span><br><span class="line">	toR(matrix, res, xs, xe, ys, ye)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>最大子序和</title>
     <url>/2019/12/24/leetcode/53/</url>
     <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给定一个整数数组 nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。</p>
@@ -760,7 +776,7 @@
 <tr>
 <td>数组</td>
 <td>20</td>
-<td>19</td>
+<td>20</td>
 </tr>
 </tbody>
 </table>
@@ -889,6 +905,12 @@
 <td>中等</td>
 <td><a href="/2019/12/24/leetcode/53">最大子序和</a></td>
 <td><a href="https://leetcode-cn.com/problems/maximum-subarray/" target="_blank" rel="noopener">最大子序和</a></td>
+</tr>
+<tr>
+<td>数组</td>
+<td>中等</td>
+<td><a href="/2019/12/26/leetcode/54">螺旋矩阵</a></td>
+<td><a href="https://leetcode-cn.com/problems/spiral-matrix/" target="_blank" rel="noopener">螺旋矩阵</a></td>
 </tr>
 </tbody>
 </table>
